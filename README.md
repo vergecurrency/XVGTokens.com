@@ -49,4 +49,10 @@ Clone the repository and edit webpage:
 git clone https://github.com/vergecurrency/XVGTokens.com.git
 cd XVGTokens.com
 
-nano index.html 
+nano index.html
+
+
+```
+Other Repositories of interest:<br>
+https://github.com/vergecurrency/erc20/<br>
+<br>
