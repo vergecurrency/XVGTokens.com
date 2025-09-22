@@ -10,22 +10,23 @@
 
 XVG Unified Contract Address Chains Supported:
 
-Base
-Binance
-Polygon
-Unichain
-Arbitrum One
-Sonic
-Avalanche C-chain
-zkSync Era
-Linea
-Optimism 
-Cronos
-Mantle
-World
-Bera 
-Gnosis
-Hemi
+Base ($XVGBASE)
+Binance ($XVGBSC)
+Polygon ($XVGPOLY)
+Unichain ($XVGUNI)
+Arbitrum One ($XVGARB)
+Sonic ($XVGSON)
+Avalanche C-chain ($XVGAVA)
+zkSync Era ($XVGZKE)
+Linea ($XVGLIN)
+Optimism ($XVGOPT)
+Cronos ($XVGCRO)
+Mantle ($XVGMNT)
+World ($XVGWORLD)
+Blast ($XVGBLAST)
+Bera  ($XVGBERA)
+Gnosis ($XVGGNOSIS)
+Hemi ($XVGHEMI)
 
 
 
