@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XVGTokens.com - Forged in Code, Bound Across Chains...</title>
+<link rel="icon" type="image/x-icon" href="./images/favicon.ico" /
+<link href="css/styles.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+  body {
+    margin: 0;
+    background: #0a0d14;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+    color: #fff;
+    padding: 40px 20px;
+  }
+  
+  @media (max-width: 768px) {
+      .hero-banner {
+        aspect-ratio: 2.5 / 1;
+        background-size: cover;
+      }
+      .bottom-banner {
+        aspect-ratio: 2.5 / 1;
+        background-size: cover;
+      }
+    }
+
+    .intro {
+        text-align: center;
+        width: 100%; /* let it flex full width on small screens */
+        max-width: 1400px; /* don’t exceed desktop width */
+        margin: 0 auto 40px; /* center horizontally, keep bottom spacing */
+        font-size: 22px;
+        line-height: 1.6;
+        padding: 0 15px; /* prevent text from touching screen edges */
+    }
+
+  .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 220px); /* 3 fixed-width columns */
+  gap: 40px 60px; /* vertical | horizontal spacing */
+  justify-content: center; /* center the whole grid */
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 220px);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 220px;
+  }
+}
+
+  .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+  .token-logo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    margin-bottom: 15px;
+    animation: spin360 1.5s ease forwards;
+  }
+
+    .token-logo-zke {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-base {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-opt {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-son {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-arb {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-ava {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-poly {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-lin {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-bsc {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-mnt {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-cro {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-uni {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+	
+	.token-logo-bera {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-blast {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+	
+	.token-logo-gnosis {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+    .token-logo-world {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+	
+	.token-logo-hemi {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
+
+  @keyframes spin360 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Rainbow glow animation */
+  @keyframes rainbowGlow {
+    0%   { box-shadow: 0 0 25px red, 0 0 100px red; }
+    20%  { box-shadow: 0 0 25px orange, 0 0 100px orange; }
+    40%  { box-shadow: 0 0 25px yellow, 0 0 100px yellow; }
+    60%  { box-shadow: 0 0 25px green, 0 0 100px green; }
+    80%   { box-shadow: 0 0 25px red, 0 0 100px red; }
+    100%  { box-shadow: 0 0 25px white, 0 0 100px white; }
+  }
+
+  .token-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px hotpink, 0 0 100px hotpink;
+  }
+
+    .token-logo-base:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px blue, 0 0 100px blue;
+    }
+
+    .token-logo-zke:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px #262768, 0 0 100px #262768;
+    }
+
+    .token-logo-opt:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px red, 0 0 100px red;
+    }
+
+    .token-logo-son:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px white, 0 0 100px white;
+    }
+
+    .token-logo-arb:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px skyblue, 0 0 100px skyblue;
+    }
+
+    .token-logo-ava:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px #fe6666, 0 0 100px #fe6666;
+    }
+
+    .token-logo-poly:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px #6c00f6, 0 0 100px #6c00f6;
+    }
+
+    .token-logo-lin:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px teal, 0 0 100px teal;
+    }
+
+    .token-logo-bsc:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px gold, 0 0 100px gold;
+    }
+
+    .token-logo-mnt:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px lightgreen, 0 0 100px lightgreen;
+    }
+
+    .token-logo-cro:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px #3b4478, 0 0 100px #3b4478;
+    }
+
+    .token-logo-uni:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px purple, 0 0 100px purple;
+    }
+
+    .token-logo-world:hover {
+        transform: scale(1.05);
+        animation: rainbowGlow 3s linear infinite;
+    }
+	
+	.token-logo-blast:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px yellow, 0 0 100px yellow;
+    }
+	
+	.token-logo-gnosis:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px darkgreen, 0 0 100px darkgreen;
+    }
+
+    .token-logo-bera:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px brown, 0 0 100px brown;
+    }
+	
+	.token-logo-hemi:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px orange, 0 0 100px orange;
+    }
+
+  .logo-text {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .hero-banner {
+      background-image: url('./images/bottompagebanner.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center top;
+      width: 100%;
+      aspect-ratio: 3 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      margin: 0;
+      padding: 0;
+    }
+	
+.bottom-banner {
+      background-image: url('./images/mainbanner.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-color: #000;
+      width: 100%;
+      aspect-ratio: 3 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      margin: 0;
+      padding: 0;
+    }
+
+  .footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .footer a img {
+    width: 32px;
+    height: 32px;
+    transition: transform 0.3s, filter 0.3s, box-shadow 0.3s;
+  }
+
+  /* Glow effect on social media icons */
+  .footer a img:hover {
+    transform: scale(1.2);
+    filter: brightness(1.5);
+    box-shadow: 0 0 15px hotpink, 0 0 30px hotpink;
+  }
+  
+  .btn-slide {
+          display: inline-block;
+          padding: 12px 28px;
+          background: #1E3A8A; /* deep navy */
+          color: #FFD166; /* warm amber text */
+          font-weight: 600;
+          text-decoration: none;
+          border-radius: 9999px; /* pill shape */
+          font-family: sans-serif;
+          position: relative;
+          overflow: hidden;
+          transition: background 0.3s ease;
+      }
+
+          .btn-slide:hover {
+              background: #162f6b; /* slightly darker navy */
+          }
+
+          .btn-slide::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: rgba(255,255,255,0.25);
+              transform: skewX(-20deg);
+              transition: all 0.5s ease;
+          }
+
+          .btn-slide:hover::after {
+              left: 100%;
+          }
+
+    .btn-slide-green {
+        display: inline-block;
+        padding: 12px 28px;
+        background: #40E0D0; /* solid turquoise */
+        color: #FFFFFF;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 9999px; /* pill shape */
+        font-family: sans-serif;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .btn-slide-green:hover {
+            filter: brightness(1.1); /* subtle brighten on hover */
+        }
+
+        .btn-slide-green::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.25);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+        }
+
+        .btn-slide-green:hover::after {
+            left: 100%;
+        }
+
+      .btn-explorer {
+          display: inline-block;
+          padding: 12px 28px;
+          background: #000000; /* black */
+          color: #FFFFFF; /* white text */
+          font-weight: bold;
+          text-decoration: none;
+          border-radius: 9999px; /* pill shape */
+          font-family: sans-serif;
+          position: relative;
+          overflow: hidden;
+          transition: background 0.3s ease;
+      }
+
+          .btn-explorer:hover {
+              background: #111111; /* slightly lighter black on hover */
+          }
+
+          .btn-explorer::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: rgba(211,211,211,0.3); /* light gray slide effect */
+              transform: skewX(-20deg);
+              transition: all 0.5s ease;
+          }
+
+          .btn-explorer:hover::after {
+              left: 100%;
+          }
+</style>
+</head>
+<body>
+    <!-- Hero Banner -->
+    <header class="hero-banner"></header>
+    <!-- Main Content -->
+    <div class="intro">
+        <h1>One Contract Address to Rule Them All...</h1><br>
+        <h3>All of the $XVG branded tokens follow a unique 'unified contract address system', a first of it's kind, where they all share the same contract address across all smart chains:</h3>
+        <h4>
+            <span id="contract-address">0xe061aa40be525a13296cb4bf69f513242349d708</span>
+            <button onclick="copyToClipboard()" class="btn btn-sm btn-outline-secondary ms-2">Copy</button>
+        </h4>
+        <h5>(if you have any issues adding networks or the tokens from this site inside your wallets browser, please visit <a href="https://chainlist.org" target="_blank">chainlist.org</a>)</h5>
+    </div>
+    <script>
+        function copyToClipboard() {
+            const text = document.getElementById("contract-address").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Contract address copied!");
+            });
+        }
+    </script>
+    <div class="grid">
+        <!-- tokensection -->
+        <div class="logo-container">
+            <div class="token-logo-zke" style="background-image:url('./images/xvgzke.png');"></div>
+            <div class="logo-text">
+                XVGZKE takes Verge into the zkSync Era, where cutting-edge
+                zero-knowledge rollups enable private, scalable, and gas-efficient transactions.
+                It’s ideal for users looking to transact securely and swiftly while keeping fees
+                at rock-bottom levels.
+            </div><br>
+            <a href="https://era.zksync.network/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgzke" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/zksync/pair-explorer/0x1466d87bc4b100ac7c3d0dbeb2ba7a46f1bc59b2"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'zkSync Era Mainnet',
+              chainId: '0x144',
+              rpcUrl: 'https://mainnet.era.zksync.io',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://era.zksync.io',
+              tokenSymbol: 'XVGZKE',
+              tokenImage: 'images/xvgzke.png'
+            })">
+                ➕ Add XVGZKE to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-base" style="background-image:url('./images/xvgbase.png');"></div>
+            <div class="logo-text">
+                XVGBASE launches XVG into Coinbase’s Base chain — a secure,
+                developer-friendly L2 built to onboard the next billion users. It fuses Verge’s legacy
+                with Base’s high-performance, low-gas infrastructure, making it perfect for fast and
+                trusted everyday use.
+            </div><br>
+            <a href="https://basescan.org/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgbase" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/base/pair-explorer/0x7f09fde136dafc1222ef22d4d15f434a0161aa50"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Base Mainnet',
+              chainId: '0x2105',
+              rpcUrl: 'https://mainnet.base.org',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://basescan.org',
+              tokenSymbol: 'XVGBASE',
+              tokenImage: 'images/xvgbase.png'
+            })">
+                ➕ Add XVGBASE to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-opt" style="background-image:url('./images/xvgopt.png');"></div>
+            <div class="logo-text">
+                XVGOPT unlocks Verge utility on Optimism, a chain designed for
+                fast, Ethereum-compatible transactions with significantly lower costs. This positions
+                XVG at the center of the Optimism Superchain vision—empowering seamless, scalable
+                Web3 experiences.
+            </div><br>
+            <a href="https://optimistic.etherscan.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgopt" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/optimism/pair-explorer/0x08ad80b07b28ea2d40a031150cecb71b59ebb174b663bb3e341cd816dae37ba7"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Optimism',
+              chainId: '0xA',
+              rpcUrl: 'https://mainnet.optimism.io',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://optimistic.etherscan.io',
+              tokenSymbol: 'XVGOPT',
+              tokenImage: 'images/xvgopt.png'
+            })">
+                ➕ Add XVGOPT to Metamask
+            </button>
+        </div>
+        <!-- another token section -->
+        <div class="logo-container">
+            <div class="token-logo-son" style="background-image:url('./images/xvgson.png');"></div>
+            <div class="logo-text">
+                XVGSON is at the forefront of experimental, high-throughput chains,
+                benefiting from Sonic Labs’ innovative modular design and rapid block times. It brings
+                Verge’s community-powered mission to a next-gen environment optimized for speed, scale,
+                and smart contract flexibility.
+            </div><br>
+            <a href="https://sonicscan.org/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgson" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/sonic/pair-explorer/0xb93d90b0f0947f2f7a31effbd686a3995db5db35"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Sonic Mainnet',
+              chainId: '0x92',
+              rpcUrl: 'https://1rpc.io/sonic',
+              nativeSymbol: 'S',
+              explorerUrl: 'https://sonicscan.org',
+              tokenSymbol: 'XVGSON',
+              tokenImage: 'images/xvgson.png'
+            })">
+                ➕ Add XVGSON to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-arb" style="background-image:url('./images/xvgarb.png');"></div>
+            <div class="logo-text">
+                XVGARB thrives on Arbitrum One, offering lightning-fast
+                transactions and low fees powered by one of the most adopted rollups in Web3. This
+                launch connects Verge holders with a vast DeFi ecosystem and efficient Layer 2 UX
+                that rivals centralized exchanges in speed.
+            </div><br>
+            <a href="https://arbiscan.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgarb" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/arbitrum/pair-explorer/0xeda17fad99924e44030ed6900cf20beb888ce2fc7f50e0ad4ffd584eb84ca5e5"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Arbitrum One',
+              chainId: '0xA4B1',
+              rpcUrl: 'https://arb1.arbitrum.io/rpc',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://arbiscan.io',
+              tokenSymbol: 'XVGARB',
+              tokenImage: 'images/xvgarb.png'
+            })">
+                ➕ Add XVGARB to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-ava" style="background-image:url('./images/xvgava.png');"></div>
+            <div class="logo-text">
+                XVGAVA taps into Avalanche’s sub-second finality and
+                eco-friendly proof-of-stake consensus, delivering near-instant value transfer
+                and dApp performance. It empowers users with high-speed, low-cost interoperability
+                across Avalanche's thriving C-Chain DeFi ecosystem.
+            </div><br>
+            <a href="https://snowtrace.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.coingecko.com/en/coins/xvgava" target="_blank" class="btn-slide">📈 CoinGecko</a>
+            <a href="https://www.dextools.io/app/en/avalanche/pair-explorer/0x09ae78182a2183a8ffbbca73bde007bb907cdd7022b06b3bda6379d8effff3f1"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Avalanche Network C-Chain',
+              chainId: '0xA86A',
+              rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+              nativeSymbol: 'AVAX',
+              explorerUrl: 'https://snowtrace.io',
+              tokenSymbol: 'XVGAVA',
+              tokenImage: 'images/xvgava.png'
+            })">
+                ➕ Add XVGAVA to Metamask
+            </button>
+        </div>
+        <!-- another token section -->
+        <div class="logo-container">
+            <div class="token-logo-poly" style="background-image:url('./images/xvgpoly.png');"></div>
+            <div class="logo-text">
+                XVGPOLY brings Verge to Polygon's ultra-efficient Layer 2 environment,
+                delivering lightning-fast, low-cost transactions ideal for gaming, NFTs, and DeFi. With deep
+                integrations across the Web3 ecosystem, XVG users gain instant access to scalable, real-world
+                dApps.
+            </div><br>
+            <a href="https://polygonscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/polygon/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Polygon Mainnet',
+              chainId: '0x89',
+              rpcUrl: 'https://polygon-rpc.com',
+              nativeSymbol: 'MATIC',
+              explorerUrl: 'https://polygonscan.com',
+              tokenSymbol: 'XVGPOLY',
+              tokenImage: 'images/xvgpoly.png'
+            })">
+                ➕ Add XVGPOLY to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-lin" style="background-image:url('./images/xvglin.png');"></div>
+            <div class="logo-text">
+                XVGLIN brings the power of Verge to Linea’s zkEVM Layer 2,
+                combining ultra-low gas fees with Ethereum-level security and full EVM compatibility.
+                It’s the perfect gateway for users who want to scale without compromise, enjoying fast,
+                cheap transactions in a next-gen ZK environment.
+            </div><br>
+            <a href="https://lineascan.build/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/linea/pair-explorer/0xee83fce74a0ef6efcdc63c0f7367819d485aef8d"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Linea',
+              chainId: '0xE708',
+              rpcUrl: 'https://rpc.linea.build',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://lineascan.build',
+              tokenSymbol: 'XVGLIN',
+              tokenImage: 'images/xvglin.png'
+            })">
+                ➕ Add XVGLIN to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-bsc" style="background-image:url('./images/xvgbsc.png');"></div>
+            <div class="logo-text">
+                XVGBSC unlocks the power of XVG on Binance Smart Chain,
+                known for blazing speed, massive liquidity, and ultra-low fees. It’s a perfect
+                match for traders, DEX users, and DeFi builders seeking real performance in one
+                of the most active ecosystems in crypto.
+            </div><br>
+            <a href="https://bscscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/bnb/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Binance Smart Chain',
+              chainId: '0x38',
+              rpcUrl: 'https://bsc-dataseed.binance.org',
+              nativeSymbol: 'BNB',
+              explorerUrl: 'https://bscscan.com',
+              tokenSymbol: 'XVGBSC',
+              tokenImage: 'images/xvgbsc.png'
+            })">
+                ➕ Add XVGBSC to Metamask
+            </button>
+        </div>
+        <!-- another token section-->
+        <div class="logo-container">
+            <div class="token-logo-mnt" style="background-image:url('./images/xvgmnt.png');"></div>
+            <div class="logo-text">
+                XVGMNT brings Verge to Mantle’s modular Ethereum Layer 2,
+                combining rollup security with decentralized data availability and low fees. Built
+                for next-gen dApps, Mantle empowers XVG with ultra-efficient execution and a
+                future-proof DeFi foundation. It's liquidity pool is paired solely with $MNT.
+            </div>
+            <br>
+            <a href="https://explorer.mantle.xyz/token/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/mantle/pair-explorer/0x3f5db130faeb741b3131f51d9d48789e74b20d57"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Mantle',
+              chainId: '0x1388',
+              rpcUrl: 'https://rpc.mantle.xyz',
+              nativeSymbol: 'MNT',
+              explorerUrl: 'https://explorer.mantle.xyz',
+              tokenSymbol: 'XVGMNT',
+              tokenImage: 'images/xvgmnt.png'
+            })">
+                ➕ Add XVGMNT to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-cro" style="background-image:url('./images/xvgcro.png');"></div>
+            <div class="logo-text">
+                XVGCRO is a Verge-branded token deployed natively on the
+                Cronos chain, designed to extend the XVG multi-chain token suite. Unlike wrapped
+                assets or synthetic derivatives, XVGCRO is fully native and anchored by a single
+                liquidity pool that pairs it exclusively with CRO, ensuring its value is tied to
+                Cronos’ core value ($CRO).
+            </div><br>
+            <a href="https://cronoscan.com/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/cronos/pair-explorer/0xdcd1bd360155de2469e36f7f8095584de4d5f828"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Cronos',
+              chainId: '0x19',
+              rpcUrl: 'https://evm.cronos.org',
+              nativeSymbol: 'CRO',
+              explorerUrl: 'https://cronoscan.com',
+              tokenSymbol: 'XVGCRO',
+              tokenImage: 'images/xvgcro.png'
+            })">
+                ➕ Add XVGCRO to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-uni" style="background-image:url('./images/xvguni.png');"></div>
+            <div class="logo-text">
+                XVGUNI harnesses the power of Uniswap’s proprietary L2 chain
+                to merge Verge’s value with one of the largest DEX user bases in the world. This
+                brings ultra-fast swaps, next-gen liquidity incentives, and direct access to the
+                heart of DeFi innovation.
+            </div><br>
+            <a href="https://uniscan.xyz/address/0xe061aa40be525a13296cb4bf69f513242349d708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <a href="https://www.dextools.io/app/en/unichain/pair-explorer/0x6d084b1a9d4459cb74007700c0a8236be7753d3e"
+               target="_blank"
+               class="btn-slide-green">
+                🔗 View on DexTools
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Unichain',
+              chainId: '0x82',
+              rpcUrl: 'https://mainnet.unichain.org',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://uniscan.xyz',
+              tokenSymbol: 'XVGUNI',
+              tokenImage: 'images/xvguni.png'
+            })">
+                ➕ Add XVGUNI to Metamask
+            </button>
+        </div>
+        <!-- another token section -->
+        <div class="logo-container">
+            <div class="token-logo-blast" style="background-image:url('./images/xvgblast.png');"></div>
+            <div class="logo-text">
+                Launching an XVG-branded token on Blast Network that shares the
+                same contract address as the other 11 tokens ensures true cross-chain consistency and trustless
+                interoperability. This unified design simplifies bridging, deepens liquidity, and lets
+                users trade seamlessly while benefiting from Blast’s unique incentives and yield features.
+            </div><br>
+            <a href="https://blastexplorer.io/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708/contract/code?type=erc20"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a><br>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Blast Mainnet',
+              chainId: '0x13e31',
+              rpcUrl: 'https://rpc.blast.io',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://blastexplorer.io',
+              tokenSymbol: 'XVGBLAST',
+              tokenImage: 'images/xvgblast.png'
+            })">
+                ➕ Add XVGBLAST to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-gnosis" style="background-image:url('./images/xvggnosis.png');"></div>
+            <div class="logo-text">
+                XVGGnosis extends the XVG ecosystem to the Gnosis Chain,
+                leveraging its low fees and secure infrastructure while maintaining the same unified
+                contract address as the other tokens. This seamless integration empowers users with
+                efficient cross-chain transactions and easy access to Gnosis’s thriving DeFi and
+                payments community.
+            </div><br>
+            <a href="https://gnosis.blockscout.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708?tab=contract"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Gnosis',
+              chainId: '0x64',
+              rpcUrl: 'https://rpc.gnosischain.com',
+              nativeSymbol: 'XDAI',
+              explorerUrl: 'https://gnosisscan.io/',
+              tokenSymbol: 'XVGGNOSIS',
+              tokenImage: 'images/xvggnosis.png'
+            })">
+                ➕ Add XVGGNOSIS to Metamask
+            </button>
+        </div>
+        <div class="logo-container">
+            <div class="token-logo-bera" style="background-image:url('./images/xvgbera.png');"></div>
+            <div class="logo-text">
+                XVGBera brings the unified XVG token experience to Berachain
+                by utilizing the same contract address, ensuring seamless interoperability and instant
+                verification for XVG holders. By operating on Berachain’s native BERA network, it
+                combines XVG’s cross-chain liquidity with the scalability, security, and transaction
+                efficiency of a dedicated Cosmos-based appchain.
+            </div><br>
+            <a href="https://berascan.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Berachain',
+              chainId: '0x138de',
+              rpcUrl: 'https://rpc.berachain.com',
+              nativeSymbol: 'BERA',
+              explorerUrl: 'https://berascan.com/',
+              tokenSymbol: 'XVGBERA',
+              tokenImage: 'images/xvgbera.png'
+            })">
+                ➕ Add XVGBERA to Metamask
+            </button>
+        </div>
+        <!-- end of tokens section -->
+        <!-- another token section -->
+        <div class="logo-container">
+            <div class="token-logo-world" style="background-image:url('./images/xvgworld.png');"></div>
+            <div class="logo-text">
+                $XVGWorld brings the XVG brand to World Chain, gaining faster transactions, lower fees, 
+            and global utility. It ties XVG’s value to World Chain’s growth while giving holders new opportunities 
+            for arbitrage, cross-chain use, and decentralized apps.<br>
+            </div>
+            <a href="https://worldscan.org/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+      networkName: 'World Chain',
+      chainId: '0x1e0',
+      rpcUrl: 'https://worldchain.drpc.org',
+      nativeSymbol: 'ETH',
+      explorerUrl: 'https://worldscan.org',
+      tokenSymbol: 'XVGWORLD',
+      tokenImage: 'images/xvgworld.png'
+    })">
+                ➕ Add XVGWorld to Metamask
+            </button>
+        </div>
+		<div class="logo-container">
+            <div class="token-logo-hemi" style="background-image:url('./images/xvghemi.png');"></div>
+            <div class="logo-text">
+                XVGHEMI is the Verge-branded token deployed on the Hemi blockchain, extending the 
+				multi-chain XVG ecosystem into Hemi’s fast and low-fee EVM environment. What makes 
+				Hemi unique is that its EVM isn’t just a smart-contract layer — it embeds a fully-verifiable 
+				Bitcoin node directly inside the chain, so contracts can interact with Bitcoin data trustlessly. 
+				By combining XVG branding with Hemi’s “Bitcoin-in-EVM” architecture, XVGHEMI positions itself as 
+				both a cross-chain asset and a showcase for native BTC-aware DeFi.
+            </div><br>
+            <a href="https://explorer.hemi.xyz/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
+               target="_blank"
+               class="btn-explorer">
+                🔎 View Explorer
+            </a>
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="addToMetaMaskNetworkThenToken({
+              networkName: 'Hemi',
+              chainId: '0xa867',
+              rpcUrl: 'https://rpc.hemi.network/rpc',
+              nativeSymbol: 'ETH',
+              explorerUrl: 'https://rpc.hemi.network/rpc',
+              tokenSymbol: 'XVGHEMI',
+              tokenImage: 'images/xvghemi.png'
+            })">
+                ➕ Add XVGHEMI to Metamask
+            </button>
+        </div>
+    </div>
+    <!-- socials buttonz -->
+    <div class="footer">
+        <a href="https://discord.gg/vergecurrency" target="_blank"><img src="./images/discord.png" alt="Discord"></a>
+        <a href="https://www.twitter.com/xvgeth" target="_blank"><img src="./images/xwhite.png" alt="X (Twitter)"></a>
+        <a href="https://t.me/officialxvg" target="_blank"><img src="./images/telegram.png" alt="Telegram"></a>
+        <a href="https://github.com/vergecurrency/erc20/" target="_blank"><img src="./images/whitegithub.jpg" alt="Github"></a>
+        <a href="https://www.youtube.com/vergecurrencyofficial" target="_blank"><img src="./images/youtube.png" alt="YouTube"></a>
+    </div>
+    <br><br>
+
+    <header class="bottom-banner"></header>
+    <section class="py-5" style="background-color: #0a0d14; color: #fff;">
+        <div class="container">
+            <div class="d-flex justify-content-center gap-4 flex-wrap iframe-container" style="text-align: center; margin-bottom: 20px;">
+                <h4 style="text-align: center;">Here you can buy XVG (coin), XVG ETH (ERC20), (or any cryptocurrency/XVG token) with Paypal Coin (from the Paypal App), Bitcoin, <br /> Ethereum, and more! or swap any crypto for a different crypto or even bridge cross chain!</h4>
+                <iframe src="https://swapspace.co/widget/2094b859afe772afdf9a0215" frameborder="0" style="width: 404px; height: 536px; border-radius: 20px;" media="(max-width: 403px) { width: 100%; height: 617px; }" media="(max-width: 353px) { width: 353px; height: 617px; }" />
+            </div>
+        </div>
+    </section>
+    <div class="intro">
+        © XVGTokens.com 2025
+    </div>
+    <script>
+        async function addToMetaMaskNetworkThenToken({
+            networkName, chainId, rpcUrl, nativeSymbol, explorerUrl,
+            tokenSymbol, tokenImage
+        }) {
+            const address = '0xe061aa40be525a13296cb4bf69f513242349d708';
+            const decimals = 18;
+            if (!window.ethereum) return alert('Please install MetaMask.');
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId }]
+                });
+            } catch (err) {
+                if (err.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId,
+                                chainName: networkName,
+                                rpcUrls: [rpcUrl],
+                                nativeCurrency: {
+                                    name: nativeSymbol,
+                                    symbol: nativeSymbol,
+                                    decimals: decimals
+                                },
+                                blockExplorerUrls: [explorerUrl]
+                            }]
+                        });
+                    } catch (addErr) {
+                        console.error(addErr);
+                        return alert('Could not add network: ' + networkName);
+                    }
+                } else {
+                    console.error(err);
+                    return alert('Could not switch to network: ' + networkName);
+                }
+            }
+
+            try {
+                const added = await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20',
+                        options: {
+                            address,
+                            symbol: tokenSymbol,
+                            decimals,
+                            image: tokenImage
+                        }
+                    }
+                });
+                if (!added) alert(`Token ${tokenSymbol} not added.`);
+            } catch (err) {
+                console.error(err);
+                alert('Failed to add token: ' + tokenSymbol);
+            }
+        }
+    </script>
+</body>
+</html>
