@@ -8,25 +8,25 @@
 > **XVGTokens.com** is the official hub for the multi-chain suite of Verge (XVG) tokens — unifying all XVG-branded assets across Ethereum, BSC, Polygon, Base, Solana, Hemi, and more.  
 > *One XVG. One Contract. All Chains.*
 
-XVG Unified Contract Address Chains Supported:
+XVG Unified Contract Address Chains Supported:<br>
 
-Base ($XVGBASE)
-Binance ($XVGBSC)
-Polygon ($XVGPOLY)
-Unichain ($XVGUNI)
-Arbitrum One ($XVGARB)
-Sonic ($XVGSON)
-Avalanche C-chain ($XVGAVA)
-zkSync Era ($XVGZKE)
-Linea ($XVGLIN)
-Optimism ($XVGOPT)
-Cronos ($XVGCRO)
-Mantle ($XVGMNT)
-World ($XVGWORLD)
-Blast ($XVGBLAST)
-Bera  ($XVGBERA)
-Gnosis ($XVGGNOSIS)
-Hemi ($XVGHEMI)
+Base ($XVGBASE)<br>
+Binance ($XVGBSC)<br>
+Polygon ($XVGPOLY)<br>
+Unichain ($XVGUNI)<br>
+Arbitrum One ($XVGARB)<br>
+Sonic ($XVGSON)<br>
+Avalanche C-chain ($XVGAVA)<br>
+zkSync Era ($XVGZKE)<br>
+Linea ($XVGLIN)<br>
+Optimism ($XVGOPT)<br>
+Cronos ($XVGCRO)<br>
+Mantle ($XVGMNT)<br>
+World ($XVGWORLD)<br>
+Blast ($XVGBLAST)<br>
+Bera  ($XVGBERA)<br>
+Gnosis ($XVGGNOSIS)<br>
+Hemi ($XVGHEMI)<br>
 
 
 
