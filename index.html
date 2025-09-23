@@ -428,26 +428,34 @@
     }
 
   .footer {
-    background: transparent
-    margin-top: 50px;
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-  }
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
 
-  .footer a img {
-    background: transparent;
-    width: 64px;
-    height: 64px;
-    transition: transform 0.3s, filter 0.3s, box-shadow 0.3s;
-  }
+.footer a {
+  background: transparent;       /* fully transparent by default */
+  border-radius: 50%;            /* circular background area */
+  padding: 8px;                  /* space around the icon */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
 
-  /* Glow effect on social media icons */
-  .footer a img:hover {
-    transform: scale(1.2);
-    filter: brightness(1.5);
-    box-shadow: 0 0 25px hotpink, 0 0 50px hotpink;
-  }
+.footer a img {
+  width: 64px;
+  height: 64px;
+  background: transparent;       /* ensure icons are transparent */
+  transition: transform 0.3s, filter 0.3s;
+}
+
+/* Hover glow effect */
+.footer a:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px hotpink, 0 0 40px hotpink, 0 0 60px hotpink;
+}
   
   .btn-slide {
           display: inline-block;
