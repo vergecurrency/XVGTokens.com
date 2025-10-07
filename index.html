@@ -283,6 +283,18 @@
         margin-bottom: 15px;
         animation: spin360 1.5s ease forwards;
     }
+	
+	.token-logo-zora {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        margin-bottom: 15px;
+        animation: spin360 1.5s ease forwards;
+    }
 
   @keyframes spin360 {
     0% { transform: rotate(0deg); }
@@ -387,6 +399,11 @@
 	.token-logo-hemi:hover {
         transform: scale(1.05);
         box-shadow: 0 0 25px orange, 0 0 100px orange;
+    }
+	
+	.token-logo-zora:hover {
+        transform: scale(1.05);
+        animation: rainbowGlow 3s linear infinite;
     }
 
   .logo-text {
