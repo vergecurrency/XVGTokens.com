@@ -850,6 +850,28 @@
         color: #7dd3fc;
     }
 
+    .swap-widget-shell {
+        width: min(100%, 960px);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+    }
+
+    .swap-widget-frame {
+        display: block;
+        width: 100%;
+        max-width: 960px;
+        height: 700px;
+        margin: 0 auto;
+        transform: translateX(22px);
+    }
+
+    @media (max-width: 600px) {
+        .swap-widget-frame {
+            transform: none;
+        }
+    }
+
     @media (max-width: 600px) {
         .hero-intro__panel {
             padding: 24px 18px 22px;
@@ -2068,20 +2090,22 @@
     <br><br>
 	<header class="bottom-banner page-reveal" data-reveal style="--reveal-delay: 1040ms;"></header>
     <section class="py-5 page-reveal" data-reveal style="background-color: #0a0d14; color: #fff; --reveal-delay: 1100ms;">
-        <div class="container" style="max-width: 1120px; margin: 0 auto; text-align: center;">
-            <div class="iframe-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 20px;">
-                <h4 style="text-align: center; max-width: 980px; margin: 0 auto;">Here you can buy XVG (coin), XVG ETH (ERC20), (or any cryptocurrency/XVG token) with Paypal Coin (from the Paypal App), Bitcoin, <br /> Ethereum, and more! or swap any crypto for a different crypto or even bridge cross chain!</h4>
+        <div style="width: 100%; display: flex; justify-content: center; padding: 0 16px;">
+            <div class="iframe-container" style="width: min(100%, 960px); display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 0 auto 20px; text-align: center;">
+                <h4 style="max-width: 980px; margin: 0 auto;">Here you can buy XVG (coin), XVG ETH (ERC20), (or any cryptocurrency/XVG token) with Paypal Coin (from the Paypal App), Bitcoin, <br /> Ethereum, and more! or swap any crypto for a different crypto or even bridge cross chain!</h4>
+                <div class="swap-widget-shell">
                 <iframe
   src="https://letsexchange.io/v2/widget?affiliate_id=ZfdAVgTUKOueeKY4&is_iframe=true"
-  style="display: block; width: min(100%, 960px); height: 700px; margin: 0 auto;"
+  class="swap-widget-frame"
   frameborder="0"
   allow="clipboard-read; clipboard-write">
 </iframe>
+                </div>
             </div>
         </div>
     </section>
     <div class="intro page-reveal" data-reveal style="--reveal-delay: 1160ms;">
-        © XVGTokens.com 2025
+        © XVGTokens.com 2026
     </div>
     <script>
         async function addToMetaMaskNetworkThenToken({
@@ -2169,10 +2193,10 @@
             }
 
             window.addEventListener('load', () => {
-                window.setTimeout(revealPage, 5400);
+                window.setTimeout(revealPage, 4050);
             }, { once: true });
 
-            window.setTimeout(revealPage, 8800);
+            window.setTimeout(revealPage, 6600);
         }());
     </script>
 </body>
