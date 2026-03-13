@@ -41,31 +41,34 @@
     }
 
   .grid {
-  display: grid;
-  grid-template-columns: repeat(3, 220px); /* 3 fixed-width columns */
-  gap: 40px 60px; /* vertical | horizontal spacing */
-  justify-content: center; /* center the whole grid */
-}
-
-/* Tablet: 2 columns */
-@media (max-width: 992px) {
-  .grid {
-    grid-template-columns: repeat(2, 220px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 320px));
+    gap: 40px 32px;
+    justify-content: center;
+    width: min(100%, 1088px);
   }
-}
 
-/* Mobile: 1 column */
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 220px;
+  @media (max-width: 992px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 320px));
+    }
   }
-}
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+      width: min(100%, 360px);
+      gap: 28px;
+    }
+  }
 
   .logo-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      width: 100%;
+      padding: 0 8px;
     }
 
   .token-logo {
@@ -410,6 +413,140 @@
     font-size: 14px;
     line-height: 1.4;
   }
+
+  .token-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      margin-top: 8px;
+  }
+
+  .token-action {
+      --token-action-bg: linear-gradient(135deg, rgba(43, 59, 89, 0.96), rgba(17, 24, 39, 0.96));
+      --token-action-border: rgba(148, 163, 184, 0.28);
+      --token-action-shadow: 0 14px 32px rgba(8, 15, 28, 0.34);
+      --token-action-highlight: rgba(255, 255, 255, 0.12);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--token-action-border);
+      background: var(--token-action-bg);
+      color: #f8fafc;
+      box-shadow: var(--token-action-shadow);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease, filter 240ms ease;
+      flex: 1 1 140px;
+      max-width: 100%;
+      text-align: center;
+      -webkit-appearance: none;
+      appearance: none;
+  }
+
+  .token-action::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+      opacity: 0.9;
+      pointer-events: none;
+  }
+
+  .token-action::after {
+      content: "";
+      position: absolute;
+      inset: -120% auto auto -30%;
+      width: 42%;
+      height: 240%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0), var(--token-action-highlight), rgba(255, 255, 255, 0));
+      transform: rotate(24deg);
+      transition: transform 280ms ease;
+      pointer-events: none;
+  }
+
+  .token-action > span {
+      position: relative;
+      z-index: 1;
+  }
+
+  .token-action:hover,
+  .token-action:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(8, 15, 28, 0.46);
+      border-color: rgba(191, 219, 254, 0.65);
+      color: #ffffff;
+  }
+
+  .token-action:hover::after,
+  .token-action:focus-visible::after {
+      transform: translateX(220%) rotate(24deg);
+  }
+
+  .token-action:focus-visible {
+      outline: 2px solid rgba(125, 211, 252, 0.95);
+      outline-offset: 3px;
+  }
+
+  .token-action:active {
+      transform: translateY(0);
+      filter: brightness(0.98);
+      box-shadow: 0 10px 24px rgba(8, 15, 28, 0.32);
+  }
+
+  .token-action.is-explorer {
+      --token-action-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(12, 18, 31, 0.98));
+      --token-action-border: rgba(148, 163, 184, 0.34);
+  }
+
+  .token-action.is-market {
+      --token-action-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.96), rgba(30, 64, 175, 0.96));
+      --token-action-border: rgba(147, 197, 253, 0.36);
+      --token-action-highlight: rgba(255, 255, 255, 0.18);
+  }
+
+  .token-action.is-dex {
+      --token-action-bg: linear-gradient(135deg, rgba(14, 116, 144, 0.96), rgba(15, 118, 110, 0.96));
+      --token-action-border: rgba(94, 234, 212, 0.32);
+      --token-action-highlight: rgba(204, 251, 241, 0.18);
+  }
+
+  .token-action.is-wallet {
+      --token-action-bg: linear-gradient(135deg, rgba(180, 83, 9, 0.97), rgba(146, 64, 14, 0.97));
+      --token-action-border: rgba(253, 186, 116, 0.38);
+      --token-action-highlight: rgba(255, 237, 213, 0.2);
+  }
+
+  @media (max-width: 600px) {
+      .token-actions {
+          gap: 10px;
+      }
+
+      .token-action {
+          flex-basis: 100%;
+          width: 100%;
+          font-size: 0.94rem;
+      }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+      .token-action,
+      .token-action::after {
+          transition: none;
+      }
+  }
   
   .hero-banner {
       background-image: url('./images/bottompagebanner.png');
@@ -474,107 +611,6 @@
   box-shadow: 0 0 20px hotpink, 0 0 40px hotpink, 0 0 60px hotpink;
 }
   
-  .btn-slide {
-          display: inline-block;
-          padding: 12px 28px;
-          background: #1E3A8A; /* deep navy */
-          color: #FFD166; /* warm amber text */
-          font-weight: 600;
-          text-decoration: none;
-          border-radius: 9999px; /* pill shape */
-          font-family: sans-serif;
-          position: relative;
-          overflow: hidden;
-          transition: background 0.3s ease;
-      }
-
-          .btn-slide:hover {
-              background: #162f6b; /* slightly darker navy */
-          }
-
-          .btn-slide::after {
-              content: "";
-              position: absolute;
-              top: 0;
-              left: -100%;
-              width: 100%;
-              height: 100%;
-              background: rgba(255,255,255,0.25);
-              transform: skewX(-20deg);
-              transition: all 0.5s ease;
-          }
-
-          .btn-slide:hover::after {
-              left: 100%;
-          }
-
-    .btn-slide-green {
-        display: inline-block;
-        padding: 12px 28px;
-        background: #40E0D0; /* solid turquoise */
-        color: #FFFFFF;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 9999px; /* pill shape */
-        font-family: sans-serif;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-        .btn-slide-green:hover {
-            filter: brightness(1.1); /* subtle brighten on hover */
-        }
-
-        .btn-slide-green::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.25);
-            transform: skewX(-20deg);
-            transition: all 0.5s ease;
-        }
-
-        .btn-slide-green:hover::after {
-            left: 100%;
-        }
-
-      .btn-explorer {
-          display: inline-block;
-          padding: 12px 28px;
-          background: #000000; /* black */
-          color: #FFFFFF; /* white text */
-          font-weight: bold;
-          text-decoration: none;
-          border-radius: 9999px; /* pill shape */
-          font-family: sans-serif;
-          position: relative;
-          overflow: hidden;
-          transition: background 0.3s ease;
-      }
-
-          .btn-explorer:hover {
-              background: #111111; /* slightly lighter black on hover */
-          }
-
-          .btn-explorer::after {
-              content: "";
-              position: absolute;
-              top: 0;
-              left: -100%;
-              width: 100%;
-              height: 100%;
-              background: rgba(211,211,211,0.3); /* light gray slide effect */
-              transform: skewX(-20deg);
-              transition: all 0.5s ease;
-          }
-
-          .btn-explorer:hover::after {
-              left: 100%;
-          }
 </style>
 </head>
 <body>
@@ -608,18 +644,15 @@
                 It’s ideal for users looking to transact securely and swiftly while keeping fees
                 at rock-bottom levels. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://era.zksync.network/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgzke" target="_blank" class="btn-slide">📈 CoinGecko</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgzke" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
             <a href="https://www.dextools.io/app/en/zksync/pair-explorer/0x1466d87bc4b100ac7c3d0dbeb2ba7a46f1bc59b2"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'zkSync Era Mainnet',
               chainId: '0x144',
@@ -628,9 +661,8 @@
               explorerUrl: 'https://era.zksync.io',
               tokenSymbol: 'XVGZKE',
               tokenImage: 'images/xvgzke.png'
-            })">
-                ➕ Add XVGZKE to Metamask
-            </button>
+            })"><span>➕ Add XVGZKE to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-base" style="background-image:url('./images/xvgbase.png');"></div>
@@ -640,19 +672,16 @@
                 with Base’s high-performance, low-gas infrastructure, making it perfect for fast and
                 trusted everyday use. This token's entire supply was airdropped for FREE on all $XVGETH holders to show community appreciation!
             </div><br>
+            <div class="token-actions">
             <a href="https://basescan.org/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgbase" target="_blank" class="btn-slide">📈 CoinGecko</a>
-			<a href="https://www.coinbase.com/price/base-xvgbase-d708" target="_blank" class="btn-slide">📈 View on Coinbase</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgbase" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
+			<a href="https://www.coinbase.com/price/base-xvgbase-d708" target="_blank" class="token-action is-market"><span>📈 View on Coinbase</span></a>
             <a href="https://www.dextools.io/app/en/base/pair-explorer/0x7f09fde136dafc1222ef22d4d15f434a0161aa50"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Base Mainnet',
               chainId: '0x2105',
@@ -661,9 +690,8 @@
               explorerUrl: 'https://basescan.org',
               tokenSymbol: 'XVGBASE',
               tokenImage: 'images/xvgbase.png'
-            })">
-                ➕ Add XVGBASE to Metamask
-            </button>
+            })"><span>➕ Add XVGBASE to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-opt" style="background-image:url('./images/xvgopt.png');"></div>
@@ -673,18 +701,15 @@
                 XVG at the center of the Optimism Superchain vision—empowering seamless, scalable
                 Web3 experiences. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://optimistic.etherscan.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgopt" target="_blank" class="btn-slide">📈 CoinGecko</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgopt" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
             <a href="https://www.dextools.io/app/en/optimism/pair-explorer/0x08ad80b07b28ea2d40a031150cecb71b59ebb174b663bb3e341cd816dae37ba7"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Optimism',
               chainId: '0xA',
@@ -693,9 +718,8 @@
               explorerUrl: 'https://optimistic.etherscan.io',
               tokenSymbol: 'XVGOPT',
               tokenImage: 'images/xvgopt.png'
-            })">
-                ➕ Add XVGOPT to Metamask
-            </button>
+            })"><span>➕ Add XVGOPT to MetaMask</span></button>
+            </div>
         </div>
         <!-- another token section -->
         <div class="logo-container">
@@ -706,18 +730,15 @@
                 Verge’s community-powered mission to a next-gen environment optimized for speed, scale,
                 and smart contract flexibility. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://sonicscan.org/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgson" target="_blank" class="btn-slide">📈 CoinGecko</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgson" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
             <a href="https://www.dextools.io/app/en/sonic/pair-explorer/0xb93d90b0f0947f2f7a31effbd686a3995db5db35"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Sonic Mainnet',
               chainId: '0x92',
@@ -726,9 +747,8 @@
               explorerUrl: 'https://sonicscan.org',
               tokenSymbol: 'XVGSON',
               tokenImage: 'images/xvgson.png'
-            })">
-                ➕ Add XVGSON to Metamask
-            </button>
+            })"><span>➕ Add XVGSON to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-arb" style="background-image:url('./images/xvgarb.png');"></div>
@@ -738,18 +758,15 @@
                 launch connects Verge holders with a vast DeFi ecosystem and efficient Layer 2 UX
                 that rivals centralized exchanges in speed. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://arbiscan.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgarb" target="_blank" class="btn-slide">📈 CoinGecko</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgarb" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
             <a href="https://www.dextools.io/app/en/arbitrum/pair-explorer/0xeda17fad99924e44030ed6900cf20beb888ce2fc7f50e0ad4ffd584eb84ca5e5"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Arbitrum One',
               chainId: '0xA4B1',
@@ -758,9 +775,8 @@
               explorerUrl: 'https://arbiscan.io',
               tokenSymbol: 'XVGARB',
               tokenImage: 'images/xvgarb.png'
-            })">
-                ➕ Add XVGARB to Metamask
-            </button>
+            })"><span>➕ Add XVGARB to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-ava" style="background-image:url('./images/xvgava.png');"></div>
@@ -770,18 +786,15 @@
                 and dApp performance. It empowers users with high-speed, low-cost interoperability
                 across Avalanche's thriving C-Chain DeFi ecosystem. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://snowtrace.io/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <a href="https://www.coingecko.com/en/coins/xvgava" target="_blank" class="btn-slide">📈 CoinGecko</a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://www.coingecko.com/en/coins/xvgava" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
             <a href="https://www.dextools.io/app/en/avalanche/pair-explorer/0x09ae78182a2183a8ffbbca73bde007bb907cdd7022b06b3bda6379d8effff3f1"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Avalanche Network C-Chain',
               chainId: '0xA86A',
@@ -790,9 +803,8 @@
               explorerUrl: 'https://snowtrace.io',
               tokenSymbol: 'XVGAVA',
               tokenImage: 'images/xvgava.png'
-            })">
-                ➕ Add XVGAVA to Metamask
-            </button>
+            })"><span>➕ Add XVGAVA to MetaMask</span></button>
+            </div>
         </div>
         <!-- another token section -->
         <div class="logo-container">
@@ -803,17 +815,14 @@
                 integrations across the Web3 ecosystem, XVG users gain instant access to scalable, real-world
                 dApps. This token's ENTIRE supply was airdropped FREE to the XVGETH holders!
             </div><br>
+            <div class="token-actions">
             <a href="https://polygonscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/polygon/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Polygon Mainnet',
               chainId: '0x89',
@@ -822,9 +831,8 @@
               explorerUrl: 'https://polygonscan.com',
               tokenSymbol: 'XVGPOLY',
               tokenImage: 'images/xvgpoly.png'
-            })">
-                ➕ Add XVGPOLY to Metamask
-            </button>
+            })"><span>➕ Add XVGPOLY to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-lin" style="background-image:url('./images/xvglin.png');"></div>
@@ -834,17 +842,14 @@
                 It’s the perfect gateway for users who want to scale without compromise, enjoying fast,
                 cheap transactions in a next-gen ZK environment. This token was one of six included in the XVGSuite Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://lineascan.build/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/linea/pair-explorer/0xee83fce74a0ef6efcdc63c0f7367819d485aef8d"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Linea',
               chainId: '0xE708',
@@ -853,9 +858,8 @@
               explorerUrl: 'https://lineascan.build',
               tokenSymbol: 'XVGLIN',
               tokenImage: 'images/xvglin.png'
-            })">
-                ➕ Add XVGLIN to Metamask
-            </button>
+            })"><span>➕ Add XVGLIN to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-bsc" style="background-image:url('./images/xvgbsc.png');"></div>
@@ -865,17 +869,14 @@
                 match for traders, DEX users, and DeFi builders seeking real performance in one
                 of the most active ecosystems in crypto. This token's entire supply was airdropped for FREE!
             </div><br>
+            <div class="token-actions">
             <a href="https://bscscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/bnb/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Binance Smart Chain',
               chainId: '0x38',
@@ -884,9 +885,8 @@
               explorerUrl: 'https://bscscan.com',
               tokenSymbol: 'XVGBSC',
               tokenImage: 'images/xvgbsc.png'
-            })">
-                ➕ Add XVGBSC to Metamask
-            </button>
+            })"><span>➕ Add XVGBSC to MetaMask</span></button>
+            </div>
         </div>
         <!-- another token section-->
         <div class="logo-container">
@@ -898,17 +898,14 @@
                 future-proof DeFi foundation. It's liquidity pool is paired solely with $MNT. This token's entire supply was airdropped for free!
             </div>
             <br>
+            <div class="token-actions">
             <a href="https://explorer.mantle.xyz/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/mantle/pair-explorer/0x3f5db130faeb741b3131f51d9d48789e74b20d57"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Mantle',
               chainId: '0x1388',
@@ -917,9 +914,8 @@
               explorerUrl: 'https://explorer.mantle.xyz',
               tokenSymbol: 'XVGMNT',
               tokenImage: 'images/xvgmnt.png'
-            })">
-                ➕ Add XVGMNT to Metamask
-            </button>
+            })"><span>➕ Add XVGMNT to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-cro" style="background-image:url('./images/xvgcro.png');"></div>
@@ -930,17 +926,14 @@
                 liquidity pool that pairs it exclusively with CRO, ensuring its value is tied to
                 Cronos’ core value ($CRO). This token was fair launched from 0 marketcap, and near 0 liquidity! 
             </div><br>
+            <div class="token-actions">
             <a href="https://cronoscan.com/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/cronos/pair-explorer/0xdcd1bd360155de2469e36f7f8095584de4d5f828"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Cronos',
               chainId: '0x19',
@@ -949,9 +942,8 @@
               explorerUrl: 'https://cronoscan.com',
               tokenSymbol: 'XVGCRO',
               tokenImage: 'images/xvgcro.png'
-            })">
-                ➕ Add XVGCRO to Metamask
-            </button>
+            })"><span>➕ Add XVGCRO to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-uni" style="background-image:url('./images/xvguni.png');"></div>
@@ -961,17 +953,14 @@
                 brings ultra-fast swaps, next-gen liquidity incentives, and direct access to the
                 heart of DeFi innovation. This tokens supply was airdropped free.
             </div><br>
+            <div class="token-actions">
             <a href="https://uniscan.xyz/address/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.dextools.io/app/en/unichain/pair-explorer/0x04b01734e4af42a33e6d89a4c42915a10f5237c19f99ea401a6ebed87e9693ce"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Unichain',
               chainId: '0x82',
@@ -980,9 +969,8 @@
               explorerUrl: 'https://uniscan.xyz',
               tokenSymbol: 'XVGUNI',
               tokenImage: 'images/xvguni.png'
-            })">
-                ➕ Add XVGUNI to Metamask
-            </button>
+            })"><span>➕ Add XVGUNI to MetaMask</span></button>
+            </div>
         </div>
         <!-- another token section -->
         <div class="logo-container">
@@ -994,17 +982,14 @@
                 users trade seamlessly while benefiting from Blast’s unique incentives and yield features.
 				This token is one of six included in the XVGSuite2 Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://blastexplorer.io/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708/contract/code?type=erc20"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
 			<a href="https://www.dextools.io/app/en/blast/pair-explorer/0x6d58e03afa8d4549d08a6bdad1a951eefce30c6a0aaa07a085b5f7d3ac1b50be"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Blast Mainnet',
               chainId: '0x13e31',
@@ -1013,9 +998,8 @@
               explorerUrl: 'https://blastexplorer.io',
               tokenSymbol: 'XVGBLAST',
               tokenImage: 'images/xvgblast.png'
-            })">
-                ➕ Add XVGBLAST to Metamask
-            </button>
+            })"><span>➕ Add XVGBLAST to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-gnosis" style="background-image:url('./images/xvggnosis.png');"></div>
@@ -1026,17 +1010,14 @@
                 efficient cross-chain transactions and easy access to Gnosis’s thriving DeFi and
                 payments community. This token is one of six included in the XVGSuite2 Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://gnosis.blockscout.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708?tab=contract"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
 			<a href="https://www.dextools.io/app/en/gnosis/pair-explorer/0x0925aae4c0aa5bd31eb315dc1063247d9ea72b0f"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Gnosis',
               chainId: '0x64',
@@ -1045,9 +1026,8 @@
               explorerUrl: 'https://gnosisscan.io/',
               tokenSymbol: 'XVGGNOSIS',
               tokenImage: 'images/xvggnosis.png'
-            })">
-                ➕ Add XVGGNOSIS to Metamask
-            </button>
+            })"><span>➕ Add XVGGNOSIS to MetaMask</span></button>
+            </div>
         </div>
         <div class="logo-container">
             <div class="token-logo-bera" style="background-image:url('./images/xvgbera.png');"></div>
@@ -1058,17 +1038,14 @@
                 combines XVG’s cross-chain liquidity with the scalability, security, and transaction
                 efficiency of a dedicated Cosmos-based appchain. This token is one of six included in the XVGSuite2 Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://berascan.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://dexscreener.com/berachain/0x0eea4b4c5e02ce122276ab3a559837d498d6f43f"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexScreener
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexScreener</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Berachain',
               chainId: '0x138de',
@@ -1077,9 +1054,8 @@
               explorerUrl: 'https://berascan.com/',
               tokenSymbol: 'XVGBERA',
               tokenImage: 'images/xvgbera.png'
-            })">
-                ➕ Add XVGBERA to Metamask
-            </button>
+            })"><span>➕ Add XVGBERA to MetaMask</span></button>
+            </div>
         </div>
         <!-- end of tokens section -->
         <!-- another token section -->
@@ -1090,17 +1066,14 @@
             and global utility. It ties XVG’s value to World Chain’s growth while giving holders new opportunities 
             for arbitrage, cross-chain use, and decentralized apps. This token is one of six included in the XVGSuite2 Pinksale.<br>
             </div>
+            <div class="token-actions">
             <a href="https://worldscan.org/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
 			<a href="https://www.dextools.io/app/en/worldchain/pair-explorer/0x2a67b0973fae9192652891af33e457d43bd7e37b38376a3e2c235ddb078788af"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on DexTools
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on DexTools</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
       networkName: 'World Chain',
       chainId: '0x1e0',
@@ -1109,9 +1082,8 @@
       explorerUrl: 'https://worldscan.org',
       tokenSymbol: 'XVGWORLD',
       tokenImage: 'images/xvgworld.png'
-    })">
-                ➕ Add XVGWorld to Metamask
-            </button>
+    })"><span>➕ Add XVGWorld to MetaMask</span></button>
+            </div>
         </div>
 		<div class="logo-container">
             <div class="token-logo-hemi" style="background-image:url('./images/xvghemi.png');"></div>
@@ -1124,17 +1096,14 @@
 				both a cross-chain asset and a showcase for native BTC-aware DeFi. This token is one of six included 
 				in the XVGSuite2 Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://explorer.hemi.xyz/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
 			<a href="https://www.geckoterminal.com/hemi/pools/0x476a3ad9e167848812737214e380c1b4de405911"
                target="_blank"
-               class="btn-slide-green">
-                🔗 View on GeckoTerminal
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-dex"><span>🔗 View on GeckoTerminal</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Hemi',
               chainId: '0xa867',
@@ -1143,9 +1112,8 @@
               explorerUrl: 'https://explorer.hemi.xyz/',
               tokenSymbol: 'XVGHEMI',
               tokenImage: 'images/xvghemi.png'
-            })">
-                ➕ Add XVGHEMI to Metamask
-            </button>
+            })"><span>➕ Add XVGHEMI to MetaMask</span></button>
+            </div>
         </div>
 		<div class="logo-container">
             <div class="token-logo-zora" style="background-image:url('./images/xvgzora.png');"></div>
@@ -1158,12 +1126,11 @@
 				decade-long history to one of the most expressive blockchains shaping Web3’s cultural frontier. 
 				This token is one of six included in the XVGSuite2 Pinksale.
             </div><br>
+            <div class="token-actions">
             <a href="https://explorer.zora.energy/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708"
                target="_blank"
-               class="btn-explorer">
-                🔎 View Explorer
-            </a>
-            <button class="btn btn-outline-primary btn-sm mt-2"
+               class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <button type="button" class="token-action is-wallet"
                     onclick="addToMetaMaskNetworkThenToken({
               networkName: 'Zora',
               chainId: '0x76adf1',
@@ -1172,9 +1139,8 @@
               explorerUrl: 'https://explorer.zora.energy/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708',
               tokenSymbol: 'XVGZORA',
               tokenImage: 'images/xvgzora.png'
-            })">
-                ➕ Add XVGZORA to Metamask
-            </button>
+            })"><span>➕ Add XVGZORA to MetaMask</span></button>
+            </div>
         </div>
     </div>
     <!-- socials buttonz -->
