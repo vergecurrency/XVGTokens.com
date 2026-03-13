@@ -17,6 +17,638 @@
     font-family: sans-serif;
     color: #fff;
     padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body.is-intro-active {
+    overflow: hidden;
+  }
+
+  .intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(140deg, rgba(255, 255, 255, 0.03), transparent 32%, transparent 68%, rgba(96, 165, 250, 0.06)),
+      radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.12), transparent 24%),
+      radial-gradient(circle at 50% 70%, rgba(30, 64, 175, 0.18), transparent 38%),
+      rgba(6, 10, 18, 0.975);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 520ms ease, visibility 520ms ease;
+  }
+
+  .intro-overlay::before,
+  .intro-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .intro-overlay::before {
+    background:
+      radial-gradient(circle at 50% 46%, rgba(125, 211, 252, 0.12), transparent 18%),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 9px),
+      repeating-linear-gradient(0deg, rgba(148, 163, 184, 0.018) 0 1px, transparent 1px 10px);
+    mix-blend-mode: screen;
+    opacity: 0.42;
+  }
+
+  .intro-overlay::after {
+    inset: 12%;
+    border-radius: 36px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08), transparent 55%),
+      radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.05), transparent 70%);
+    filter: blur(40px);
+    opacity: 0.9;
+  }
+
+  .intro-overlay.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .intro-overlay__core {
+    position: relative;
+    width: min(82vw, 320px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .intro-overlay__core::before,
+  .intro-overlay__core::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  .intro-overlay__core::before {
+    inset: 6%;
+    background:
+      radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.14), transparent 22%),
+      radial-gradient(circle at 65% 72%, rgba(96, 165, 250, 0.22), transparent 30%),
+      linear-gradient(160deg, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0));
+    filter: blur(2px);
+    opacity: 0.9;
+    transform: translateZ(18px);
+  }
+
+  .intro-overlay__core::after {
+    inset: -18%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.16), rgba(14, 165, 233, 0));
+    filter: blur(44px);
+    opacity: 0.75;
+    transform: translateZ(-24px);
+  }
+
+  .intro-overlay__orbit {
+    position: absolute;
+    inset: 50%;
+    width: 104px;
+    height: 104px;
+    margin: -52px 0 0 -52px;
+    border-radius: 999px;
+    pointer-events: none;
+    z-index: 0;
+    transform-style: preserve-3d;
+    opacity: 0.9;
+  }
+
+  .intro-overlay__orbit::before,
+  .intro-overlay__orbit::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+  }
+
+  .intro-overlay__orbit::before {
+    inset: 0;
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 24%, transparent 58%),
+      radial-gradient(circle at 68% 68%, rgba(15, 23, 42, 0.22), transparent 54%),
+      linear-gradient(160deg, rgba(148, 163, 184, 0.2), rgba(15, 23, 42, 0.16));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 28px rgba(56, 189, 248, 0.08),
+      0 18px 32px rgba(2, 6, 23, 0.18);
+    backdrop-filter: blur(4px);
+  }
+
+  .intro-overlay__orbit::after {
+    inset: -18px;
+    background: radial-gradient(circle, rgba(71, 85, 105, 0.16), rgba(56, 189, 248, 0.06), rgba(15, 23, 42, 0));
+    filter: blur(16px);
+    opacity: 0.9;
+  }
+
+  .intro-overlay__orbit--one {
+    animation: orbitFloatOne 9.25s ease-in-out infinite;
+    color: rgba(125, 211, 252, 0.24);
+  }
+
+  .intro-overlay__orbit--two {
+    width: 76px;
+    height: 76px;
+    margin: -38px 0 0 -38px;
+    animation: orbitFloatTwo 10.25s ease-in-out infinite;
+    color: rgba(71, 85, 105, 0.24);
+  }
+
+  .intro-overlay__orbit--three {
+    width: 58px;
+    height: 58px;
+    margin: -29px 0 0 -29px;
+    animation: orbitFloatThree 8.5s ease-in-out infinite;
+    color: rgba(15, 23, 42, 0.3);
+  }
+
+  .intro-overlay__orbit--four {
+    width: 82px;
+    height: 82px;
+    margin: -41px 0 0 -41px;
+    animation: orbitFloatFour 11.25s ease-in-out infinite;
+    color: rgba(148, 163, 184, 0.18);
+  }
+
+  .intro-overlay__orbit--five {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    animation: orbitFloatFive 10.75s ease-in-out infinite;
+    color: rgba(96, 165, 250, 0.18);
+  }
+
+  .intro-overlay__orbit--six {
+    width: 112px;
+    height: 112px;
+    margin: -56px 0 0 -56px;
+    animation: orbitFloatSix 13.5s ease-in-out infinite;
+    color: rgba(51, 65, 85, 0.22);
+  }
+
+  .intro-overlay__orbit--seven {
+    width: 72px;
+    height: 72px;
+    margin: -36px 0 0 -36px;
+    animation: orbitFloatSeven 9.75s ease-in-out infinite;
+    color: rgba(125, 211, 252, 0.16);
+  }
+
+  .intro-overlay__orbit--eight {
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    animation: orbitFloatEight 8.625s ease-in-out infinite;
+    color: rgba(30, 41, 59, 0.28);
+  }
+
+  .intro-overlay__orbit--nine {
+    width: 136px;
+    height: 136px;
+    margin: -68px 0 0 -68px;
+    animation: orbitFloatNine 14.25s ease-in-out infinite;
+    color: rgba(100, 116, 139, 0.16);
+  }
+
+  .intro-overlay__orbit--ten {
+    width: 88px;
+    height: 88px;
+    margin: -44px 0 0 -44px;
+    animation: orbitFloatTen 11.75s ease-in-out infinite;
+    color: rgba(15, 23, 42, 0.26);
+  }
+
+  .intro-overlay__orbit--eleven {
+    width: 54px;
+    height: 54px;
+    margin: -27px 0 0 -27px;
+    animation: orbitFloatEleven 8.875s ease-in-out infinite;
+    color: rgba(191, 219, 254, 0.14);
+  }
+
+  .intro-overlay__orbit--twelve {
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
+    animation: orbitFloatTwelve 12.625s ease-in-out infinite;
+    color: rgba(71, 85, 105, 0.2);
+  }
+
+  .intro-overlay__orbit--thirteen {
+    width: 62px;
+    height: 62px;
+    margin: -31px 0 0 -31px;
+    animation: orbitFloatThirteen 11s ease-in-out infinite;
+    color: rgba(56, 189, 248, 0.14);
+  }
+
+  .intro-overlay__orbit--fourteen {
+    width: 120px;
+    height: 120px;
+    margin: -60px 0 0 -60px;
+    animation: orbitFloatFourteen 14.75s ease-in-out infinite;
+    color: rgba(17, 24, 39, 0.3);
+  }
+
+  .intro-overlay__orbit--fifteen {
+    width: 70px;
+    height: 70px;
+    margin: -35px 0 0 -35px;
+    animation: orbitFloatFifteen 10.5s ease-in-out infinite;
+    color: rgba(255, 0, 102, 0.22);
+  }
+
+  .intro-overlay__orbit--sixteen {
+    width: 126px;
+    height: 126px;
+    margin: -63px 0 0 -63px;
+    animation: orbitFloatSixteen 15.25s ease-in-out infinite;
+    color: rgba(255, 213, 79, 0.18);
+  }
+
+  .intro-overlay__orbit--seventeen {
+    width: 84px;
+    height: 84px;
+    margin: -42px 0 0 -42px;
+    animation: orbitFloatSeventeen 12.25s ease-in-out infinite;
+    color: rgba(255, 255, 255, 0.1);
+  }
+
+  .intro-overlay__orbit--eighteen {
+    width: 92px;
+    height: 92px;
+    margin: -46px 0 0 -46px;
+    animation: orbitFloatEighteen 13.25s ease-in-out infinite;
+    color: rgba(255, 59, 48, 0.2);
+  }
+
+  .intro-overlay__orbit::before {
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02) 24%, transparent 58%),
+      radial-gradient(circle at 50% 50%, currentColor, transparent 72%);
+  }
+
+  .intro-overlay__ring,
+  .intro-overlay__ring::before,
+  .intro-overlay__ring::after {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    content: "";
+  }
+
+  .intro-overlay__ring {
+    border: 1px solid rgba(125, 211, 252, 0.2);
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.05), transparent 36%),
+      radial-gradient(circle at 35% 30%, rgba(148, 163, 184, 0.12), transparent 18%),
+      radial-gradient(circle at 68% 72%, rgba(59, 130, 246, 0.2), transparent 28%),
+      radial-gradient(circle, rgba(15, 23, 42, 0.94), rgba(7, 10, 18, 0.66));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -18px 38px rgba(2, 6, 23, 0.34),
+      0 12px 40px rgba(2, 6, 23, 0.48),
+      0 0 70px rgba(14, 165, 233, 0.16);
+    transform: translateZ(12px);
+  }
+
+  .intro-overlay__ring::before {
+    inset: 8%;
+    border: 1px solid rgba(147, 197, 253, 0.18);
+    box-shadow: inset 0 0 18px rgba(125, 211, 252, 0.08);
+    animation: introRipple 1.9s ease-in-out infinite;
+  }
+
+  .intro-overlay__ring::after {
+    inset: -12%;
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 26px rgba(56, 189, 248, 0.08);
+    animation: introRipple 1.9s ease-in-out infinite 240ms;
+  }
+
+  .intro-overlay__wordmark {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    animation: introPulse 1.5s ease-in-out infinite;
+    transform: translateZ(34px);
+  }
+
+  .intro-overlay__wordmark::before {
+    content: "";
+    position: absolute;
+    inset: -24% -20%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.16), rgba(59, 130, 246, 0));
+    filter: blur(20px);
+    z-index: -1;
+    opacity: 0.9;
+  }
+
+  .intro-overlay__title {
+    margin: 0;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    line-height: 0.9;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    color: #f8fafc;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 0%, #dbeafe 42%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.18),
+      0 8px 24px rgba(8, 47, 73, 0.34),
+      0 0 28px rgba(56, 189, 248, 0.18);
+  }
+
+  .intro-overlay__subtitle {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.26em;
+    text-indent: 0.26em;
+    text-transform: uppercase;
+    color: rgba(191, 219, 254, 0.78);
+    text-shadow: 0 8px 18px rgba(8, 47, 73, 0.34);
+  }
+
+  .page-reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    filter: blur(10px);
+    transition: opacity 760ms ease, transform 760ms ease, filter 760ms ease;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .page-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  .hero-banner.page-reveal {
+    transform: translateY(18px) scale(0.985);
+  }
+
+  .hero-banner.page-reveal.is-visible {
+    transform: translateY(0) scale(1);
+  }
+
+  .hero-banner {
+      position: relative;
+      overflow: hidden;
+  }
+
+  .logo-container.page-reveal {
+    transform: translateY(36px);
+    transition-duration: 820ms;
+  }
+
+  .logo-container {
+      position: relative;
+  }
+
+  .logo-container::before {
+      content: "";
+      position: absolute;
+      inset: -12px -6px auto;
+      height: 140px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0));
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 500ms ease, transform 500ms ease;
+      pointer-events: none;
+  }
+
+  .logo-container.page-reveal.is-visible::before {
+      opacity: 1;
+      transform: translateY(0);
+  }
+
+  @keyframes introPulse {
+    0% {
+      transform: scale(0.96);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.98);
+      opacity: 0.94;
+    }
+  }
+
+  @keyframes introRipple {
+    0% {
+      transform: scale(0.92);
+      opacity: 0.14;
+    }
+    55% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: scale(1.08);
+      opacity: 0.08;
+    }
+  }
+
+  @keyframes orbitFloatOne {
+    0%,
+    100% {
+      transform: translate3d(-196px, -132px, 12px) scale(0.96);
+    }
+    50% {
+      transform: translate3d(-152px, -176px, 24px) scale(1.06);
+    }
+  }
+
+  @keyframes orbitFloatTwo {
+    0%,
+    100% {
+      transform: translate3d(188px, -142px, 18px) scale(0.92);
+    }
+    50% {
+      transform: translate3d(228px, -96px, 28px) scale(1.08);
+    }
+  }
+
+  @keyframes orbitFloatThree {
+    0%,
+    100% {
+      transform: translate3d(176px, 154px, 8px) scale(0.94);
+    }
+    50% {
+      transform: translate3d(132px, 196px, 18px) scale(1.12);
+    }
+  }
+
+  @keyframes orbitFloatFour {
+    0%,
+    100% {
+      transform: translate3d(-178px, 172px, 10px) scale(0.9);
+    }
+    50% {
+      transform: translate3d(-212px, 124px, 22px) scale(1.04);
+    }
+  }
+
+  @keyframes orbitFloatFive {
+    0%,
+    100% {
+      transform: translate3d(-286px, -18px, 8px) scale(0.92);
+    }
+    50% {
+      transform: translate3d(-246px, 38px, 20px) scale(1.06);
+    }
+  }
+
+  @keyframes orbitFloatSix {
+    0%,
+    100% {
+      transform: translate3d(278px, -18px, 6px) scale(0.95);
+    }
+    50% {
+      transform: translate3d(318px, -64px, 22px) scale(1.04);
+    }
+  }
+
+  @keyframes orbitFloatSeven {
+    0%,
+    100% {
+      transform: translate3d(10px, -292px, 14px) scale(0.92);
+    }
+    50% {
+      transform: translate3d(54px, -248px, 24px) scale(1.08);
+    }
+  }
+
+  @keyframes orbitFloatEight {
+    0%,
+    100% {
+      transform: translate3d(24px, 286px, 6px) scale(0.9);
+    }
+    50% {
+      transform: translate3d(-22px, 324px, 18px) scale(1.1);
+    }
+  }
+
+  @keyframes orbitFloatNine {
+    0%,
+    100% {
+      transform: translate3d(-286px, -242px, 0) scale(0.94);
+    }
+    50% {
+      transform: translate3d(-226px, -288px, 16px) scale(1.02);
+    }
+  }
+
+  @keyframes orbitFloatTen {
+    0%,
+    100% {
+      transform: translate3d(258px, 228px, 10px) scale(0.9);
+    }
+    50% {
+      transform: translate3d(306px, 192px, 20px) scale(1.05);
+    }
+  }
+
+  @keyframes orbitFloatEleven {
+    0%,
+    100% {
+      transform: translate3d(-108px, -296px, 12px) scale(0.95);
+    }
+    50% {
+      transform: translate3d(-146px, -244px, 24px) scale(1.1);
+    }
+  }
+
+  @keyframes orbitFloatTwelve {
+    0%,
+    100% {
+      transform: translate3d(298px, 98px, 8px) scale(0.9);
+    }
+    50% {
+      transform: translate3d(246px, 142px, 22px) scale(1.06);
+    }
+  }
+
+  @keyframes orbitFloatThirteen {
+    0%,
+    100% {
+      transform: translate3d(-304px, 126px, 14px) scale(0.94);
+    }
+    50% {
+      transform: translate3d(-258px, 176px, 26px) scale(1.08);
+    }
+  }
+
+  @keyframes orbitFloatFourteen {
+    0%,
+    100% {
+      transform: translate3d(138px, -304px, 2px) scale(0.92);
+    }
+    50% {
+      transform: translate3d(184px, -246px, 18px) scale(1.03);
+    }
+  }
+
+  @keyframes orbitFloatFifteen {
+    0%,
+    100% {
+      transform: translate3d(-340px, -92px, 16px) scale(0.92);
+    }
+    50% {
+      transform: translate3d(-294px, -148px, 28px) scale(1.08);
+    }
+  }
+
+  @keyframes orbitFloatSixteen {
+    0%,
+    100% {
+      transform: translate3d(338px, -118px, 6px) scale(0.94);
+    }
+    50% {
+      transform: translate3d(386px, -72px, 18px) scale(1.02);
+    }
+  }
+
+  @keyframes orbitFloatSeventeen {
+    0%,
+    100% {
+      transform: translate3d(-26px, 344px, 10px) scale(0.9);
+    }
+    50% {
+      transform: translate3d(18px, 388px, 22px) scale(1.06);
+    }
+  }
+
+  @keyframes orbitFloatEighteen {
+    0%,
+    100% {
+      transform: translate3d(342px, 126px, 12px) scale(0.94);
+    }
+    50% {
+      transform: translate3d(392px, 178px, 26px) scale(1.04);
+    }
   }
   
   @media (max-width: 768px) {
@@ -299,6 +931,47 @@
         animation: spin360 1.5s ease forwards;
     }
 
+  .token-logo,
+  [class^="token-logo-"] {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+  }
+
+  .token-logo::before,
+  [class^="token-logo-"]::before {
+      content: "";
+      position: absolute;
+      inset: 8% 16% 48% 16%;
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0));
+      filter: blur(3px);
+      opacity: 0.72;
+      transform: rotate(-18deg) translateY(2px);
+      z-index: 2;
+      pointer-events: none;
+      mix-blend-mode: screen;
+  }
+
+  .token-logo::after,
+  [class^="token-logo-"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08) 16%, transparent 30%),
+        radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.16), transparent 36%),
+        radial-gradient(circle at 68% 74%, rgba(0, 0, 0, 0.26), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%, rgba(0, 0, 0, 0.18) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -16px 28px rgba(2, 6, 23, 0.28);
+      z-index: 1;
+      pointer-events: none;
+  }
+
   @keyframes spin360 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -316,67 +989,67 @@
 
   .token-logo:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 25px hotpink, 0 0 100px hotpink;
+    box-shadow: 0 -18px 34px hotpink, 26px 8px 42px hotpink, -24px 18px 38px hotpink, 12px 34px 54px hotpink, -8px -30px 46px hotpink;
   }
 
     .token-logo-base:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px blue, 0 0 100px blue;
+        box-shadow: 0 -18px 34px blue, 26px 8px 42px blue, -24px 18px 38px blue, 12px 34px 54px blue, -8px -30px 46px blue;
     }
 
     .token-logo-zke:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px #262768, 0 0 100px #262768;
+        box-shadow: 0 -18px 34px #262768, 26px 8px 42px #262768, -24px 18px 38px #262768, 12px 34px 54px #262768, -8px -30px 46px #262768;
     }
 
     .token-logo-opt:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px red, 0 0 100px red;
+        box-shadow: 0 -18px 34px red, 26px 8px 42px red, -24px 18px 38px red, 12px 34px 54px red, -8px -30px 46px red;
     }
 
     .token-logo-son:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px white, 0 0 100px white;
+        box-shadow: 0 -18px 34px white, 26px 8px 42px white, -24px 18px 38px white, 12px 34px 54px white, -8px -30px 46px white;
     }
 
     .token-logo-arb:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px skyblue, 0 0 100px skyblue;
+        box-shadow: 0 -18px 34px skyblue, 26px 8px 42px skyblue, -24px 18px 38px skyblue, 12px 34px 54px skyblue, -8px -30px 46px skyblue;
     }
 
     .token-logo-ava:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px #fe6666, 0 0 100px #fe6666;
+        box-shadow: 0 -18px 34px #fe6666, 26px 8px 42px #fe6666, -24px 18px 38px #fe6666, 12px 34px 54px #fe6666, -8px -30px 46px #fe6666;
     }
 
     .token-logo-poly:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px #6c00f6, 0 0 100px #6c00f6;
+        box-shadow: 0 -18px 34px #6c00f6, 26px 8px 42px #6c00f6, -24px 18px 38px #6c00f6, 12px 34px 54px #6c00f6, -8px -30px 46px #6c00f6;
     }
 
     .token-logo-lin:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px teal, 0 0 100px teal;
+        box-shadow: 0 -18px 34px teal, 26px 8px 42px teal, -24px 18px 38px teal, 12px 34px 54px teal, -8px -30px 46px teal;
     }
 
     .token-logo-bsc:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px gold, 0 0 100px gold;
+        box-shadow: 0 -18px 34px gold, 26px 8px 42px gold, -24px 18px 38px gold, 12px 34px 54px gold, -8px -30px 46px gold;
     }
 
     .token-logo-mnt:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px lightgreen, 0 0 100px lightgreen;
+        box-shadow: 0 -18px 34px lightgreen, 26px 8px 42px lightgreen, -24px 18px 38px lightgreen, 12px 34px 54px lightgreen, -8px -30px 46px lightgreen;
     }
 
     .token-logo-cro:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px #3b4478, 0 0 100px #3b4478;
+        box-shadow: 0 -18px 34px #3b4478, 26px 8px 42px #3b4478, -24px 18px 38px #3b4478, 12px 34px 54px #3b4478, -8px -30px 46px #3b4478;
     }
 
     .token-logo-uni:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px purple, 0 0 100px purple;
+        box-shadow: 0 -18px 34px purple, 26px 8px 42px purple, -24px 18px 38px purple, 12px 34px 54px purple, -8px -30px 46px purple;
     }
 
     .token-logo-world:hover {
@@ -386,27 +1059,27 @@
 	
 	.token-logo-blast:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px yellow, 0 0 100px yellow;
+        box-shadow: 0 -18px 34px yellow, 26px 8px 42px yellow, -24px 18px 38px yellow, 12px 34px 54px yellow, -8px -30px 46px yellow;
     }
 	
 	.token-logo-gnosis:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px darkgreen, 0 0 100px darkgreen;
+        box-shadow: 0 -18px 34px darkgreen, 26px 8px 42px darkgreen, -24px 18px 38px darkgreen, 12px 34px 54px darkgreen, -8px -30px 46px darkgreen;
     }
 
     .token-logo-bera:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px brown, 0 0 100px brown;
+        box-shadow: 0 -18px 34px brown, 26px 8px 42px brown, -24px 18px 38px brown, 12px 34px 54px brown, -8px -30px 46px brown;
     }
 	
 	.token-logo-hemi:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px darkorange, 0 0 100px orange;
+        box-shadow: 0 -18px 34px darkorange, 26px 8px 42px darkorange, -24px 18px 38px orange, 12px 34px 54px orange, -8px -30px 46px darkorange;
     }
 	
 	.token-logo-zora:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 25px blue, 0 0 100px purple;
+        box-shadow: 0 -18px 34px blue, 26px 8px 42px blue, -24px 18px 38px purple, 12px 34px 54px purple, -8px -30px 46px blue;
     }
 
   .logo-text {
@@ -542,6 +1215,19 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+      .intro-overlay,
+      .intro-overlay__wordmark,
+      .intro-overlay__orbit,
+      .intro-overlay__ring::before,
+      .intro-overlay__ring::after,
+      .page-reveal {
+          animation: none;
+      }
+
+      .page-reveal {
+          transition: none;
+      }
+
       .token-action,
       .token-action::after {
           transition: none;
@@ -613,11 +1299,38 @@
   
 </style>
 </head>
-<body>
+<body class="is-intro-active">
+    <div class="intro-overlay" id="intro-overlay" aria-hidden="true">
+        <div class="intro-overlay__core">
+            <div class="intro-overlay__ring"></div>
+            <span class="intro-overlay__orbit intro-overlay__orbit--one" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--two" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--three" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--four" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--five" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--six" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--seven" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--eight" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--nine" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--ten" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--eleven" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--twelve" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--thirteen" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--fourteen" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--fifteen" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--sixteen" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--seventeen" aria-hidden="true"></span>
+            <span class="intro-overlay__orbit intro-overlay__orbit--eighteen" aria-hidden="true"></span>
+            <div class="intro-overlay__wordmark">
+                <h2 class="intro-overlay__title">XVG</h2>
+                <p class="intro-overlay__subtitle">Unified Across Chains</p>
+            </div>
+        </div>
+    </div>
     <!-- Hero Banner -->
-    <header class="hero-banner"></header>
+    <header class="hero-banner page-reveal" data-reveal style="--reveal-delay: 0ms;"></header>
     <!-- Main Content -->
-    <div class="intro">
+    <div class="intro page-reveal" data-reveal style="--reveal-delay: 120ms;">
         <h1>One Contract Address to Rule Them All...</h1><br>
         <h3>All of the $XVG branded tokens follow a unique 'unified contract address system', a first of it's kind, where they all share the same contract address across all smart chains:</h3>
         <h4>
@@ -636,7 +1349,7 @@
     </script>
     <div class="grid">
         <!-- tokensection -->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 180ms;">
             <div class="token-logo-zke" style="background-image:url('./images/xvgzke.png');"></div>
             <div class="logo-text">
                 XVGZKE takes Verge into the zkSync Era, where cutting-edge
@@ -664,7 +1377,7 @@
             })"><span>➕ Add XVGZKE to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 220ms;">
             <div class="token-logo-base" style="background-image:url('./images/xvgbase.png');"></div>
             <div class="logo-text">
                 XVGBASE launches XVG into Coinbase’s Base chain — a secure,
@@ -693,7 +1406,7 @@
             })"><span>➕ Add XVGBASE to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 260ms;">
             <div class="token-logo-opt" style="background-image:url('./images/xvgopt.png');"></div>
             <div class="logo-text">
                 XVGOPT unlocks Verge utility on Optimism, a chain designed for
@@ -722,7 +1435,7 @@
             </div>
         </div>
         <!-- another token section -->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 300ms;">
             <div class="token-logo-son" style="background-image:url('./images/xvgson.png');"></div>
             <div class="logo-text">
                 XVGSON is at the forefront of experimental, high-throughput chains,
@@ -750,7 +1463,7 @@
             })"><span>➕ Add XVGSON to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 340ms;">
             <div class="token-logo-arb" style="background-image:url('./images/xvgarb.png');"></div>
             <div class="logo-text">
                 XVGARB thrives on Arbitrum One, offering lightning-fast
@@ -778,7 +1491,7 @@
             })"><span>➕ Add XVGARB to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 380ms;">
             <div class="token-logo-ava" style="background-image:url('./images/xvgava.png');"></div>
             <div class="logo-text">
                 XVGAVA taps into Avalanche’s sub-second finality and
@@ -807,7 +1520,7 @@
             </div>
         </div>
         <!-- another token section -->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 420ms;">
             <div class="token-logo-poly" style="background-image:url('./images/xvgpoly.png');"></div>
             <div class="logo-text">
                 XVGPOLY brings Verge to Polygon's ultra-efficient Layer 2 environment,
@@ -834,7 +1547,7 @@
             })"><span>➕ Add XVGPOLY to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 460ms;">
             <div class="token-logo-lin" style="background-image:url('./images/xvglin.png');"></div>
             <div class="logo-text">
                 XVGLIN brings the power of Verge to Linea’s zkEVM Layer 2,
@@ -861,7 +1574,7 @@
             })"><span>➕ Add XVGLIN to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 500ms;">
             <div class="token-logo-bsc" style="background-image:url('./images/xvgbsc.png');"></div>
             <div class="logo-text">
                 XVGBSC unlocks the power of XVG on Binance Smart Chain,
@@ -889,7 +1602,7 @@
             </div>
         </div>
         <!-- another token section-->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 540ms;">
             <div class="token-logo-mnt" style="background-image:url('./images/xvgmnt.png');"></div>
             <div class="logo-text">
                 XVGMNT brings Verge to Mantle’s modular Ethereum Layer 2,
@@ -917,7 +1630,7 @@
             })"><span>➕ Add XVGMNT to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 580ms;">
             <div class="token-logo-cro" style="background-image:url('./images/xvgcro.png');"></div>
             <div class="logo-text">
                 XVGCRO is a Verge-branded token deployed natively on the
@@ -945,7 +1658,7 @@
             })"><span>➕ Add XVGCRO to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 620ms;">
             <div class="token-logo-uni" style="background-image:url('./images/xvguni.png');"></div>
             <div class="logo-text">
                 XVGUNI harnesses the power of Uniswap’s proprietary L2 chain
@@ -973,7 +1686,7 @@
             </div>
         </div>
         <!-- another token section -->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 660ms;">
             <div class="token-logo-blast" style="background-image:url('./images/xvgblast.png');"></div>
             <div class="logo-text">
                 Launching an XVG-branded token on Blast Network that shares the
@@ -1001,7 +1714,7 @@
             })"><span>➕ Add XVGBLAST to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 700ms;">
             <div class="token-logo-gnosis" style="background-image:url('./images/xvggnosis.png');"></div>
             <div class="logo-text">
                 XVGGnosis extends the XVG ecosystem to the Gnosis Chain,
@@ -1029,7 +1742,7 @@
             })"><span>➕ Add XVGGNOSIS to MetaMask</span></button>
             </div>
         </div>
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 740ms;">
             <div class="token-logo-bera" style="background-image:url('./images/xvgbera.png');"></div>
             <div class="logo-text">
                 XVGBera brings the unified XVG token experience to Berachain
@@ -1059,7 +1772,7 @@
         </div>
         <!-- end of tokens section -->
         <!-- another token section -->
-        <div class="logo-container">
+        <div class="logo-container page-reveal" data-reveal style="--reveal-delay: 780ms;">
             <div class="token-logo-world" style="background-image:url('./images/xvgworld.png');"></div>
             <div class="logo-text">
                 $XVGWorld brings the XVG brand to World Chain, gaining faster transactions, lower fees, 
@@ -1085,7 +1798,7 @@
     })"><span>➕ Add XVGWorld to MetaMask</span></button>
             </div>
         </div>
-		<div class="logo-container">
+		<div class="logo-container page-reveal" data-reveal style="--reveal-delay: 820ms;">
             <div class="token-logo-hemi" style="background-image:url('./images/xvghemi.png');"></div>
             <div class="logo-text">
                 XVGHEMI is the Verge-branded token deployed on the Hemi blockchain, extending the 
@@ -1115,7 +1828,7 @@
             })"><span>➕ Add XVGHEMI to MetaMask</span></button>
             </div>
         </div>
-		<div class="logo-container">
+		<div class="logo-container page-reveal" data-reveal style="--reveal-delay: 860ms;">
             <div class="token-logo-zora" style="background-image:url('./images/xvgzora.png');"></div>
             <div class="logo-text">
                 XVGZORA brings the iconic Verge brand into the vibrant Zora blockchain ecosystem, fusing Verge’s 
@@ -1144,7 +1857,7 @@
         </div>
     </div>
     <!-- socials buttonz -->
-    <div class="footer">
+    <div class="footer page-reveal" data-reveal style="--reveal-delay: 940ms;">
         <a href="https://discord.gg/vergecurrency" target="_blank"><img src="./images/discord.png" alt="Discord"></a>
         <a href="https://www.twitter.com/xvgeth" target="_blank"><img src="./images/xwhite.png" alt="X (Twitter)"></a>
         <a href="https://t.me/officialxvg" target="_blank"><img src="./images/telegram.png" alt="Telegram"></a>
@@ -1152,23 +1865,23 @@
         <a href="https://www.youtube.com/vergecurrencyofficial" target="_blank"><img src="./images/youtube.png" alt="YouTube"></a>
     </div>
     <br><br>
-    <font color=white>This website is open source, and served live from our github repository! <br>Feel free to open any issues or contribute to the site itself here: <a href="https://github.com/vergecurrency/XVGtokens.com" target="_blank">https://github.com/vergecurrency/XVGtokens.com</a></font>
+    <font color=white class="page-reveal" data-reveal style="--reveal-delay: 980ms;">This website is open source, and served live from our github repository! <br>Feel free to open any issues or contribute to the site itself here: <a href="https://github.com/vergecurrency/XVGtokens.com" target="_blank">https://github.com/vergecurrency/XVGtokens.com</a></font>
     <br><br>
-	<header class="bottom-banner"></header>
-    <section class="py-5" style="background-color: #0a0d14; color: #fff;"><center>
-        <div class="container">
-            <div class="d-flex justify-content-center gap-4 flex-wrap iframe-container" style="text-align: center; margin-bottom: 20px;">
-                <h4 style="text-align: center;">Here you can buy XVG (coin), XVG ETH (ERC20), (or any cryptocurrency/XVG token) with Paypal Coin (from the Paypal App), Bitcoin, <br /> Ethereum, and more! or swap any crypto for a different crypto or even bridge cross chain!</h4>
+	<header class="bottom-banner page-reveal" data-reveal style="--reveal-delay: 1040ms;"></header>
+    <section class="py-5 page-reveal" data-reveal style="background-color: #0a0d14; color: #fff; --reveal-delay: 1100ms;">
+        <div class="container" style="max-width: 1120px; margin: 0 auto; text-align: center;">
+            <div class="iframe-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 20px;">
+                <h4 style="text-align: center; max-width: 980px; margin: 0 auto;">Here you can buy XVG (coin), XVG ETH (ERC20), (or any cryptocurrency/XVG token) with Paypal Coin (from the Paypal App), Bitcoin, <br /> Ethereum, and more! or swap any crypto for a different crypto or even bridge cross chain!</h4>
                 <iframe
   src="https://letsexchange.io/v2/widget?affiliate_id=ZfdAVgTUKOueeKY4&is_iframe=true"
-  style="width: 100%; height: 700px; max-width: 100%;"
+  style="display: block; width: min(100%, 960px); height: 700px; margin: 0 auto;"
   frameborder="0"
   allow="clipboard-read; clipboard-write">
 </iframe>
             </div>
-        </div><center>
+        </div>
     </section>
-    <div class="intro">
+    <div class="intro page-reveal" data-reveal style="--reveal-delay: 1160ms;">
         © XVGTokens.com 2025
     </div>
     <script>
@@ -1231,6 +1944,37 @@
                 alert('Failed to add token: ' + tokenSymbol);
             }
         }
+
+        (function () {
+            const introOverlay = document.getElementById('intro-overlay');
+            const reveals = document.querySelectorAll('[data-reveal]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let introComplete = false;
+
+            function revealPage() {
+                if (introComplete) return;
+                introComplete = true;
+
+                document.body.classList.remove('is-intro-active');
+                reveals.forEach((element) => element.classList.add('is-visible'));
+
+                if (!introOverlay) return;
+
+                introOverlay.classList.add('is-hidden');
+                window.setTimeout(() => introOverlay.remove(), 560);
+            }
+
+            if (reduceMotion) {
+                revealPage();
+                return;
+            }
+
+            window.addEventListener('load', () => {
+                window.setTimeout(revealPage, 5400);
+            }, { once: true });
+
+            window.setTimeout(revealPage, 8800);
+        }());
     </script>
 </body>
 </html>
