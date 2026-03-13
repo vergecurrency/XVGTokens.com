@@ -1485,34 +1485,96 @@
     }
 
   .footer {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-}
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
 
-.footer a {
-  background: transparent;       /* fully transparent by default */
-  border-radius: 50%;            /* circular background area */
-  padding: 8px;                  /* space around the icon */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: box-shadow 0.3s, transform 0.3s;
-}
+  .social-link {
+    --social-accent: rgba(125, 211, 252, 0.42);
+    width: 76px;
+    height: 76px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 24px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)),
+      radial-gradient(circle at top, rgba(125, 211, 252, 0.14), transparent 58%),
+      rgba(9, 14, 24, 0.82);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 18px 38px rgba(2, 6, 23, 0.32);
+    color: #f8fafc;
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease, color 240ms ease;
+  }
 
-.footer a img {
-  width: 64px;
-  height: 64px;
-  background: transparent;       /* ensure icons are transparent */
-  transition: transform 0.3s, filter 0.3s;
-}
+  .social-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 35%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: auto, 18px 18px, 18px 18px;
+    opacity: 0.28;
+    pointer-events: none;
+  }
 
-/* Hover glow effect */
-.footer a:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px hotpink, 0 0 40px hotpink, 0 0 60px hotpink;
-}
+  .social-link::after {
+    content: "";
+    position: absolute;
+    inset: auto -30% -38% -30%;
+    height: 70%;
+    background: radial-gradient(circle, var(--social-accent), rgba(125, 211, 252, 0));
+    filter: blur(18px);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .social-link:hover,
+  .social-link:focus-visible {
+    transform: translateY(-4px) scale(1.04);
+    border-color: rgba(191, 219, 254, 0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 24px 44px rgba(2, 6, 23, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  .social-link:focus-visible {
+    outline: 2px solid rgba(125, 211, 252, 0.9);
+    outline-offset: 4px;
+  }
+
+  .social-link svg {
+    width: 34px;
+    height: 34px;
+    position: relative;
+    z-index: 1;
+    fill: currentColor;
+    transition: transform 240ms ease, filter 240ms ease;
+  }
+
+  .social-link:hover svg,
+  .social-link:focus-visible svg {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 14px var(--social-accent));
+  }
+
+  .social-link--discord { --social-accent: rgba(88, 101, 242, 0.45); }
+  .social-link--x { --social-accent: rgba(148, 163, 184, 0.34); }
+  .social-link--telegram { --social-accent: rgba(34, 158, 217, 0.45); }
+  .social-link--github { --social-accent: rgba(148, 163, 184, 0.32); }
+  .social-link--youtube { --social-accent: rgba(255, 0, 0, 0.38); }
   
 </style>
 </head>
@@ -2079,11 +2141,21 @@
     </div>
     <!-- socials buttonz -->
     <div class="footer page-reveal" data-reveal style="--reveal-delay: 940ms;">
-        <a href="https://discord.gg/vergecurrency" target="_blank"><img src="./images/discord.png" alt="Discord"></a>
-        <a href="https://www.twitter.com/xvgeth" target="_blank"><img src="./images/xwhite.png" alt="X (Twitter)"></a>
-        <a href="https://t.me/officialxvg" target="_blank"><img src="./images/telegram.png" alt="Telegram"></a>
-        <a href="https://github.com/vergecurrency/erc20/" target="_blank"><img src="./images/github.png" alt="Github" width="90%" height="90%"></a>
-        <a href="https://www.youtube.com/vergecurrencyofficial" target="_blank"><img src="./images/youtube.png" alt="YouTube"></a>
+        <a class="social-link social-link--discord" href="https://discord.gg/vergecurrency" target="_blank" aria-label="Discord">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0 0 15.379 3c-.214.37-.463.87-.634 1.26a18.27 18.27 0 0 0-5.49 0A12.64 12.64 0 0 0 8.62 3a19.736 19.736 0 0 0-4.94 1.37C.557 9.04-.286 13.58.135 18.057A19.9 19.9 0 0 0 6.2 21c.49-.67.927-1.378 1.305-2.12a12.85 12.85 0 0 1-2.053-.99c.172-.125.34-.255.503-.39 3.963 1.86 8.256 1.86 12.172 0 .164.135.332.265.503.39-.652.38-1.34.714-2.055.99.378.742.814 1.45 1.306 2.12a19.864 19.864 0 0 0 6.067-2.943c.494-5.183-.842-9.682-3.63-13.688ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.175 1.095 2.157 2.418 0 1.334-.956 2.419-2.157 2.419Zm7.96 0c-1.184 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.175 1.095 2.157 2.418 0 1.334-.947 2.419-2.157 2.419Z"/></svg>
+        </a>
+        <a class="social-link social-link--x" href="https://www.twitter.com/xvgeth" target="_blank" aria-label="X">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.188 9.458 12.506h-7.406l-5.8-7.584-6.638 7.584H.474l8.597-9.825L0 1.153h7.594l5.243 6.932 6.064-6.932Zm-1.292 19.49h2.04L6.486 3.24H4.298l13.31 17.404Z"/></svg>
+        </a>
+        <a class="social-link social-link--telegram" href="https://t.me/officialxvg" target="_blank" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.944 4.66a1.5 1.5 0 0 0-1.63-.252L2.89 11.596a1.5 1.5 0 0 0 .106 2.818l4.253 1.4 1.612 5.182a1.5 1.5 0 0 0 2.57.596l2.246-2.307 4.413 3.244a1.5 1.5 0 0 0 2.36-.906l3.25-15.425a1.5 1.5 0 0 0-.756-1.538ZM9.15 15.01l8.37-5.34-6.46 6.618-.252 2.558-1.658-3.836Z"/></svg>
+        </a>
+        <a class="social-link social-link--github" href="https://github.com/vergecurrency/erc20/" target="_blank" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297a12 12 0 0 0-3.79 23.39c.6.111.82-.26.82-.577v-2.234c-3.338.726-4.042-1.61-4.042-1.61a3.186 3.186 0 0 0-1.337-1.756c-1.093-.747.084-.732.084-.732a2.52 2.52 0 0 1 1.84 1.237 2.554 2.554 0 0 0 3.49.997 2.56 2.56 0 0 1 .762-1.604c-2.665-.305-5.467-1.334-5.467-5.93a4.64 4.64 0 0 1 1.235-3.222 4.31 4.31 0 0 1 .117-3.177s1.008-.322 3.3 1.23a11.44 11.44 0 0 1 6.005 0c2.29-1.552 3.297-1.23 3.297-1.23.546 1.139.589 2.494.118 3.177a4.64 4.64 0 0 1 1.233 3.222c0 4.609-2.807 5.622-5.48 5.921.43.372.815 1.103.815 2.222v3.293c0 .319.216.694.825.576A12.001 12.001 0 0 0 12 .297Z"/></svg>
+        </a>
+        <a class="social-link social-link--youtube" href="https://www.youtube.com/vergecurrencyofficial" target="_blank" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a2.98 2.98 0 0 0-2.098-2.11C19.536 3.545 12 3.545 12 3.545s-7.536 0-9.4.53A2.98 2.98 0 0 0 .502 6.186 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .502 5.814 2.98 2.98 0 0 0 2.098 2.11c1.864.53 9.4.53 9.4.53s7.536 0 9.4-.53a2.98 2.98 0 0 0 2.098-2.11A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z"/></svg>
+        </a>
     </div>
     <br><br>
     <font color=white class="page-reveal" data-reveal style="--reveal-delay: 980ms;">This website is open source, and served live from our github repository! <br>Feel free to open any issues or contribute to the site itself here: <a href="https://github.com/vergecurrency/XVGtokens.com" target="_blank">https://github.com/vergecurrency/XVGtokens.com</a></font>
