@@ -28,6 +28,7 @@ Bera  ($XVGBERA)<br>
 Gnosis ($XVGGNOSIS)<br>
 Hemi ($XVGHEMI)<br>
 Zora ($XVGZORA)<br>
+Citrea ($XVGcBTC)<br>
 
 
 
