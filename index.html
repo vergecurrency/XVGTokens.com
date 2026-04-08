@@ -423,6 +423,17 @@
 
   .logo-container {
       position: relative;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.46));
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 28px;
+      box-shadow:
+        0 22px 44px rgba(2, 6, 23, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
   }
 
   .logo-container::before {
@@ -437,9 +448,36 @@
       pointer-events: none;
   }
 
+  .logo-container::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 34%),
+        linear-gradient(120deg, rgba(255, 255, 255, 0.14), transparent 24%, transparent 68%, rgba(255, 255, 255, 0.08) 84%, transparent 100%);
+      opacity: 0.7;
+      pointer-events: none;
+      transform: translateX(-4%);
+      transition: opacity 260ms ease, transform 260ms ease;
+  }
+
   .logo-container.page-reveal.is-visible::before {
       opacity: 1;
       transform: translateY(0);
+  }
+
+  .logo-container:hover {
+      transform: translateY(-4px);
+      border-color: rgba(125, 211, 252, 0.26);
+      box-shadow:
+        0 28px 56px rgba(2, 6, 23, 0.3),
+        0 0 34px rgba(56, 189, 248, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .logo-container:hover::after {
+      opacity: 0.92;
+      transform: translateX(0);
   }
 
   @keyframes introPulse {
@@ -1043,7 +1081,7 @@
       align-items: center;
       text-align: center;
       width: 100%;
-      padding: 0 8px;
+      padding: 28px 18px 24px;
     }
 
   .token-logo {
@@ -1428,6 +1466,8 @@
   .logo-text {
     font-size: 14px;
     line-height: 1.4;
+    color: rgba(241, 245, 249, 0.96);
+    text-shadow: 0 1px 14px rgba(15, 23, 42, 0.35);
   }
 
   .token-actions {
@@ -1436,7 +1476,7 @@
       justify-content: center;
       gap: 12px;
       width: 100%;
-      margin-top: 8px;
+      margin-top: 12px;
   }
 
   .token-action {
@@ -1444,6 +1484,7 @@
       --token-action-border: rgba(148, 163, 184, 0.28);
       --token-action-shadow: 0 14px 32px rgba(8, 15, 28, 0.34);
       --token-action-highlight: rgba(255, 255, 255, 0.12);
+      --token-action-glow: rgba(125, 211, 252, 0.12);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1469,6 +1510,7 @@
       text-align: center;
       -webkit-appearance: none;
       appearance: none;
+      backdrop-filter: blur(10px);
   }
 
   .token-action::before {
@@ -1476,7 +1518,9 @@
       position: absolute;
       inset: 1px;
       border-radius: 15px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03)),
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 60%);
       opacity: 0.9;
       pointer-events: none;
   }
@@ -1490,7 +1534,17 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0), var(--token-action-highlight), rgba(255, 255, 255, 0));
       transform: rotate(24deg);
       transition: transform 280ms ease;
+      animation: tokenActionShine 5.6s ease-in-out infinite;
       pointer-events: none;
+  }
+
+  @keyframes tokenActionShine {
+      0%, 100% {
+          transform: translateX(0) rotate(24deg);
+      }
+      50% {
+          transform: translateX(185%) rotate(24deg);
+      }
   }
 
   .token-action > span {
@@ -1501,7 +1555,9 @@
   .token-action:hover,
   .token-action:focus-visible {
       transform: translateY(-2px);
-      box-shadow: 0 18px 36px rgba(8, 15, 28, 0.46);
+      box-shadow:
+        0 18px 36px rgba(8, 15, 28, 0.46),
+        0 0 24px var(--token-action-glow);
       border-color: rgba(191, 219, 254, 0.65);
       color: #ffffff;
   }
@@ -1537,12 +1593,21 @@
       --token-action-bg: linear-gradient(135deg, rgba(14, 116, 144, 0.96), rgba(15, 118, 110, 0.96));
       --token-action-border: rgba(94, 234, 212, 0.32);
       --token-action-highlight: rgba(204, 251, 241, 0.18);
+      --token-action-glow: rgba(45, 212, 191, 0.18);
   }
 
   .token-action.is-wallet {
       --token-action-bg: linear-gradient(135deg, rgba(180, 83, 9, 0.97), rgba(146, 64, 14, 0.97));
       --token-action-border: rgba(253, 186, 116, 0.38);
       --token-action-highlight: rgba(255, 237, 213, 0.2);
+      --token-action-glow: rgba(251, 191, 36, 0.18);
+  }
+
+  .token-action.is-farm {
+      --token-action-bg: linear-gradient(135deg, rgba(22, 163, 74, 0.97), rgba(5, 150, 105, 0.97));
+      --token-action-border: rgba(134, 239, 172, 0.42);
+      --token-action-highlight: rgba(220, 252, 231, 0.22);
+      --token-action-glow: rgba(74, 222, 128, 0.2);
   }
 
   @media (max-width: 600px) {
@@ -1572,8 +1637,14 @@
       }
 
       .token-action,
-      .token-action::after {
+      .token-action::after,
+      .logo-container,
+      .logo-container::after {
           transition: none;
+      }
+
+      .token-action::after {
+          animation: none;
       }
   }
   
@@ -1801,6 +1872,7 @@
                class="token-action is-explorer"><span>🔎 View Explorer</span></a>
             <a href="https://www.coingecko.com/en/coins/xvgbase" target="_blank" class="token-action is-market"><span>📈 CoinGecko</span></a>
 			<a href="https://www.coinbase.com/price/xvgbase-base-0xe061aa40be525a13296cb4bf69f513242349d708-token" target="_blank" class="token-action is-market"><span>📈 View on Coinbase</span></a>
+            <a href="https://farm.xvgtokens.com" target="_blank" class="token-action is-farm"><span>🌾 Farm</span></a>
             <a href="https://www.dextools.io/app/en/base/pair-explorer/0x7f09fde136dafc1222ef22d4d15f434a0161aa50"
                target="_blank"
                class="token-action is-dex"><span>🔗 View on DexTools</span></a>
@@ -1996,6 +2068,7 @@
             <a href="https://bscscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708"
                target="_blank"
                class="token-action is-explorer"><span>🔎 View Explorer</span></a>
+            <a href="https://farm.xvgtokens.com" target="_blank" class="token-action is-farm"><span>🌾 Farm</span></a>
             <a href="https://www.dextools.io/app/en/bnb/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115"
                target="_blank"
                class="token-action is-dex"><span>🔗 View on DexTools</span></a>
