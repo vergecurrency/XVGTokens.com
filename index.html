@@ -9,6 +9,29 @@
       content="Forged in code, bound across chains. Explore the XVG token network and live farm pages."
     />
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <script>
+      (function restoreSpaRoute() {
+        const url = new URL(window.location.href);
+        const redirect = url.searchParams.get("__redirect");
+
+        if (!redirect) {
+          return;
+        }
+
+        url.searchParams.delete("__redirect");
+
+        const restoredUrl = new URL(redirect, window.location.origin);
+        const remainingQuery = url.searchParams.toString();
+
+        if (remainingQuery) {
+          restoredUrl.search = restoredUrl.search
+            ? `${restoredUrl.search}&${remainingQuery}`
+            : `?${remainingQuery}`;
+        }
+
+        window.history.replaceState({}, "", `${restoredUrl.pathname}${restoredUrl.search}${restoredUrl.hash}`);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
