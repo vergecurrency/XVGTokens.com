@@ -118,6 +118,7 @@ export function useFarm(): FarmState {
   const tokenAddressReady = isAddress(farmConfig.tokenAddress);
   const quoteTokenAddressReady = isAddress(farmConfig.quoteTokenAddress);
   const lpTokenAddressReady = isAddress(farmConfig.lpTokenAddress);
+  const routerAddressReady = isAddress(farmConfig.v2RouterAddress);
   const poolAddressReady = isAddress(farmConfig.v2PoolAddress);
   const {
     data: publicProgramInfoData,
@@ -267,7 +268,7 @@ export function useFarm(): FarmState {
       });
     }
 
-    if (tokenAddressReady) {
+    if (tokenAddressReady && routerAddressReady) {
       contracts.push({
         key: "tokenAllowanceToRouter",
         address: farmConfig.tokenAddress as `0x${string}`,
@@ -278,7 +279,7 @@ export function useFarm(): FarmState {
       });
     }
 
-    if (quoteTokenAddressReady) {
+    if (quoteTokenAddressReady && routerAddressReady) {
       contracts.push({
         key: "quoteTokenAllowanceToRouter",
         address: farmConfig.quoteTokenAddress as `0x${string}`,
@@ -289,7 +290,7 @@ export function useFarm(): FarmState {
       });
     }
 
-    if (lpTokenAddressReady) {
+    if (lpTokenAddressReady && routerAddressReady) {
       contracts.push({
         key: "lpAllowanceToRouter",
         address: farmConfig.lpTokenAddress as `0x${string}`,
@@ -312,6 +313,7 @@ export function useFarm(): FarmState {
     lpTokenAddressReady,
     quoteTokenAddressReady,
     rewardsContractReady,
+    routerAddressReady,
     tokenAddressReady,
   ]);
   const { data: accountData, refetch: refetchAccountData } = useReadContracts({
