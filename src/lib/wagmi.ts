@@ -30,6 +30,16 @@ import {
 } from "wagmi/chains";
 import { tokenOrder, tokensBySlug } from "@/data/tokens";
 
+function getRpcUrlEnv(name: string, fallback: string) {
+  const raw = import.meta.env[name];
+  if (typeof raw !== "string") {
+    return fallback;
+  }
+
+  const normalized = raw.trim();
+  return normalized.length > 0 ? normalized : fallback;
+}
+
 const chains = [
   baseChain,
   bscChain,
@@ -54,7 +64,16 @@ const chains = [
 const transports = Object.fromEntries(
   tokenOrder.map((slug) => {
     const token = tokensBySlug[slug];
-    return [Number.parseInt(token.wallet.chainId, 16), http(token.wallet.rpcUrl)];
+    const chainId = Number.parseInt(token.wallet.chainId, 16);
+
+    const rpcUrl =
+      chainId === baseChain.id
+        ? getRpcUrlEnv("VITE_BASE_RPC_URL", token.wallet.rpcUrl)
+        : chainId === bscChain.id
+          ? getRpcUrlEnv("VITE_BSC_RPC_URL", token.wallet.rpcUrl)
+          : token.wallet.rpcUrl;
+
+    return [chainId, http(rpcUrl)];
   }),
 );
 

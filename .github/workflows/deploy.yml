@@ -34,7 +34,9 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          VITE_BASE_RPC_URL: ${{ secrets.VITE_BASE_RPC_URL }}
           VITE_BASE_REWARD: ${{ secrets.VITE_BASE_REWARD }}
+          VITE_BSC_RPC_URL: ${{ secrets.VITE_BSC_RPC_URL }}
           VITE_BSC_REWARD: ${{ secrets.VITE_BSC_REWARD }}
           VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
           VITE_XVGBASE_ROUTER_KIND: ${{ secrets.VITE_XVGBASE_ROUTER_KIND }}
