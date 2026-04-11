@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { ArrowRight, Droplets, RefreshCw, ShieldCheck, Waves } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -28,6 +29,7 @@ export function WalletActions({
   const { chain } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const wrongFarmChain = Boolean(chain && chain.id !== farmConfig.chainId);
+  const autoSwitchAttemptRef = useRef<number | null>(null);
 
   async function handleSwitchChain() {
     if (!switchChainAsync) {
@@ -40,6 +42,20 @@ export function WalletActions({
       console.error(`Failed to switch wallet to ${farmConfig.chainName}.`, error);
     }
   }
+
+  useEffect(() => {
+    if (!connected || !wrongFarmChain || !chain?.id) {
+      autoSwitchAttemptRef.current = null;
+      return;
+    }
+
+    if (autoSwitchAttemptRef.current === chain.id) {
+      return;
+    }
+
+    autoSwitchAttemptRef.current = chain.id;
+    void handleSwitchChain();
+  }, [chain?.id, connected, wrongFarmChain]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>

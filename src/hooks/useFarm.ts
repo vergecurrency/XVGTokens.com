@@ -6,7 +6,7 @@ import {
   isAddress,
   type Eip1193Provider,
 } from "ethers";
-import type { Abi } from "viem";
+import { parseAbi, type Abi } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { useFarmConfig } from "@/lib/farm-context";
 import { ERC20_ABI, REWARDS_ABI, UNISWAP_V2_PAIR_ABI } from "@/lib/abis";
@@ -17,6 +17,26 @@ import {
   getRewardsWriteContract,
 } from "@/lib/contracts";
 import { formatUnitsSafe, parseInputToUnits, parseInputToUnitsSafe } from "@/lib/format";
+
+const FARM_REWARDS_READ_ABI = parseAbi([
+  "function rewardRate() view returns (uint256)",
+  "function periodFinish() view returns (uint256)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function earned(address account) view returns (uint256)",
+]);
+
+const FARM_ERC20_READ_ABI = parseAbi([
+  "function balanceOf(address account) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+]);
+
+const FARM_PAIR_READ_ABI = parseAbi([
+  "function totalSupply() view returns (uint256)",
+  "function token0() view returns (address)",
+  "function token1() view returns (address)",
+  "function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)",
+]);
 
 export type FarmState = {
   provider: BrowserProvider | null;
@@ -129,19 +149,19 @@ export function useFarm(): FarmState {
           {
             address: farmConfig.rewardsContractAddress as `0x${string}`,
             chainId: farmConfig.chainId,
-            abi: REWARDS_ABI,
+            abi: FARM_REWARDS_READ_ABI,
             functionName: "rewardRate",
           },
           {
             address: farmConfig.rewardsContractAddress as `0x${string}`,
             chainId: farmConfig.chainId,
-            abi: REWARDS_ABI,
+            abi: FARM_REWARDS_READ_ABI,
             functionName: "periodFinish",
           },
           {
             address: farmConfig.rewardsContractAddress as `0x${string}`,
             chainId: farmConfig.chainId,
-            abi: REWARDS_ABI,
+            abi: FARM_REWARDS_READ_ABI,
             functionName: "totalSupply",
           },
         ]
@@ -160,7 +180,7 @@ export function useFarm(): FarmState {
     const contracts: Array<{
       key: "walletTokenBalance" | "walletQuoteTokenBalance" | "walletLpBalance";
       address: `0x${string}`;
-      abi: Abi;
+      abi: typeof FARM_ERC20_READ_ABI;
       functionName: "balanceOf";
       args: [typeof address];
       chainId: number;
@@ -170,7 +190,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "walletTokenBalance",
         address: farmConfig.tokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "balanceOf",
         args: [address],
         chainId: farmConfig.chainId,
@@ -181,7 +201,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "walletQuoteTokenBalance",
         address: farmConfig.quoteTokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "balanceOf",
         args: [address],
         chainId: farmConfig.chainId,
@@ -192,7 +212,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "walletLpBalance",
         address: farmConfig.lpTokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "balanceOf",
         args: [address],
         chainId: farmConfig.chainId,
@@ -242,7 +262,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "stakedBalance",
         address: farmConfig.rewardsContractAddress as `0x${string}`,
-        abi: REWARDS_ABI as unknown as Abi,
+        abi: FARM_REWARDS_READ_ABI,
         functionName: "balanceOf",
         args: [address],
         chainId: farmConfig.chainId,
@@ -250,7 +270,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "earnedRewards",
         address: farmConfig.rewardsContractAddress as `0x${string}`,
-        abi: REWARDS_ABI as unknown as Abi,
+        abi: FARM_REWARDS_READ_ABI,
         functionName: "earned",
         args: [address],
         chainId: farmConfig.chainId,
@@ -261,7 +281,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "allowance",
         address: farmConfig.lpTokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "allowance",
         args: [address, farmConfig.rewardsContractAddress],
         chainId: farmConfig.chainId,
@@ -272,7 +292,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "tokenAllowanceToRouter",
         address: farmConfig.tokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "allowance",
         args: [address, farmConfig.v2RouterAddress],
         chainId: farmConfig.chainId,
@@ -283,7 +303,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "quoteTokenAllowanceToRouter",
         address: farmConfig.quoteTokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "allowance",
         args: [address, farmConfig.v2RouterAddress],
         chainId: farmConfig.chainId,
@@ -294,7 +314,7 @@ export function useFarm(): FarmState {
       contracts.push({
         key: "lpAllowanceToRouter",
         address: farmConfig.lpTokenAddress as `0x${string}`,
-        abi: ERC20_ABI as unknown as Abi,
+        abi: FARM_ERC20_READ_ABI,
         functionName: "allowance",
         args: [address, farmConfig.v2RouterAddress],
         chainId: farmConfig.chainId,
@@ -333,28 +353,28 @@ export function useFarm(): FarmState {
       {
         key: "pairLiquiditySupply" as const,
         address: farmConfig.v2PoolAddress as `0x${string}`,
-        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        abi: FARM_PAIR_READ_ABI,
         functionName: "totalSupply" as const,
         chainId: farmConfig.chainId,
       },
       {
         key: "pairToken0" as const,
         address: farmConfig.v2PoolAddress as `0x${string}`,
-        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        abi: FARM_PAIR_READ_ABI,
         functionName: "token0" as const,
         chainId: farmConfig.chainId,
       },
       {
         key: "pairToken1" as const,
         address: farmConfig.v2PoolAddress as `0x${string}`,
-        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        abi: FARM_PAIR_READ_ABI,
         functionName: "token1" as const,
         chainId: farmConfig.chainId,
       },
       {
         key: "pairReserves" as const,
         address: farmConfig.v2PoolAddress as `0x${string}`,
-        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        abi: FARM_PAIR_READ_ABI,
         functionName: "getReserves" as const,
         chainId: farmConfig.chainId,
       },
