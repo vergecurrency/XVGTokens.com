@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Droplets, RefreshCw, ShieldCheck, Waves } from "lucide-react";
+import { useAccount, useSwitchChain } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,21 @@ export function WalletActions({
   onRefresh,
 }: WalletActionsProps) {
   const farmConfig = useFarmConfig();
+  const { chain } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
+  const wrongFarmChain = Boolean(chain && chain.id !== farmConfig.chainId);
+
+  async function handleSwitchChain() {
+    if (!switchChainAsync) {
+      return;
+    }
+
+    try {
+      await switchChainAsync({ chainId: farmConfig.chainId });
+    } catch (error) {
+      console.error(`Failed to switch wallet to ${farmConfig.chainName}.`, error);
+    }
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
@@ -78,6 +94,15 @@ export function WalletActions({
         </CardHeader>
         <CardContent className="relative grid gap-3 sm:flex sm:flex-wrap">
           <WalletConnectTrigger />
+          {connected && wrongFarmChain ? (
+            <Button
+              onClick={() => void handleSwitchChain()}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
+              Switch to {farmConfig.chainName}
+            </Button>
+          ) : null}
           <a
             href="#add-liquidity"
             className={buttonVariants("secondary", "w-full sm:w-auto")}

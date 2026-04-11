@@ -31,15 +31,15 @@ import {
 import { tokenOrder, tokensBySlug } from "@/data/tokens";
 
 const chains = [
-  zksyncChain,
   baseChain,
+  bscChain,
+  zksyncChain,
   optimismChain,
   sonicChain,
   arbitrumChain,
   avalancheChain,
   polygonChain,
   lineaChain,
-  bscChain,
   mantleChain,
   cronosChain,
   unichainChain,
