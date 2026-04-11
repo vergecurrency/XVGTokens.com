@@ -6,17 +6,14 @@ import {
   isAddress,
   type Eip1193Provider,
 } from "ethers";
-import { useAccount, useBalance, useReadContracts } from "wagmi";
+import type { Abi } from "viem";
+import { useAccount, useReadContracts } from "wagmi";
 import { useFarmConfig } from "@/lib/farm-context";
-import { REWARDS_ABI } from "@/lib/abis";
+import { ERC20_ABI, REWARDS_ABI, UNISWAP_V2_PAIR_ABI } from "@/lib/abis";
 import {
-  getLpReadContract,
-  getTokenReadContract,
   getTokenWriteContract,
-  getV2PairReadContract,
   getV2RouterWriteContract,
   getLpWriteContract,
-  getRewardsReadContract,
   getRewardsWriteContract,
 } from "@/lib/contracts";
 import { formatUnitsSafe, parseInputToUnits, parseInputToUnitsSafe } from "@/lib/format";
@@ -118,8 +115,13 @@ export function useFarm(): FarmState {
   const farmConfig = useFarmConfig();
   const { address, connector, chain, isConnected } = useAccount();
   const rewardsContractReady = isAddress(farmConfig.rewardsContractAddress);
+  const tokenAddressReady = isAddress(farmConfig.tokenAddress);
+  const quoteTokenAddressReady = isAddress(farmConfig.quoteTokenAddress);
+  const lpTokenAddressReady = isAddress(farmConfig.lpTokenAddress);
+  const poolAddressReady = isAddress(farmConfig.v2PoolAddress);
   const {
     data: publicProgramInfoData,
+    refetch: refetchPublicProgramInfo,
   } = useReadContracts({
     contracts: rewardsContractReady
       ? [
@@ -149,30 +151,218 @@ export function useFarm(): FarmState {
       refetchInterval: 10000,
     },
   });
-  const { data: walletTokenBalanceData } = useBalance({
+  const walletSnapshotContracts = useMemo(() => {
+    if (!address) {
+      return [];
+    }
+
+    const contracts: Array<{
+      key: "walletTokenBalance" | "walletQuoteTokenBalance" | "walletLpBalance";
+      address: `0x${string}`;
+      abi: Abi;
+      functionName: "balanceOf";
+      args: [typeof address];
+      chainId: number;
+    }> = [];
+
+    if (tokenAddressReady) {
+      contracts.push({
+        key: "walletTokenBalance",
+        address: farmConfig.tokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "balanceOf",
+        args: [address],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (quoteTokenAddressReady) {
+      contracts.push({
+        key: "walletQuoteTokenBalance",
+        address: farmConfig.quoteTokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "balanceOf",
+        args: [address],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (lpTokenAddressReady) {
+      contracts.push({
+        key: "walletLpBalance",
+        address: farmConfig.lpTokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "balanceOf",
+        args: [address],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    return contracts;
+  }, [
     address,
-    chainId: farmConfig.chainId,
-    token: farmConfig.tokenAddress as `0x${string}`,
+    farmConfig.chainId,
+    farmConfig.lpTokenAddress,
+    farmConfig.quoteTokenAddress,
+    farmConfig.tokenAddress,
+    lpTokenAddressReady,
+    quoteTokenAddressReady,
+    tokenAddressReady,
+  ]);
+  const { data: walletSnapshotData, refetch: refetchWalletSnapshot } = useReadContracts({
+    allowFailure: true,
+    contracts: walletSnapshotContracts.map(({ key: _key, ...contract }) => contract),
     query: {
-      enabled: Boolean(address),
+      enabled: walletSnapshotContracts.length > 0,
       refetchInterval: 10000,
     },
   });
-  const { data: walletQuoteTokenBalanceData } = useBalance({
+  const accountContracts = useMemo(() => {
+    if (!address) {
+      return [];
+    }
+
+    const contracts: Array<{
+      key:
+        | "stakedBalance"
+        | "earnedRewards"
+        | "allowance"
+        | "tokenAllowanceToRouter"
+        | "quoteTokenAllowanceToRouter"
+        | "lpAllowanceToRouter";
+      address: `0x${string}`;
+      abi: Abi;
+      functionName: string;
+      args: readonly unknown[];
+      chainId: number;
+    }> = [];
+
+    if (rewardsContractReady) {
+      contracts.push({
+        key: "stakedBalance",
+        address: farmConfig.rewardsContractAddress as `0x${string}`,
+        abi: REWARDS_ABI as unknown as Abi,
+        functionName: "balanceOf",
+        args: [address],
+        chainId: farmConfig.chainId,
+      });
+      contracts.push({
+        key: "earnedRewards",
+        address: farmConfig.rewardsContractAddress as `0x${string}`,
+        abi: REWARDS_ABI as unknown as Abi,
+        functionName: "earned",
+        args: [address],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (lpTokenAddressReady && rewardsContractReady) {
+      contracts.push({
+        key: "allowance",
+        address: farmConfig.lpTokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "allowance",
+        args: [address, farmConfig.rewardsContractAddress],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (tokenAddressReady) {
+      contracts.push({
+        key: "tokenAllowanceToRouter",
+        address: farmConfig.tokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "allowance",
+        args: [address, farmConfig.v2RouterAddress],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (quoteTokenAddressReady) {
+      contracts.push({
+        key: "quoteTokenAllowanceToRouter",
+        address: farmConfig.quoteTokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "allowance",
+        args: [address, farmConfig.v2RouterAddress],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    if (lpTokenAddressReady) {
+      contracts.push({
+        key: "lpAllowanceToRouter",
+        address: farmConfig.lpTokenAddress as `0x${string}`,
+        abi: ERC20_ABI as unknown as Abi,
+        functionName: "allowance",
+        args: [address, farmConfig.v2RouterAddress],
+        chainId: farmConfig.chainId,
+      });
+    }
+
+    return contracts;
+  }, [
     address,
-    chainId: farmConfig.chainId,
-    token: farmConfig.quoteTokenAddress as `0x${string}`,
+    farmConfig.chainId,
+    farmConfig.lpTokenAddress,
+    farmConfig.quoteTokenAddress,
+    farmConfig.rewardsContractAddress,
+    farmConfig.tokenAddress,
+    farmConfig.v2RouterAddress,
+    lpTokenAddressReady,
+    quoteTokenAddressReady,
+    rewardsContractReady,
+    tokenAddressReady,
+  ]);
+  const { data: accountData, refetch: refetchAccountData } = useReadContracts({
+    allowFailure: true,
+    contracts: accountContracts.map(({ key: _key, ...contract }) => contract),
     query: {
-      enabled: Boolean(address),
+      enabled: accountContracts.length > 0,
       refetchInterval: 10000,
     },
   });
-  const { data: walletLpBalanceData } = useBalance({
-    address,
-    chainId: farmConfig.chainId,
-    token: farmConfig.lpTokenAddress as `0x${string}`,
+  const poolContracts = useMemo(() => {
+    if (!poolAddressReady) {
+      return [];
+    }
+
+    return [
+      {
+        key: "pairLiquiditySupply" as const,
+        address: farmConfig.v2PoolAddress as `0x${string}`,
+        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        functionName: "totalSupply" as const,
+        chainId: farmConfig.chainId,
+      },
+      {
+        key: "pairToken0" as const,
+        address: farmConfig.v2PoolAddress as `0x${string}`,
+        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        functionName: "token0" as const,
+        chainId: farmConfig.chainId,
+      },
+      {
+        key: "pairToken1" as const,
+        address: farmConfig.v2PoolAddress as `0x${string}`,
+        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        functionName: "token1" as const,
+        chainId: farmConfig.chainId,
+      },
+      {
+        key: "pairReserves" as const,
+        address: farmConfig.v2PoolAddress as `0x${string}`,
+        abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
+        functionName: "getReserves" as const,
+        chainId: farmConfig.chainId,
+      },
+    ];
+  }, [farmConfig.chainId, farmConfig.v2PoolAddress, poolAddressReady]);
+  const { data: poolData, refetch: refetchPoolData } = useReadContracts({
+    allowFailure: true,
+    contracts: poolContracts.map(({ key: _key, ...contract }) => contract),
     query: {
-      enabled: Boolean(address),
+      enabled: poolContracts.length > 0,
       refetchInterval: 10000,
     },
   });
@@ -204,26 +394,6 @@ export function useFarm(): FarmState {
   const [stakeInput, setStakeInput] = useState("");
   const [withdrawInput, setWithdrawInput] = useState("");
 
-  const rewardsRead = useMemo(
-    () => (provider ? getRewardsReadContract(provider, farmConfig) : null),
-    [farmConfig, provider],
-  );
-  const lpRead = useMemo(
-    () => (provider ? getLpReadContract(provider, farmConfig) : null),
-    [farmConfig, provider],
-  );
-  const tokenRead = useMemo(
-    () => (provider ? getTokenReadContract(farmConfig.tokenAddress, provider) : null),
-    [farmConfig.tokenAddress, provider],
-  );
-  const quoteTokenRead = useMemo(
-    () => (provider ? getTokenReadContract(farmConfig.quoteTokenAddress, provider) : null),
-    [farmConfig.quoteTokenAddress, provider],
-  );
-  const pairRead = useMemo(
-    () => (provider ? getV2PairReadContract(provider, farmConfig) : null),
-    [farmConfig, provider],
-  );
   const rewardsWrite = useMemo(
     () => (signer ? getRewardsWriteContract(signer, farmConfig) : null),
     [farmConfig, signer],
@@ -247,151 +417,21 @@ export function useFarm(): FarmState {
   const isOnFarmChain = (chain?.id ?? farmConfig.chainId) === farmConfig.chainId;
 
   const refreshData = useCallback(async () => {
-    if (!isOnFarmChain) {
-      return;
-    }
-
-    if (!provider || !rewardsRead || !lpRead || !tokenRead || !quoteTokenRead || !pairRead || !account) {
-      return;
-    }
-
     try {
-      const [
-        walletLpBalanceResult,
-        walletTokenBalanceResult,
-        walletQuoteTokenBalanceResult,
-        stakedBalanceResult,
-        earnedResult,
-        rewardRateResult,
-        periodFinishResult,
-        allowanceResult,
-        tokenAllowanceToRouterResult,
-        quoteTokenAllowanceToRouterResult,
-        lpAllowanceToRouterResult,
-        totalStakedResult,
-        pairLiquiditySupplyResult,
-        pairToken0Result,
-        pairToken1Result,
-        pairReservesResult,
-      ] = await Promise.allSettled([
-        lpRead.balanceOf(account),
-        tokenRead.balanceOf(account),
-        quoteTokenRead.balanceOf(account),
-        rewardsRead.balanceOf(account),
-        rewardsRead.earned(account),
-        rewardsRead.rewardRate(),
-        rewardsRead.periodFinish(),
-        lpRead.allowance(account, farmConfig.rewardsContractAddress),
-        tokenRead.allowance(account, farmConfig.v2RouterAddress),
-        quoteTokenRead.allowance(account, farmConfig.v2RouterAddress),
-        lpRead.allowance(account, farmConfig.v2RouterAddress),
-        rewardsRead.totalSupply(),
-        pairRead.totalSupply(),
-        pairRead.token0(),
-        pairRead.token1(),
-        pairRead.getReserves(),
+      await Promise.all([
+        refetchPublicProgramInfo(),
+        refetchWalletSnapshot(),
+        refetchAccountData(),
+        refetchPoolData(),
       ]);
-
-      if (walletLpBalanceResult.status === "fulfilled" && !walletLpBalanceData) {
-        setWalletLpBalance(walletLpBalanceResult.value as bigint);
-      }
-
-      if (walletTokenBalanceResult.status === "fulfilled" && !walletTokenBalanceData) {
-        setWalletTokenBalance(walletTokenBalanceResult.value as bigint);
-      }
-
-      if (
-        walletQuoteTokenBalanceResult.status === "fulfilled" &&
-        !walletQuoteTokenBalanceData
-      ) {
-        setWalletQuoteTokenBalance(walletQuoteTokenBalanceResult.value as bigint);
-      }
-
-      if (stakedBalanceResult.status === "fulfilled") {
-        setStakedBalance(stakedBalanceResult.value as bigint);
-      }
-
-      if (earnedResult.status === "fulfilled") {
-        setEarnedRewards(earnedResult.value as bigint);
-      }
-
-      if (rewardRateResult.status === "fulfilled") {
-        setRewardRate(rewardRateResult.value as bigint);
-      }
-
-      if (periodFinishResult.status === "fulfilled") {
-        setPeriodFinish(periodFinishResult.value as bigint);
-      }
-
-      if (allowanceResult.status === "fulfilled") {
-        setAllowance(allowanceResult.value as bigint);
-      }
-
-      if (tokenAllowanceToRouterResult.status === "fulfilled") {
-        setTokenAllowanceToRouter(tokenAllowanceToRouterResult.value as bigint);
-      }
-
-      if (quoteTokenAllowanceToRouterResult.status === "fulfilled") {
-        setQuoteTokenAllowanceToRouter(quoteTokenAllowanceToRouterResult.value as bigint);
-      }
-
-      if (lpAllowanceToRouterResult.status === "fulfilled") {
-        setLpAllowanceToRouter(lpAllowanceToRouterResult.value as bigint);
-      }
-
-      if (totalStakedResult.status === "fulfilled") {
-        setTotalStaked(totalStakedResult.value as bigint);
-      }
-
-      if (pairLiquiditySupplyResult.status === "fulfilled") {
-        setPairLiquiditySupply(pairLiquiditySupplyResult.value as bigint);
-      } else {
-        setPairLiquiditySupply(0n);
-      }
-
-      if (
-        pairToken0Result.status === "fulfilled" &&
-        pairToken1Result.status === "fulfilled" &&
-        pairReservesResult.status === "fulfilled"
-      ) {
-        const token0Address = String(pairToken0Result.value).toLowerCase();
-        const token1Address = String(pairToken1Result.value).toLowerCase();
-        const tokenAddress = farmConfig.tokenAddress.toLowerCase();
-        const quoteTokenAddress = farmConfig.quoteTokenAddress.toLowerCase();
-        const reserves = pairReservesResult.value as [bigint, bigint, number];
-
-        if (token0Address === tokenAddress && token1Address === quoteTokenAddress) {
-          setPairTokenReserve(reserves[0]);
-          setPairQuoteReserve(reserves[1]);
-        } else if (token0Address === quoteTokenAddress && token1Address === tokenAddress) {
-          setPairTokenReserve(reserves[1]);
-          setPairQuoteReserve(reserves[0]);
-        } else {
-          setPairTokenReserve(0n);
-          setPairQuoteReserve(0n);
-          setStatus(
-            `Configured pair does not match the ${farmConfig.tokenSymbol}/${farmConfig.quoteTokenSymbol} token addresses.`,
-          );
-        }
-      } else {
-        setPairTokenReserve(0n);
-        setPairQuoteReserve(0n);
-      }
     } catch (error) {
       setStatus(formatStatusError(error, "Failed to refresh contract data."));
     }
   }, [
-    account,
-    lpRead,
-    pairRead,
-    provider,
-    quoteTokenRead,
-    rewardsRead,
-    tokenRead,
-    walletLpBalanceData,
-    walletQuoteTokenBalanceData,
-    walletTokenBalanceData,
-    isOnFarmChain,
+    refetchAccountData,
+    refetchPoolData,
+    refetchPublicProgramInfo,
+    refetchWalletSnapshot,
   ]);
 
   useEffect(() => {
@@ -421,22 +461,127 @@ export function useFarm(): FarmState {
   }, [publicProgramInfoData]);
 
   useEffect(() => {
-    if (walletTokenBalanceData?.value != null) {
-      setWalletTokenBalance(walletTokenBalanceData.value);
+    if (!walletSnapshotContracts.length || !walletSnapshotData?.length) {
+      return;
     }
-  }, [walletTokenBalanceData?.value]);
+
+    for (const [index, contract] of walletSnapshotContracts.entries()) {
+      const result = walletSnapshotData[index];
+
+      if (result?.status !== "success" || typeof result.result !== "bigint") {
+        continue;
+      }
+
+      if (contract.key === "walletTokenBalance") {
+        setWalletTokenBalance(result.result);
+      }
+
+      if (contract.key === "walletQuoteTokenBalance") {
+        setWalletQuoteTokenBalance(result.result);
+      }
+
+      if (contract.key === "walletLpBalance") {
+        setWalletLpBalance(result.result);
+      }
+    }
+  }, [walletSnapshotContracts, walletSnapshotData]);
 
   useEffect(() => {
-    if (walletQuoteTokenBalanceData?.value != null) {
-      setWalletQuoteTokenBalance(walletQuoteTokenBalanceData.value);
+    if (!accountContracts.length || !accountData?.length) {
+      return;
     }
-  }, [walletQuoteTokenBalanceData?.value]);
+
+    for (const [index, contract] of accountContracts.entries()) {
+      const result = accountData[index];
+
+      if (result?.status !== "success" || typeof result.result !== "bigint") {
+        continue;
+      }
+
+      if (contract.key === "stakedBalance") {
+        setStakedBalance(result.result);
+      }
+
+      if (contract.key === "earnedRewards") {
+        setEarnedRewards(result.result);
+      }
+
+      if (contract.key === "allowance") {
+        setAllowance(result.result);
+      }
+
+      if (contract.key === "tokenAllowanceToRouter") {
+        setTokenAllowanceToRouter(result.result);
+      }
+
+      if (contract.key === "quoteTokenAllowanceToRouter") {
+        setQuoteTokenAllowanceToRouter(result.result);
+      }
+
+      if (contract.key === "lpAllowanceToRouter") {
+        setLpAllowanceToRouter(result.result);
+      }
+    }
+  }, [accountContracts, accountData]);
 
   useEffect(() => {
-    if (walletLpBalanceData?.value != null) {
-      setWalletLpBalance(walletLpBalanceData.value);
+    if (!poolContracts.length || !poolData?.length) {
+      setPairLiquiditySupply(0n);
+      setPairTokenReserve(0n);
+      setPairQuoteReserve(0n);
+      return;
     }
-  }, [walletLpBalanceData?.value]);
+
+    const pairLiquiditySupplyResult = poolData[0];
+    const pairToken0Result = poolData[1];
+    const pairToken1Result = poolData[2];
+    const pairReservesResult = poolData[3];
+
+    if (
+      pairLiquiditySupplyResult?.status === "success" &&
+      typeof pairLiquiditySupplyResult.result === "bigint"
+    ) {
+      setPairLiquiditySupply(pairLiquiditySupplyResult.result);
+    } else {
+      setPairLiquiditySupply(0n);
+    }
+
+    if (
+      pairToken0Result?.status === "success" &&
+      pairToken1Result?.status === "success" &&
+      pairReservesResult?.status === "success"
+    ) {
+      const token0Address = String(pairToken0Result.result).toLowerCase();
+      const token1Address = String(pairToken1Result.result).toLowerCase();
+      const tokenAddress = farmConfig.tokenAddress.toLowerCase();
+      const quoteTokenAddress = farmConfig.quoteTokenAddress.toLowerCase();
+      const reserves = pairReservesResult.result as [bigint, bigint, number];
+
+      if (token0Address === tokenAddress && token1Address === quoteTokenAddress) {
+        setPairTokenReserve(reserves[0]);
+        setPairQuoteReserve(reserves[1]);
+      } else if (token0Address === quoteTokenAddress && token1Address === tokenAddress) {
+        setPairTokenReserve(reserves[1]);
+        setPairQuoteReserve(reserves[0]);
+      } else {
+        setPairTokenReserve(0n);
+        setPairQuoteReserve(0n);
+        setStatus(
+          `Configured pair does not match the ${farmConfig.tokenSymbol}/${farmConfig.quoteTokenSymbol} token addresses.`,
+        );
+      }
+    } else {
+      setPairTokenReserve(0n);
+      setPairQuoteReserve(0n);
+    }
+  }, [
+    farmConfig.quoteTokenAddress,
+    farmConfig.quoteTokenSymbol,
+    farmConfig.tokenAddress,
+    farmConfig.tokenSymbol,
+    poolContracts.length,
+    poolData,
+  ]);
 
   const quoteFromTokenInput = useCallback((value: string) => {
     const amountIn = parseInputToUnitsSafe(value, farmConfig.tokenDecimals);
@@ -889,28 +1034,11 @@ export function useFarm(): FarmState {
     setTokenAllowanceToRouter(0n);
     setQuoteTokenAllowanceToRouter(0n);
     setLpAllowanceToRouter(0n);
-    setWalletLpBalance(0n);
-    setWalletTokenBalance(0n);
-    setWalletQuoteTokenBalance(0n);
     setStakedBalance(0n);
     setEarnedRewards(0n);
     setPairTokenReserve(0n);
     setPairQuoteReserve(0n);
   }, [isOnFarmChain]);
-
-  useEffect(() => {
-    if (!account) {
-      return;
-    }
-
-    void refreshData();
-
-    const interval = window.setInterval(() => {
-      void refreshData();
-    }, 10000);
-
-    return () => window.clearInterval(interval);
-  }, [account, refreshData]);
 
   useEffect(() => {
     if (!account) {

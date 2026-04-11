@@ -162,7 +162,7 @@ export const farmConfigs: Record<FarmSlug, FarmConfig> = {
     projectName: "XVGBSC",
     projectTicker: "XVGBSC",
     tokenSymbol: "XVGBSC",
-    tokenAddress: "0xYourXvgbscTokenAddressHere",
+    tokenAddress: "0xe061aa40be525a13296cb4bf69f513242349d708",
     quoteTokenSymbol: "WBNB",
     quoteTokenAddress: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     quoteTokenDecimals: 18,
