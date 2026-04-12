@@ -40,7 +40,7 @@ Citrea ($XVGcBTC)<br>
 - 🔗 **Unified Contract Address** – Highlighting the novel *single address across all chains* design.  
 - 🌍 **Multi-Chain Explorer Links** – Quick access to each tokens native chain explorer 
 - 📊 **Liquidity Pools & DEX Links** – Easily find each token's LP on Uniswap, PancakeSwap, Aerodrome, Raydium, Orca, etc.  
-
+- 🚜 **Farm Interfaces** - Farm interface available directly on token info page
 ---
 
 ## 📦 Installation
