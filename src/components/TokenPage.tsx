@@ -1,5 +1,5 @@
-import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, Wallet } from "lucide-react";
-import { type CSSProperties, type ReactNode, useState } from "react";
+import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, TrendingUp, Wallet } from "lucide-react";
+import { type CSSProperties, type ReactNode, useEffect, useState } from "react";
 import { socials, type TokenDefinition } from "@/data/tokens";
 
 type TokenPageProps = {
@@ -8,6 +8,78 @@ type TokenPageProps = {
   onNavigate: (path: string) => void;
   children?: ReactNode;
 };
+
+type MarketChartPoint = {
+  timestamp: number;
+  price: number;
+};
+
+type MarketChartState = {
+  points: MarketChartPoint[];
+  loading: boolean;
+  error: string | null;
+};
+
+const chartWidth = 720;
+const chartHeight = 260;
+const chartPadding = 18;
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: value >= 1 ? 2 : 6,
+    maximumFractionDigits: value >= 1 ? 2 : 8,
+  }).format(value);
+}
+
+function formatAxisPrice(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: value >= 0.01 ? 2 : 6,
+    maximumFractionDigits: value >= 0.01 ? 4 : 8,
+  }).format(value);
+}
+
+function formatChartDate(timestamp: number) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(timestamp);
+}
+
+function buildChartPath(points: MarketChartPoint[]) {
+  if (points.length === 0) {
+    return { linePath: "", areaPath: "", minPrice: 0, maxPrice: 0 };
+  }
+
+  const prices = points.map((point) => point.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const priceSpan = Math.max(maxPrice - minPrice, maxPrice * 0.02, 1e-9);
+  const usableWidth = chartWidth - chartPadding * 2;
+  const usableHeight = chartHeight - chartPadding * 2;
+
+  const coordinates = points.map((point, index) => {
+    const x =
+      chartPadding + (points.length === 1 ? usableWidth / 2 : (index / (points.length - 1)) * usableWidth);
+    const y =
+      chartPadding + (1 - (point.price - minPrice) / priceSpan) * usableHeight;
+
+    return { x, y };
+  });
+
+  const linePath = coordinates
+    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
+    .join(" ");
+  const firstPoint = coordinates[0];
+  const lastPoint = coordinates[coordinates.length - 1];
+  const baseline = chartHeight - chartPadding;
+  const areaPath = `${linePath} L ${lastPoint.x.toFixed(2)} ${baseline} L ${firstPoint.x.toFixed(2)} ${baseline} Z`;
+
+  return { linePath, areaPath, minPrice, maxPrice };
+}
 
 async function addTokenToWallet(token: TokenDefinition) {
   const wallet = window.ethereum as
@@ -65,6 +137,75 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const previousToken = currentIndex > 0 ? tokens[currentIndex - 1] : null;
   const nextToken = currentIndex < tokens.length - 1 ? tokens[currentIndex + 1] : null;
   const [contractCopied, setContractCopied] = useState(false);
+  const [marketChart, setMarketChart] = useState<MarketChartState>({
+    points: [],
+    loading: Boolean(token.marketChartId),
+    error: null,
+  });
+
+  useEffect(() => {
+    if (!token.marketChartId) {
+      setMarketChart({ points: [], loading: false, error: null });
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function loadMarketChart() {
+      setMarketChart((current) => ({ ...current, loading: true, error: null }));
+
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${token.marketChartId}/market_chart?vs_currency=usd&days=30`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error(`CoinGecko request failed with ${response.status}`);
+        }
+
+        const payload = (await response.json()) as {
+          prices?: Array<[number, number]>;
+        };
+
+        const points = (payload.prices ?? [])
+          .filter((entry): entry is [number, number] => Array.isArray(entry) && entry.length === 2)
+          .map(([timestamp, price]) => ({ timestamp, price }))
+          .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price));
+
+        setMarketChart({
+          points,
+          loading: false,
+          error: points.length ? null : "No chart data available right now.",
+        });
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        console.error(`Failed loading ${token.symbol} market chart`, error);
+        setMarketChart({
+          points: [],
+          loading: false,
+          error: "Chart data is temporarily unavailable.",
+        });
+      }
+    }
+
+    void loadMarketChart();
+
+    return () => controller.abort();
+  }, [token.marketChartId, token.symbol]);
+
+  const chartPoints = marketChart.points;
+  const firstPoint = chartPoints[0];
+  const lastPoint = chartPoints[chartPoints.length - 1];
+  const chartChange = firstPoint && lastPoint ? lastPoint.price - firstPoint.price : 0;
+  const chartChangePercent =
+    firstPoint && firstPoint.price > 0 ? (chartChange / firstPoint.price) * 100 : 0;
+  const { linePath, areaPath, minPrice, maxPrice } = buildChartPath(chartPoints);
+  const midPrice = minPrice + (maxPrice - minPrice) / 2;
+  const isPositiveChart = chartChange >= 0;
 
   async function handleCopyContract() {
     try {
@@ -163,6 +304,108 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           })}
         </div>
       </section>
+
+      {token.marketChartId ? (
+        <section className="token-page__resources token-page__chart-section">
+          <div className="token-page__section-head">
+            <div>
+              <div className="token-page__section-eyebrow">
+                <TrendingUp className="h-4 w-4" />
+                Market
+              </div>
+              <h2>30 Day Price Chart</h2>
+            </div>
+            {lastPoint ? (
+              <div className="token-page__chart-summary">
+                <strong>{formatCurrency(lastPoint.price)}</strong>
+                <span className={isPositiveChart ? "is-positive" : "is-negative"}>
+                  {isPositiveChart ? "+" : ""}
+                  {chartChangePercent.toFixed(2)}%
+                </span>
+              </div>
+            ) : null}
+          </div>
+
+          {marketChart.loading ? (
+            <div className="token-page__chart-state">Loading CoinGecko chart data...</div>
+          ) : marketChart.error ? (
+            <div className="token-page__chart-state token-page__chart-state--error">{marketChart.error}</div>
+          ) : (
+            <>
+              <div className="token-page__chart-metrics">
+                <div className="token-page__chart-metric">
+                  <span>Current</span>
+                  <strong>{lastPoint ? formatCurrency(lastPoint.price) : "-"}</strong>
+                </div>
+                <div className="token-page__chart-metric">
+                  <span>30D Change</span>
+                  <strong className={isPositiveChart ? "is-positive" : "is-negative"}>
+                    {isPositiveChart ? "+" : ""}
+                    {formatCurrency(chartChange)} ({chartChangePercent.toFixed(2)}%)
+                  </strong>
+                </div>
+                <div className="token-page__chart-metric">
+                  <span>Range</span>
+                  <strong>
+                    {formatCurrency(minPrice)} to {formatCurrency(maxPrice)}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="token-page__chart-shell">
+                <div className="token-page__chart-axis">
+                  <span>{formatAxisPrice(maxPrice)}</span>
+                  <span>{formatAxisPrice(midPrice)}</span>
+                  <span>{formatAxisPrice(minPrice)}</span>
+                </div>
+
+                <div className="token-page__chart-canvas">
+                  <svg
+                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                    className="token-page__chart-svg"
+                    role="img"
+                    aria-label={`${token.symbol} 30 day price chart`}
+                  >
+                    <defs>
+                      <linearGradient id="token-price-area" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(56, 189, 248, 0.36)" />
+                        <stop offset="100%" stopColor="rgba(56, 189, 248, 0)" />
+                      </linearGradient>
+                    </defs>
+                    <line x1={chartPadding} y1={chartPadding} x2={chartWidth - chartPadding} y2={chartPadding} className="token-page__chart-grid" />
+                    <line x1={chartPadding} y1={chartHeight / 2} x2={chartWidth - chartPadding} y2={chartHeight / 2} className="token-page__chart-grid" />
+                    <line x1={chartPadding} y1={chartHeight - chartPadding} x2={chartWidth - chartPadding} y2={chartHeight - chartPadding} className="token-page__chart-grid" />
+                    <path d={areaPath} fill="url(#token-price-area)" />
+                    <path
+                      d={linePath}
+                      className={`token-page__chart-line ${isPositiveChart ? "is-positive" : "is-negative"}`}
+                    />
+                    {lastPoint ? (
+                      <circle
+                        cx={chartWidth - chartPadding}
+                        cy={
+                          chartPoints.length === 1
+                            ? chartHeight / 2
+                            : chartPadding +
+                              (1 - (lastPoint.price - minPrice) / Math.max(maxPrice - minPrice, maxPrice * 0.02, 1e-9)) *
+                                (chartHeight - chartPadding * 2)
+                        }
+                        r="5"
+                        className={`token-page__chart-point ${isPositiveChart ? "is-positive" : "is-negative"}`}
+                      />
+                    ) : null}
+                  </svg>
+
+                  <div className="token-page__chart-dates">
+                    <span>{firstPoint ? formatChartDate(firstPoint.timestamp) : "-"}</span>
+                    <span>{lastPoint ? formatChartDate(lastPoint.timestamp) : "-"}</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+      ) : null}
 
       {children ? (
         <section id="farm" className="token-page__farm">

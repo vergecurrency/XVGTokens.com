@@ -1879,6 +1879,142 @@ input {
   margin-top: 1.5rem;
 }
 
+.token-page__chart-section {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.token-page__chart-summary {
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
+}
+
+.token-page__chart-summary strong {
+  color: #fff;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+
+.token-page__chart-summary span,
+.token-page__chart-metric strong.is-positive,
+.token-page__chart-line.is-positive,
+.token-page__chart-point.is-positive {
+  color: #4ade80;
+  stroke: #4ade80;
+  fill: #4ade80;
+}
+
+.token-page__chart-summary span.is-negative,
+.token-page__chart-metric strong.is-negative,
+.token-page__chart-line.is-negative,
+.token-page__chart-point.is-negative {
+  color: #fb7185;
+  stroke: #fb7185;
+  fill: #fb7185;
+}
+
+.token-page__chart-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.token-page__chart-metric {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.token-page__chart-metric span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: rgba(148, 163, 184, 0.82);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.token-page__chart-metric strong {
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.token-page__chart-shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.token-page__chart-axis {
+  display: grid;
+  align-content: space-between;
+  min-width: 5.4rem;
+  padding: 0.5rem 0;
+  color: rgba(148, 163, 184, 0.82);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.token-page__chart-canvas {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.token-page__chart-svg {
+  width: 100%;
+  overflow: visible;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.9)),
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.09), transparent 38%);
+}
+
+.token-page__chart-grid {
+  stroke: rgba(148, 163, 184, 0.14);
+  stroke-width: 1;
+}
+
+.token-page__chart-line {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.18));
+}
+
+.token-page__chart-point {
+  stroke: rgba(2, 6, 23, 0.92);
+  stroke-width: 3;
+}
+
+.token-page__chart-dates {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(148, 163, 184, 0.82);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.token-page__chart-state {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(226, 232, 240, 0.88);
+}
+
+.token-page__chart-state--error {
+  border-color: rgba(251, 113, 133, 0.24);
+  color: rgba(254, 205, 211, 0.94);
+}
+
 .token-page__farm .token-page__section-head {
   padding: 0 0.2rem;
 }
@@ -2008,6 +2144,22 @@ input {
   .token-page__pager {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .token-page__chart-summary {
+    justify-items: start;
+  }
+
+  .token-page__chart-metrics,
+  .token-page__chart-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .token-page__chart-axis {
+    grid-auto-flow: column;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 0;
   }
 
   .token-pager,

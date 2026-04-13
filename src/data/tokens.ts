@@ -42,6 +42,7 @@ export type TokenDefinition = {
   symbol: string;
   chainName: string;
   chainMenuLabel: string;
+  marketChartId?: string;
   contractAddress: string;
   description: string;
   icon: string;
@@ -107,6 +108,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     symbol: "XVGBASE",
     chainName: "Base",
     chainMenuLabel: "Base Network",
+    marketChartId: "xvgbase",
     contractAddress: sharedContractAddress,
     icon: "/images/xvgbase.png",
     glow: "emerald",
@@ -182,6 +184,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     symbol: "XVGARB",
     chainName: "Arbitrum",
     chainMenuLabel: "Arbitrum",
+    marketChartId: "xvgarb",
     contractAddress: sharedContractAddress,
     icon: "/images/xvgarb.png",
     glow: "sky",
@@ -206,6 +209,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     symbol: "XVGAVA",
     chainName: "Avalanche",
     chainMenuLabel: "Avalanche",
+    marketChartId: "xvgava",
     contractAddress: sharedContractAddress,
     icon: "/images/xvgava.png",
     glow: "rose",
