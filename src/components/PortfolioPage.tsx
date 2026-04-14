@@ -1,9 +1,11 @@
 import { BarChart3, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseAbi } from "viem";
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount } from "wagmi";
+import { getPublicClient } from "wagmi/actions";
 import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { type TokenDefinition } from "@/data/tokens";
+import { wagmiConfig } from "@/lib/wagmi";
 
 const PORTFOLIO_BALANCE_ABI = parseAbi([
   "function balanceOf(address account) view returns (uint256)",
@@ -61,6 +63,8 @@ function getCoinGeckoCoinId(token: TokenDefinition) {
 export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
   const { address, isConnected } = useAccount();
   const [pricesByCoinId, setPricesByCoinId] = useState<PriceMap>({});
+  const [balancesBySlug, setBalancesBySlug] = useState<Record<string, bigint>>({});
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
 
   const tokenCoinIds = useMemo(
     () =>
@@ -115,21 +119,61 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
     return () => controller.abort();
   }, [tokenCoinIds]);
 
-  const { data, isLoading, isFetching } = useReadContracts({
-    allowFailure: true,
-    contracts: address
-      ? tokens.map((token) => ({
-          abi: PORTFOLIO_BALANCE_ABI,
-          address: token.contractAddress as `0x${string}`,
-          functionName: "balanceOf",
-          args: [address],
-          chainId: Number.parseInt(token.wallet.chainId, 16),
-        }))
-      : [],
-    query: {
-      enabled: Boolean(address),
-    },
-  });
+  useEffect(() => {
+    if (!address) {
+      setBalancesBySlug({});
+      setIsBalanceLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const account = address;
+
+    async function loadBalances() {
+      setIsBalanceLoading(true);
+
+      try {
+        const entries = await Promise.all(
+          tokens.map(async (token) => {
+            const chainId = Number.parseInt(token.wallet.chainId, 16);
+            const client = getPublicClient(wagmiConfig, { chainId: chainId as never });
+
+            if (!client) {
+              return [token.slug, 0n] as const;
+            }
+
+            try {
+              const balance = await client.readContract({
+                abi: PORTFOLIO_BALANCE_ABI,
+                address: token.contractAddress as `0x${string}`,
+                functionName: "balanceOf",
+                args: [account],
+              });
+
+              return [token.slug, typeof balance === "bigint" ? balance : 0n] as const;
+            } catch (error) {
+              console.error(`Failed loading ${token.symbol} portfolio balance`, error);
+              return [token.slug, 0n] as const;
+            }
+          }),
+        );
+
+        if (!cancelled) {
+          setBalancesBySlug(Object.fromEntries(entries));
+        }
+      } finally {
+        if (!cancelled) {
+          setIsBalanceLoading(false);
+        }
+      }
+    }
+
+    void loadBalances();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address, tokens]);
 
   return (
     <main className="portfolio-page">
@@ -156,11 +200,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
 
       <section className="portfolio-list">
         {tokens.map((token, index) => {
-          const balanceResult = data?.[index];
-          const balanceValue =
-            balanceResult?.status === "success" && typeof balanceResult.result === "bigint"
-              ? balanceResult.result
-              : 0n;
+          const balanceValue = balancesBySlug[token.slug] ?? 0n;
           const coinId = tokenCoinIds[index]?.coinId;
           const tokenPriceUsd = coinId ? pricesByCoinId[coinId] : undefined;
           const balanceDecimal = Number.parseFloat(formatUnits(balanceValue, 18));
@@ -185,7 +225,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
               </div>
               <div className="portfolio-row__balance">
                 {address ? (
-                  isLoading || isFetching ? (
+                  isBalanceLoading ? (
                     <span className="portfolio-row__loading">Checking...</span>
                   ) : (
                     <>
