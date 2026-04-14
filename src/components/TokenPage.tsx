@@ -1,5 +1,8 @@
 import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, TrendingUp, Wallet } from "lucide-react";
-import { type CSSProperties, type ReactNode, useEffect, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
+import { formatUnits, parseAbi } from "viem";
+import { useAccount, useReadContracts, useSwitchChain } from "wagmi";
+import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { socials, type TokenDefinition } from "@/data/tokens";
 
 type TokenPageProps = {
@@ -19,6 +22,10 @@ type MarketChartState = {
   loading: boolean;
   error: string | null;
 };
+
+const TOKEN_BALANCE_ABI = parseAbi([
+  "function balanceOf(address account) view returns (uint256)",
+]);
 
 const chartWidth = 720;
 const chartHeight = 260;
@@ -47,6 +54,39 @@ function formatChartDate(timestamp: number) {
     month: "short",
     day: "numeric",
   }).format(timestamp);
+}
+
+function formatTokenBalance(value: bigint) {
+  const formatted = Number.parseFloat(formatUnits(value, 18));
+
+  if (!Number.isFinite(formatted) || formatted <= 0) {
+    return "0.00";
+  }
+
+  if (formatted >= 1000) {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(formatted);
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  }).format(formatted);
+}
+
+function getCoinGeckoCoinId(token: TokenDefinition) {
+  const marketLink = token.links.find(
+    (link) => link.kind === "market" && link.label === "CoinGecko" && link.href.includes("/coins/"),
+  );
+
+  if (!marketLink) {
+    return null;
+  }
+
+  const match = marketLink.href.match(/\/coins\/([^/?#]+)/i);
+  return match?.[1] ?? null;
 }
 
 function buildChartPath(points: MarketChartPoint[]) {
@@ -133,15 +173,108 @@ async function addTokenToWallet(token: TokenDefinition) {
 }
 
 export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProps) {
+  const { address, chain, isConnected } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
   const currentIndex = tokens.findIndex((item) => item.slug === token.slug);
   const previousToken = currentIndex > 0 ? tokens[currentIndex - 1] : null;
   const nextToken = currentIndex < tokens.length - 1 ? tokens[currentIndex + 1] : null;
+  const targetChainId = Number.parseInt(token.wallet.chainId, 16);
+  const wrongTokenChain = Boolean(chain && chain.id !== targetChainId);
+  const autoSwitchAttemptRef = useRef<string | null>(null);
   const [contractCopied, setContractCopied] = useState(false);
+  const [spotPriceUsd, setSpotPriceUsd] = useState<number | null>(null);
   const [marketChart, setMarketChart] = useState<MarketChartState>({
     points: [],
     loading: Boolean(token.marketChartId),
     error: null,
   });
+
+  const { data: tokenBalanceData, isLoading: isBalanceLoading, isFetching: isBalanceFetching } = useReadContracts({
+    allowFailure: true,
+    contracts: address
+      ? [
+          {
+            abi: TOKEN_BALANCE_ABI,
+            address: token.contractAddress as `0x${string}`,
+            functionName: "balanceOf",
+            args: [address],
+            chainId: targetChainId,
+          },
+        ]
+      : [],
+    query: {
+      enabled: Boolean(address),
+    },
+  });
+
+  useEffect(() => {
+    async function handleSwitchChain() {
+      if (!switchChainAsync) {
+        return;
+      }
+
+      try {
+        await switchChainAsync({ chainId: targetChainId });
+      } catch (error) {
+        console.error(`Failed to switch wallet to ${token.chainName}.`, error);
+      }
+    }
+
+    if (!isConnected || !wrongTokenChain || !chain?.id) {
+      autoSwitchAttemptRef.current = null;
+      return;
+    }
+
+    const switchAttemptKey = `${chain.id}:${targetChainId}`;
+
+    if (autoSwitchAttemptRef.current === switchAttemptKey) {
+      return;
+    }
+
+    autoSwitchAttemptRef.current = switchAttemptKey;
+    void handleSwitchChain();
+  }, [chain?.id, isConnected, switchChainAsync, targetChainId, token.chainName, wrongTokenChain]);
+
+  useEffect(() => {
+    const nextCoinId = getCoinGeckoCoinId(token);
+
+    if (!nextCoinId) {
+      setSpotPriceUsd(null);
+      return;
+    }
+
+    const coinId = nextCoinId;
+
+    const controller = new AbortController();
+
+    async function loadSpotPrice() {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=${encodeURIComponent(coinId)}`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error(`CoinGecko request failed with ${response.status}`);
+        }
+
+        const payload = (await response.json()) as Record<string, { usd?: number }>;
+        const nextPrice = payload[coinId]?.usd;
+        setSpotPriceUsd(typeof nextPrice === "number" ? nextPrice : null);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        console.error(`Failed loading ${token.symbol} spot price`, error);
+        setSpotPriceUsd(null);
+      }
+    }
+
+    void loadSpotPrice();
+
+    return () => controller.abort();
+  }, [token]);
 
   useEffect(() => {
     if (!token.marketChartId) {
@@ -206,6 +339,25 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const { linePath, areaPath, minPrice, maxPrice } = buildChartPath(chartPoints);
   const midPrice = minPrice + (maxPrice - minPrice) / 2;
   const isPositiveChart = chartChange >= 0;
+  const tokenBalance =
+    tokenBalanceData?.[0]?.status === "success" && typeof tokenBalanceData[0].result === "bigint"
+      ? tokenBalanceData[0].result
+      : 0n;
+  const tokenBalanceDecimal = Number.parseFloat(formatUnits(tokenBalance, 18));
+  const tokenBalanceUsd =
+    Number.isFinite(tokenBalanceDecimal) && spotPriceUsd !== null ? tokenBalanceDecimal * spotPriceUsd : null;
+
+  async function handleSwitchChain() {
+    if (!switchChainAsync) {
+      return;
+    }
+
+    try {
+      await switchChainAsync({ chainId: targetChainId });
+    } catch (error) {
+      console.error(`Failed to switch wallet to ${token.chainName}.`, error);
+    }
+  }
 
   async function handleCopyContract() {
     try {
@@ -246,6 +398,41 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
             <div className="token-page__meta-card">
               <span>Farm</span>
               <strong>{token.farmSlug ? "Live on this page" : "Not yet live"}</strong>
+            </div>
+            <div className="token-page__meta-card token-page__meta-card--balance">
+              <span>Wallet Balance</span>
+              {address ? (
+                wrongTokenChain ? (
+                  <>
+                    <strong>Switch to {token.chainName}</strong>
+                    <button
+                      type="button"
+                      className="token-page__meta-action"
+                      onClick={() => void handleSwitchChain()}
+                    >
+                      Switch network
+                    </button>
+                  </>
+                ) : isBalanceLoading || isBalanceFetching ? (
+                  <>
+                    <strong>Checking...</strong>
+                  </>
+                ) : (
+                  <>
+                    <strong>{formatTokenBalance(tokenBalance)} {token.symbol}</strong>
+                    {tokenBalanceUsd !== null ? (
+                      <div className="token-page__meta-value">{formatCurrency(tokenBalanceUsd)}</div>
+                    ) : null}
+                  </>
+                )
+              ) : (
+                <>
+                  <strong>Connect wallet</strong>
+                  <div className="token-page__meta-wallet">
+                    <WalletConnectTrigger />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

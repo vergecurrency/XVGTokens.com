@@ -1626,7 +1626,7 @@ input {
 
 .token-page__meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-top: 1.75rem;
 }
@@ -1654,6 +1654,41 @@ input {
   font-size: 0.92rem;
   line-height: 1.6;
   word-break: break-word;
+}
+
+.token-page__meta-card--balance {
+  display: grid;
+  align-content: start;
+}
+
+.token-page__meta-value {
+  color: rgba(186, 230, 253, 0.86);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.token-page__meta-action {
+  justify-self: start;
+  margin-top: 0.55rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.12);
+  color: rgba(240, 249, 255, 0.94);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.token-page__meta-action:hover {
+  background: rgba(14, 165, 233, 0.18);
+}
+
+.token-page__meta-wallet {
+  margin-top: 0.6rem;
 }
 
 .token-page__contract-copy {
