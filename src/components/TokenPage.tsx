@@ -1,7 +1,7 @@
 import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, TrendingUp, Wallet } from "lucide-react";
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { formatUnits, parseAbi } from "viem";
-import { useAccount, useReadContracts, useSwitchChain } from "wagmi";
+import { useAccount, usePublicClient, useSwitchChain } from "wagmi";
 import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { socials, type TokenDefinition } from "@/data/tokens";
 
@@ -179,32 +179,17 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const previousToken = currentIndex > 0 ? tokens[currentIndex - 1] : null;
   const nextToken = currentIndex < tokens.length - 1 ? tokens[currentIndex + 1] : null;
   const targetChainId = Number.parseInt(token.wallet.chainId, 16);
+  const publicClient = usePublicClient({ chainId: targetChainId });
   const wrongTokenChain = Boolean(chain && chain.id !== targetChainId);
   const autoSwitchAttemptRef = useRef<string | null>(null);
   const [contractCopied, setContractCopied] = useState(false);
   const [spotPriceUsd, setSpotPriceUsd] = useState<number | null>(null);
+  const [tokenBalance, setTokenBalance] = useState<bigint | null>(null);
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [marketChart, setMarketChart] = useState<MarketChartState>({
     points: [],
     loading: Boolean(token.marketChartId),
     error: null,
-  });
-
-  const { data: tokenBalanceData, isLoading: isBalanceLoading, isFetching: isBalanceFetching } = useReadContracts({
-    allowFailure: true,
-    contracts: address
-      ? [
-          {
-            abi: TOKEN_BALANCE_ABI,
-            address: token.contractAddress as `0x${string}`,
-            functionName: "balanceOf",
-            args: [address],
-            chainId: targetChainId,
-          },
-        ]
-      : [],
-    query: {
-      enabled: Boolean(address),
-    },
   });
 
   useEffect(() => {
@@ -234,6 +219,50 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
     autoSwitchAttemptRef.current = switchAttemptKey;
     void handleSwitchChain();
   }, [chain?.id, isConnected, switchChainAsync, targetChainId, token.chainName, wrongTokenChain]);
+
+  useEffect(() => {
+    if (!address || wrongTokenChain || !publicClient) {
+      setTokenBalance(null);
+      setIsBalanceLoading(false);
+      return;
+    }
+
+    const account = address;
+    const client = publicClient;
+    let cancelled = false;
+
+    async function loadTokenBalance() {
+      setIsBalanceLoading(true);
+
+      try {
+        const balance = await client.readContract({
+          abi: TOKEN_BALANCE_ABI,
+          address: token.contractAddress as `0x${string}`,
+          functionName: "balanceOf",
+          args: [account],
+        });
+
+        if (!cancelled) {
+          setTokenBalance(typeof balance === "bigint" ? balance : 0n);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error(`Failed loading ${token.symbol} wallet balance`, error);
+          setTokenBalance(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsBalanceLoading(false);
+        }
+      }
+    }
+
+    void loadTokenBalance();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address, publicClient, token.contractAddress, token.symbol, wrongTokenChain]);
 
   useEffect(() => {
     const nextCoinId = getCoinGeckoCoinId(token);
@@ -339,11 +368,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const { linePath, areaPath, minPrice, maxPrice } = buildChartPath(chartPoints);
   const midPrice = minPrice + (maxPrice - minPrice) / 2;
   const isPositiveChart = chartChange >= 0;
-  const tokenBalance =
-    tokenBalanceData?.[0]?.status === "success" && typeof tokenBalanceData[0].result === "bigint"
-      ? tokenBalanceData[0].result
-      : 0n;
-  const tokenBalanceDecimal = Number.parseFloat(formatUnits(tokenBalance, 18));
+  const tokenBalanceDecimal = Number.parseFloat(formatUnits(tokenBalance ?? 0n, 18));
   const tokenBalanceUsd =
     Number.isFinite(tokenBalanceDecimal) && spotPriceUsd !== null ? tokenBalanceDecimal * spotPriceUsd : null;
 
@@ -413,13 +438,13 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
                       Switch network
                     </button>
                   </>
-                ) : isBalanceLoading || isBalanceFetching ? (
+                ) : isBalanceLoading ? (
                   <>
                     <strong>Checking...</strong>
                   </>
                 ) : (
                   <>
-                    <strong>{formatTokenBalance(tokenBalance)} {token.symbol}</strong>
+                    <strong>{formatTokenBalance(tokenBalance ?? 0n)} {token.symbol}</strong>
                     {tokenBalanceUsd !== null ? (
                       <div className="token-page__meta-value">{formatCurrency(tokenBalanceUsd)}</div>
                     ) : null}

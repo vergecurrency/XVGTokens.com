@@ -113,6 +113,7 @@ export default function App() {
         <PortfolioPage tokens={tokens} onNavigate={navigate} />
       ) : activeToken ? (
         <TokenPage
+          key={activeToken.slug}
           token={activeToken}
           tokens={tokens}
           onNavigate={navigate}
