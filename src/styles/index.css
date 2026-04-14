@@ -1523,11 +1523,23 @@ input {
 }
 
 .portfolio-row__balance {
+  display: grid;
+  gap: 0.18rem;
   color: rgba(248, 250, 252, 0.94);
   font-size: 0.95rem;
   font-weight: 700;
   text-align: right;
   white-space: nowrap;
+}
+
+.portfolio-row__balance strong {
+  font: inherit;
+}
+
+.portfolio-row__usd {
+  color: rgba(186, 230, 253, 0.82);
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .portfolio-row__loading {

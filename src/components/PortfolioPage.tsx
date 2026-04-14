@@ -1,4 +1,5 @@
 import { BarChart3, Wallet } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseAbi } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
@@ -12,6 +13,8 @@ type PortfolioPageProps = {
   tokens: TokenDefinition[];
   onNavigate: (path: string) => void;
 };
+
+type PriceMap = Record<string, number>;
 
 function formatBalance(value: bigint) {
   const formatted = Number.parseFloat(formatUnits(value, 18));
@@ -33,8 +36,84 @@ function formatBalance(value: bigint) {
   }).format(formatted);
 }
 
+function formatUsdValue(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: value >= 1 ? 2 : 4,
+    maximumFractionDigits: value >= 1 ? 2 : 6,
+  }).format(value);
+}
+
+function getCoinGeckoCoinId(token: TokenDefinition) {
+  const marketLink = token.links.find(
+    (link) => link.kind === "market" && link.label === "CoinGecko" && link.href.includes("/coins/"),
+  );
+
+  if (!marketLink) {
+    return null;
+  }
+
+  const match = marketLink.href.match(/\/coins\/([^/?#]+)/i);
+  return match?.[1] ?? null;
+}
+
 export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
   const { address, isConnected } = useAccount();
+  const [pricesByCoinId, setPricesByCoinId] = useState<PriceMap>({});
+
+  const tokenCoinIds = useMemo(
+    () =>
+      tokens.map((token) => ({
+        slug: token.slug,
+        coinId: getCoinGeckoCoinId(token),
+      })),
+    [tokens],
+  );
+
+  useEffect(() => {
+    const coinIds = Array.from(new Set(tokenCoinIds.map((entry) => entry.coinId).filter((value): value is string => Boolean(value))));
+
+    if (!coinIds.length) {
+      setPricesByCoinId({});
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function loadPrices() {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=${encodeURIComponent(coinIds.join(","))}`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error(`CoinGecko request failed with ${response.status}`);
+        }
+
+        const payload = (await response.json()) as Record<string, { usd?: number }>;
+        const nextPrices = Object.fromEntries(
+          Object.entries(payload)
+            .map(([coinId, value]) => [coinId, value?.usd])
+            .filter((entry): entry is [string, number] => Number.isFinite(entry[1])),
+        );
+
+        setPricesByCoinId(nextPrices);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        console.error("Failed loading portfolio USD prices", error);
+        setPricesByCoinId({});
+      }
+    }
+
+    void loadPrices();
+
+    return () => controller.abort();
+  }, [tokenCoinIds]);
 
   const { data, isLoading, isFetching } = useReadContracts({
     allowFailure: true,
@@ -82,6 +161,13 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
             balanceResult?.status === "success" && typeof balanceResult.result === "bigint"
               ? balanceResult.result
               : 0n;
+          const coinId = tokenCoinIds[index]?.coinId;
+          const tokenPriceUsd = coinId ? pricesByCoinId[coinId] : undefined;
+          const balanceDecimal = Number.parseFloat(formatUnits(balanceValue, 18));
+          const usdValue =
+            Number.isFinite(balanceDecimal) && tokenPriceUsd !== undefined
+              ? balanceDecimal * tokenPriceUsd
+              : null;
 
           return (
             <button
@@ -102,10 +188,16 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
                   isLoading || isFetching ? (
                     <span className="portfolio-row__loading">Checking...</span>
                   ) : (
-                    `${formatBalance(balanceValue)} ${token.symbol}`
+                    <>
+                      <strong>{formatBalance(balanceValue)} {token.symbol}</strong>
+                      {usdValue !== null ? <span className="portfolio-row__usd">{formatUsdValue(usdValue)}</span> : null}
+                    </>
                   )
                 ) : (
-                  `0.00 ${token.symbol}`
+                  <>
+                    <strong>0.00 {token.symbol}</strong>
+                    <span className="portfolio-row__usd">$0.00</span>
+                  </>
                 )}
               </div>
             </button>
