@@ -7,6 +7,7 @@ import {
   uniswapWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import { defineChain } from "viem";
 import { http } from "wagmi";
 import {
   arbitrum as arbitrumChain,
@@ -40,7 +41,29 @@ function getRpcUrlEnv(name: string, fallback: string) {
   return normalized.length > 0 ? normalized : fallback;
 }
 
+const citreaChain = defineChain({
+  id: 4114,
+  name: "Citrea Mainnet",
+  nativeCurrency: {
+    name: "Citrea Bitcoin",
+    symbol: "cBTC",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.mainnet.citrea.xyz"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Citrea Explorer",
+      url: "https://explorer.mainnet.citrea.xyz",
+    },
+  },
+});
+
 const chains = [
+  citreaChain,
   baseChain,
   bscChain,
   zksyncChain,

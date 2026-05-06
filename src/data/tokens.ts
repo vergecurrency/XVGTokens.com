@@ -19,6 +19,7 @@ type WalletConfig = {
 
 export type TokenSlug =
   | "xvgzke"
+  | "xvgcbtc"
   | "xvgbase"
   | "xvgopt"
   | "xvgson"
@@ -59,6 +60,7 @@ export const sharedContractAddress = "0xe061aa40be525a13296cb4bf69f513242349d708
 
 export const tokenOrder: TokenSlug[] = [
   "xvgzke",
+  "xvgcbtc",
   "xvgbase",
   "xvgopt",
   "xvgson",
@@ -101,6 +103,28 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       rpcUrl: "https://mainnet.era.zksync.io",
       nativeSymbol: "ETH",
       explorerUrl: "https://era.zksync.io",
+    },
+  },
+  xvgcbtc: {
+    slug: "xvgcbtc",
+    symbol: "XVGCBTC",
+    chainName: "Citrea",
+    chainMenuLabel: "Citrea",
+    contractAddress: sharedContractAddress,
+    icon: "/images/xvgcbtc.png",
+    glow: "amber",
+    landingGlow: "#f7931a",
+    description:
+      "XVGCBTC extends Verge onto Citrea, a Bitcoin-secured zkEVM network designed to bring EVM apps and low-fee execution closer to the Bitcoin ecosystem.",
+    links: [
+      { label: "View Explorer", href: "https://explorer.mainnet.citrea.xyz/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
+    ],
+    wallet: {
+      networkName: "Citrea Mainnet",
+      chainId: "0x1012",
+      rpcUrl: "https://rpc.mainnet.citrea.xyz",
+      nativeSymbol: "cBTC",
+      explorerUrl: "https://explorer.mainnet.citrea.xyz",
     },
   },
   xvgbase: {
