@@ -136,19 +136,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       tokenSlug: "xvgzke",
     }),
     createAsset("xvgzke", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvgzke", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
-    createAsset("xvgzke", {
       symbol: "ZK",
       identifier: "0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E",
       decimals: 18,
@@ -170,12 +157,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "eth",
       isNativeLike: true,
     }),
-    createAsset("xvgbase", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvgopt: [
     createAsset("xvgopt", {
@@ -184,19 +165,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvgopt",
-    }),
-    createAsset("xvgopt", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvgopt", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvgopt", {
       symbol: "OP",
@@ -220,12 +188,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgson", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvgarb: [
     createAsset("xvgarb", {
@@ -234,19 +196,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvgarb",
-    }),
-    createAsset("xvgarb", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvgarb", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvgarb", {
       symbol: "ARB",
@@ -270,12 +219,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgava", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvgpoly: [
     createAsset("xvgpoly", {
@@ -292,12 +235,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgpoly", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvglin: [
     createAsset("xvglin", {
@@ -306,19 +243,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvglin",
-    }),
-    createAsset("xvglin", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvglin", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
   ],
   xvgbsc: [
@@ -336,12 +260,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgbsc", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 18,
-      kind: "stable",
-    }),
   ],
   xvgmnt: [
     createAsset("xvgmnt", {
@@ -357,12 +275,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       isNativeLike: true,
-    }),
-    createAsset("xvgmnt", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
   ],
   xvgcro: [
@@ -380,12 +292,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgcro", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvguni: [
     createAsset("xvguni", {
@@ -394,19 +300,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvguni",
-    }),
-    createAsset("xvguni", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvguni", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvguni", {
       symbol: "UNI",
@@ -422,19 +315,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvgblast",
-    }),
-    createAsset("xvgblast", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvgblast", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvgblast", {
       symbol: "BLAST",
@@ -459,12 +339,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       isNativeLike: true,
     }),
     createAsset("xvggnosis", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
-    createAsset("xvggnosis", {
       symbol: "GNO",
       identifier: "0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb",
       decimals: 18,
@@ -486,12 +360,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "native",
       isNativeLike: true,
     }),
-    createAsset("xvgbera", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
-    }),
   ],
   xvgworld: [
     createAsset("xvgworld", {
@@ -500,19 +368,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvgworld",
-    }),
-    createAsset("xvgworld", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvgworld", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvgworld", {
       symbol: "WLD",
@@ -528,19 +383,6 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "xvg",
       tokenSlug: "xvghemi",
-    }),
-    createAsset("xvghemi", {
-      symbol: "ETH",
-      identifier: "ETH",
-      decimals: 18,
-      kind: "eth",
-      isNativeLike: true,
-    }),
-    createAsset("xvghemi", {
-      symbol: "USDC",
-      identifier: "USDC",
-      decimals: 6,
-      kind: "stable",
     }),
     createAsset("xvghemi", {
       symbol: "HEMI",
