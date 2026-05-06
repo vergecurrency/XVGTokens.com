@@ -29,6 +29,17 @@ const COLORS = {
   actionStroke: "#ffd166",
 };
 
+const CONTROL_LAYOUT = {
+  padSize: 42,
+  padGap: 8,
+  dPadCenterX: 126,
+  actionRadius: 24,
+  actionButtonAOffsetX: 160,
+  actionButtonAOffsetY: 66,
+  actionButtonBOffsetX: 110,
+  actionButtonBOffsetY: 106,
+};
+
 const SPAWN_POSITION = {
   row: 2,
   column: 4,
@@ -552,11 +563,9 @@ const drawCircleButton = (drawingPanel, centerX, centerY, radius, fillColor, str
 };
 
 const drawControlPanel = (drawingPanel, canvasWidth, canvasHeight) => {
-  const padSize = 42;
-  const padGap = 8;
-  const dPadCenterX = 126;
+  const { padSize, padGap, dPadCenterX, actionRadius, actionButtonAOffsetX, actionButtonAOffsetY, actionButtonBOffsetX, actionButtonBOffsetY } =
+    CONTROL_LAYOUT;
   const dPadCenterY = canvasHeight - 86;
-  const actionRadius = 24;
   const directionalButtons = [
     { direction: "up", x: dPadCenterX, y: dPadCenterY - (padSize + padGap) },
     { direction: "left", x: dPadCenterX - (padSize + padGap), y: dPadCenterY },
@@ -586,13 +595,67 @@ const drawControlPanel = (drawingPanel, canvasWidth, canvasHeight) => {
     COLORS.dPadFill,
     COLORS.dPadStroke,
   );
-  drawCircleButton(drawingPanel, canvasWidth - 160, canvasHeight - 66, actionRadius, COLORS.actionFill, COLORS.actionStroke, "A");
-  drawCircleButton(drawingPanel, canvasWidth - 110, canvasHeight - 106, actionRadius, COLORS.actionFill, COLORS.actionStroke, "B");
+  drawCircleButton(
+    drawingPanel,
+    canvasWidth - actionButtonAOffsetX,
+    canvasHeight - actionButtonAOffsetY,
+    actionRadius,
+    COLORS.actionFill,
+    COLORS.actionStroke,
+    "A",
+  );
+  drawCircleButton(
+    drawingPanel,
+    canvasWidth - actionButtonBOffsetX,
+    canvasHeight - actionButtonBOffsetY,
+    actionRadius,
+    COLORS.actionFill,
+    COLORS.actionStroke,
+    "B",
+  );
   drawingPanel.textAlign = "start";
   drawingPanel.textBaseline = "alphabetic";
 };
 
-function TetrisCanvas({ gameState }) {
+const getCanvasAction = (canvasX, canvasY, canvasWidth, canvasHeight) => {
+  const { padSize, padGap, dPadCenterX, actionRadius, actionButtonAOffsetX, actionButtonAOffsetY, actionButtonBOffsetX, actionButtonBOffsetY } =
+    CONTROL_LAYOUT;
+  const dPadCenterY = canvasHeight - 86;
+  const halfPad = padSize / 2;
+  const dpadButtons = [
+    { action: "up", centerX: dPadCenterX, centerY: dPadCenterY - (padSize + padGap) },
+    { action: "left", centerX: dPadCenterX - (padSize + padGap), centerY: dPadCenterY },
+    { action: "right", centerX: dPadCenterX + (padSize + padGap), centerY: dPadCenterY },
+    { action: "down", centerX: dPadCenterX, centerY: dPadCenterY + (padSize + padGap) },
+  ];
+
+  for (const button of dpadButtons) {
+    if (
+      canvasX >= button.centerX - halfPad &&
+      canvasX <= button.centerX + halfPad &&
+      canvasY >= button.centerY - halfPad &&
+      canvasY <= button.centerY + halfPad
+    ) {
+      return button.action;
+    }
+  }
+
+  const actionButtons = [
+    { action: "rotate", centerX: canvasWidth - actionButtonAOffsetX, centerY: canvasHeight - actionButtonAOffsetY },
+    { action: "drop", centerX: canvasWidth - actionButtonBOffsetX, centerY: canvasHeight - actionButtonBOffsetY },
+  ];
+
+  for (const button of actionButtons) {
+    const distance = Math.hypot(canvasX - button.centerX, canvasY - button.centerY);
+    if (distance <= actionRadius) {
+      return button.action;
+    }
+  }
+
+  return null;
+};
+
+function TetrisCanvas({ gameState, onControlPress, onControlRelease }) {
   const canvasRef = useRef(null);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -649,23 +712,46 @@ function TetrisCanvas({ gameState }) {
     drawControlPanel(drawingPanel, canvasWidth, canvasHeight);
   }, [gameState]);
 
-  return <canvas ref={canvasRef} width={551} height={640} />;
+  const handlePointerDown = (event) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const bounds = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / bounds.width;
+    const scaleY = canvas.height / bounds.height;
+    const canvasX = (event.clientX - bounds.left) * scaleX;
+    const canvasY = (event.clientY - bounds.top) * scaleY;
+    const action = getCanvasAction(canvasX, canvasY, canvas.width, canvas.height);
+    if (!action) return;
+    event.preventDefault();
+    onControlPress(action);
+  };
+
+  const handlePointerUp = () => {
+    onControlRelease();
+  };
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={551}
+      height={640}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    />
+  );
 }
 
 export function TetrisGame() {
   const [gameState, setGameState] = useState(() => createInitialGameState());
   const [frameRate, setFrameRate] = useState(TIMINGS.defaultFrameRate);
   const gameStateRef = useRef(gameState);
-  const frameRateRef = useRef(frameRate);
   const hardDropPressedRef = useRef(false);
 
   useEffect(() => {
     gameStateRef.current = gameState;
   }, [gameState]);
-
-  useEffect(() => {
-    frameRateRef.current = frameRate;
-  }, [frameRate]);
 
   useEffect(() => {
     if (gameState.isStopped) return;
@@ -720,6 +806,44 @@ export function TetrisGame() {
     };
   }, []);
 
+  const commitGameState = (nextGameState) => {
+    gameStateRef.current = nextGameState;
+    setGameState(nextGameState);
+  };
+
+  const handleGameAction = (action) => {
+    if (gameStateRef.current.isStopped) return;
+    let nextGameState = gameStateRef.current;
+
+    if (action === "drop") {
+      nextGameState = hardDropGame(nextGameState);
+    } else if (action === "down") {
+      setFrameRate(TIMINGS.softDropFrameRate);
+      nextGameState = tickGame(nextGameState);
+    } else if ((action === "up" || action === "rotate") && canRotate(nextGameState.currentTetromino, nextGameState.landedGrid)) {
+      const currentTetromino = cloneTetromino(nextGameState.currentTetromino);
+      currentTetromino.rotate();
+      nextGameState = { ...nextGameState, currentTetromino };
+    } else if (action === "left" && canMoveHorizontally(nextGameState.currentTetromino, nextGameState.landedGrid, "left")) {
+      const currentTetromino = cloneTetromino(nextGameState.currentTetromino);
+      currentTetromino.moveLeft();
+      nextGameState = { ...nextGameState, currentTetromino };
+    } else if (
+      action === "right" &&
+      canMoveHorizontally(nextGameState.currentTetromino, nextGameState.landedGrid, "right")
+    ) {
+      const currentTetromino = cloneTetromino(nextGameState.currentTetromino);
+      currentTetromino.moveRight();
+      nextGameState = { ...nextGameState, currentTetromino };
+    }
+
+    commitGameState(nextGameState);
+  };
+
+  const handleSoftDropEnd = () => {
+    setFrameRate(TIMINGS.defaultFrameRate);
+  };
+
   const handleRestart = () => {
     hardDropPressedRef.current = false;
     setFrameRate(TIMINGS.defaultFrameRate);
@@ -735,7 +859,7 @@ export function TetrisGame() {
           <p className="tetris-local__status">
             {gameState.isStopped
               ? "Game over. Start a new run."
-              : "Use arrows to move and rotate. Press space to hard drop."}
+              : "Use arrows or tap controls to move and rotate. Press space or tap Drop to hard drop."}
           </p>
         </div>
         <button className="tetris-local__restart" type="button" onClick={handleRestart}>
@@ -743,7 +867,11 @@ export function TetrisGame() {
         </button>
       </header>
       <div className="tetris-local__canvas-shell">
-        <TetrisCanvas gameState={gameState} />
+        <TetrisCanvas
+          gameState={gameState}
+          onControlPress={handleGameAction}
+          onControlRelease={handleSoftDropEnd}
+        />
       </div>
     </section>
   );

@@ -1639,6 +1639,18 @@ input {
   display: block;
   margin: 0 auto;
   max-width: 100%;
+  touch-action: manipulation;
+}
+
+@media (max-width: 720px) {
+  .tetris-local__hud {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tetris-local__restart {
+    width: 100%;
+  }
 }
 
 .portfolio-hero__actions {
