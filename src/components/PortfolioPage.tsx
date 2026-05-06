@@ -16,6 +16,15 @@ type PortfolioPageProps = {
 
 type PriceMap = Record<string, number>;
 
+const portfolioRpcFallbacks: Partial<Record<TokenDefinition["slug"], string[]>> = {
+  xvgpoly: ["https://polygon-bor-rpc.publicnode.com"],
+  xvgbsc: [
+    "https://bsc-dataseed.bnbchain.org",
+    "https://bsc-dataseed1.bnbchain.org",
+    "https://bsc-dataseed.binance.org",
+  ],
+};
+
 function formatBalance(value: bigint) {
   const formatted = Number.parseFloat(formatUnits(value, 18));
 
@@ -56,6 +65,12 @@ function getCoinGeckoCoinId(token: TokenDefinition) {
 
   const match = marketLink.href.match(/\/coins\/([^/?#]+)/i);
   return match?.[1] ?? null;
+}
+
+function getPortfolioRpcUrls(token: TokenDefinition) {
+  return Array.from(
+    new Set([token.wallet.rpcUrl, ...(portfolioRpcFallbacks[token.slug] ?? [])].filter(Boolean)),
+  );
 }
 
 export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
@@ -133,22 +148,34 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
       try {
         const entries = await Promise.all(
           tokens.map(async (token) => {
-            const client = createPublicClient({
-              transport: http(token.wallet.rpcUrl),
-              batch: {
-                multicall: false,
-              },
-            });
-
             try {
-              const balance = await client.readContract({
-                abi: PORTFOLIO_BALANCE_ABI,
-                address: token.contractAddress as `0x${string}`,
-                functionName: "balanceOf",
-                args: [account],
-              });
+              let lastError: unknown = null;
 
-              return [token.slug, typeof balance === "bigint" ? balance : 0n] as const;
+              for (const rpcUrl of getPortfolioRpcUrls(token)) {
+                const client = createPublicClient({
+                  transport: http(rpcUrl, {
+                    timeout: 12_000,
+                  }),
+                  batch: {
+                    multicall: false,
+                  },
+                });
+
+                try {
+                  const balance = await client.readContract({
+                    abi: PORTFOLIO_BALANCE_ABI,
+                    address: token.contractAddress as `0x${string}`,
+                    functionName: "balanceOf",
+                    args: [account],
+                  });
+
+                  return [token.slug, typeof balance === "bigint" ? balance : 0n] as const;
+                } catch (error) {
+                  lastError = error;
+                }
+              }
+
+              throw lastError;
             } catch (error) {
               console.error(`Failed loading ${token.symbol} portfolio balance`, error);
               return [token.slug, 0n] as const;
