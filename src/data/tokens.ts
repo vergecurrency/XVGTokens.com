@@ -296,7 +296,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     wallet: {
       networkName: "Binance Smart Chain",
       chainId: "0x38",
-      rpcUrl: "https://bsc-dataseed.binance.org",
+      rpcUrl: "https://bsc-rpc.publicnode.com",
       nativeSymbol: "BNB",
       explorerUrl: "https://bscscan.com",
     },
