@@ -4,6 +4,7 @@ import { GamesPage } from "@/components/GamesPage";
 import { HomePage } from "@/components/HomePage";
 import { PortfolioPage } from "@/components/PortfolioPage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SwapPage } from "@/components/SwapPage";
 import { TetrisPage } from "@/components/TetrisPage";
 import { TokenPage } from "@/components/TokenPage";
 import { FarmProvider } from "@/lib/farm-context";
@@ -12,6 +13,7 @@ import { tokenOrder, tokensBySlug, type TokenSlug } from "@/data/tokens";
 
 const HOME_ROUTE = "/";
 const PORTFOLIO_ROUTE = "/portfolio";
+const SWAP_ROUTE = "/swap";
 const GAMES_ROUTE = "/games";
 const TETRIS_ROUTE = "/games/tetris";
 
@@ -21,6 +23,7 @@ function normalizePath(pathname: string) {
   if (
     normalized === HOME_ROUTE ||
     normalized === PORTFOLIO_ROUTE ||
+    normalized === SWAP_ROUTE ||
     normalized === GAMES_ROUTE ||
     normalized === TETRIS_ROUTE
   ) {
@@ -35,6 +38,7 @@ function getTokenSlugFromPath(pathname: string): TokenSlug | null {
   if (
     pathname === HOME_ROUTE ||
     pathname === PORTFOLIO_ROUTE ||
+    pathname === SWAP_ROUTE ||
     pathname === GAMES_ROUTE ||
     pathname === TETRIS_ROUTE
   ) {
@@ -61,6 +65,8 @@ export default function App() {
     document.documentElement.dataset.view =
       pathname === PORTFOLIO_ROUTE
         ? "portfolio"
+        : pathname === SWAP_ROUTE
+          ? "swap"
         : pathname === GAMES_ROUTE || pathname === TETRIS_ROUTE
           ? "games"
           : activeTokenSlug
@@ -69,6 +75,8 @@ export default function App() {
     document.body.dataset.view =
       pathname === PORTFOLIO_ROUTE
         ? "portfolio"
+        : pathname === SWAP_ROUTE
+          ? "swap"
         : pathname === GAMES_ROUTE || pathname === TETRIS_ROUTE
           ? "games"
           : activeTokenSlug
@@ -123,6 +131,7 @@ export default function App() {
   const activeToken = activeTokenSlug ? tokensBySlug[activeTokenSlug] : null;
   const activeFarmSlug = activeToken?.farmSlug ?? null;
   const isPortfolioRoute = pathname === PORTFOLIO_ROUTE;
+  const isSwapRoute = pathname === SWAP_ROUTE;
   const isGamesRoute = pathname === GAMES_ROUTE;
   const isTetrisRoute = pathname === TETRIS_ROUTE;
 
@@ -135,6 +144,8 @@ export default function App() {
       />
       {isPortfolioRoute ? (
         <PortfolioPage tokens={tokens} onNavigate={navigate} />
+      ) : isSwapRoute ? (
+        <SwapPage onNavigate={navigate} />
       ) : isTetrisRoute ? (
         <TetrisPage onNavigate={navigate} />
       ) : isGamesRoute ? (

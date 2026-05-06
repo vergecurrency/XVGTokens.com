@@ -17,6 +17,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
   const activeToken = tokens.find((token) => `/${token.slug}` === currentPath) ?? null;
   const farmTokens = tokens.filter((token) => token.farmSlug);
   const isPortfolioRoute = currentPath === "/portfolio";
+  const isSwapRoute = currentPath === "/swap";
   const isGamesRoute = currentPath === "/games";
 
   useEffect(() => {
@@ -90,6 +91,14 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               </div>
             ) : null}
           </div>
+          <button
+            type="button"
+            className="site-nav__link is-disabled"
+            disabled
+            aria-disabled="true"
+          >
+            Swap
+          </button>
           <button
             type="button"
             className={`site-nav__link ${isGamesRoute ? "is-active" : ""}`}
