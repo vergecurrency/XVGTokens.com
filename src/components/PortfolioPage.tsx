@@ -1,11 +1,9 @@
 import { BarChart3, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { formatUnits, parseAbi } from "viem";
+import { createPublicClient, formatUnits, http, parseAbi } from "viem";
 import { useAccount } from "wagmi";
-import { getPublicClient } from "wagmi/actions";
 import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { type TokenDefinition } from "@/data/tokens";
-import { wagmiConfig } from "@/lib/wagmi";
 
 const PORTFOLIO_BALANCE_ABI = parseAbi([
   "function balanceOf(address account) view returns (uint256)",
@@ -135,12 +133,12 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
       try {
         const entries = await Promise.all(
           tokens.map(async (token) => {
-            const chainId = Number.parseInt(token.wallet.chainId, 16);
-            const client = getPublicClient(wagmiConfig, { chainId: chainId as never });
-
-            if (!client) {
-              return [token.slug, 0n] as const;
-            }
+            const client = createPublicClient({
+              transport: http(token.wallet.rpcUrl),
+              batch: {
+                multicall: false,
+              },
+            });
 
             try {
               const balance = await client.readContract({

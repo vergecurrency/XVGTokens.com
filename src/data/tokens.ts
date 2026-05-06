@@ -248,7 +248,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     wallet: {
       networkName: "Polygon Mainnet",
       chainId: "0x89",
-      rpcUrl: "https://polygon-rpc.com",
+      rpcUrl: "https://polygon-bor-rpc.publicnode.com",
       nativeSymbol: "MATIC",
       explorerUrl: "https://polygonscan.com",
     },
