@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { FarmDashboard } from "@/components/FarmDashboard";
+import { GamesPage } from "@/components/GamesPage";
 import { HomePage } from "@/components/HomePage";
 import { PortfolioPage } from "@/components/PortfolioPage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { TetrisPage } from "@/components/TetrisPage";
 import { TokenPage } from "@/components/TokenPage";
 import { FarmProvider } from "@/lib/farm-context";
 import { farmConfigs, type FarmSlug } from "@/lib/farms";
@@ -10,16 +12,19 @@ import { tokenOrder, tokensBySlug, type TokenSlug } from "@/data/tokens";
 
 const HOME_ROUTE = "/";
 const PORTFOLIO_ROUTE = "/portfolio";
+const GAMES_ROUTE = "/games";
+const TETRIS_ROUTE = "/games/tetris";
 
 function normalizePath(pathname: string) {
   const normalized = pathname.replace(/\/+$/, "") || HOME_ROUTE;
 
-  if (normalized === HOME_ROUTE || normalized === PORTFOLIO_ROUTE) {
-    if (normalized === PORTFOLIO_ROUTE) {
-      return PORTFOLIO_ROUTE;
-    }
-
-    return HOME_ROUTE;
+  if (
+    normalized === HOME_ROUTE ||
+    normalized === PORTFOLIO_ROUTE ||
+    normalized === GAMES_ROUTE ||
+    normalized === TETRIS_ROUTE
+  ) {
+    return normalized;
   }
   const slug = normalized.replace(/^\/+/, "") as TokenSlug;
 
@@ -27,7 +32,12 @@ function normalizePath(pathname: string) {
 }
 
 function getTokenSlugFromPath(pathname: string): TokenSlug | null {
-  if (pathname === HOME_ROUTE || pathname === PORTFOLIO_ROUTE) {
+  if (
+    pathname === HOME_ROUTE ||
+    pathname === PORTFOLIO_ROUTE ||
+    pathname === GAMES_ROUTE ||
+    pathname === TETRIS_ROUTE
+  ) {
     return null;
   }
 
@@ -49,9 +59,21 @@ export default function App() {
     document.documentElement.dataset.farmTheme = activeFarmSlug ?? "home";
     document.body.dataset.farmTheme = activeFarmSlug ?? "home";
     document.documentElement.dataset.view =
-      pathname === PORTFOLIO_ROUTE ? "portfolio" : activeTokenSlug ? "token" : "home";
+      pathname === PORTFOLIO_ROUTE
+        ? "portfolio"
+        : pathname === GAMES_ROUTE || pathname === TETRIS_ROUTE
+          ? "games"
+          : activeTokenSlug
+            ? "token"
+            : "home";
     document.body.dataset.view =
-      pathname === PORTFOLIO_ROUTE ? "portfolio" : activeTokenSlug ? "token" : "home";
+      pathname === PORTFOLIO_ROUTE
+        ? "portfolio"
+        : pathname === GAMES_ROUTE || pathname === TETRIS_ROUTE
+          ? "games"
+          : activeTokenSlug
+            ? "token"
+            : "home";
   }, [pathname]);
 
   useEffect(() => {
@@ -101,6 +123,8 @@ export default function App() {
   const activeToken = activeTokenSlug ? tokensBySlug[activeTokenSlug] : null;
   const activeFarmSlug = activeToken?.farmSlug ?? null;
   const isPortfolioRoute = pathname === PORTFOLIO_ROUTE;
+  const isGamesRoute = pathname === GAMES_ROUTE;
+  const isTetrisRoute = pathname === TETRIS_ROUTE;
 
   return (
     <>
@@ -111,6 +135,10 @@ export default function App() {
       />
       {isPortfolioRoute ? (
         <PortfolioPage tokens={tokens} onNavigate={navigate} />
+      ) : isTetrisRoute ? (
+        <TetrisPage onNavigate={navigate} />
+      ) : isGamesRoute ? (
+        <GamesPage onNavigate={navigate} />
       ) : activeToken ? (
         <TokenPage
           key={activeToken.slug}

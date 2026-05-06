@@ -17,6 +17,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
   const activeToken = tokens.find((token) => `/${token.slug}` === currentPath) ?? null;
   const farmTokens = tokens.filter((token) => token.farmSlug);
   const isPortfolioRoute = currentPath === "/portfolio";
+  const isGamesRoute = currentPath === "/games";
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -89,6 +90,13 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               </div>
             ) : null}
           </div>
+          <button
+            type="button"
+            className={`site-nav__link ${isGamesRoute ? "is-active" : ""}`}
+            onClick={() => onNavigate("/games")}
+          >
+            Games
+          </button>
           <div className="site-nav__menu" ref={chainMenuRef}>
             <button
               type="button"

@@ -1390,8 +1390,18 @@ input {
   padding: 8rem 0 3rem;
 }
 
+.games-page {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, calc(100vw - 2rem));
+  min-height: calc(var(--app-height, 1vh) * 100);
+  margin: 0 auto;
+  padding: 8rem 0 3rem;
+}
+
 .portfolio-hero,
-.portfolio-list {
+.portfolio-list,
+.games-hero {
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 2rem;
   background: rgba(2, 6, 23, 0.62);
@@ -1404,6 +1414,14 @@ input {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.5rem;
+  padding: 2rem;
+}
+
+.games-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-height: 16rem;
   padding: 2rem;
 }
 
@@ -1431,11 +1449,196 @@ input {
   line-height: 0.98;
 }
 
+.games-hero__title {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
 .portfolio-hero__body {
   margin: 0;
   color: rgba(226, 232, 240, 0.82);
   font-size: 1rem;
   line-height: 1.8;
+}
+
+.games-hero__status {
+  position: absolute;
+  top: 1.35rem;
+  right: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  border-radius: 999px;
+  background: rgba(127, 29, 29, 0.22);
+  color: rgba(254, 226, 226, 0.96);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.games-hero__status-light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: #ef4444;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.72);
+  animation: games-status-pulse 1.4s infinite;
+}
+
+@keyframes games-status-pulse {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.72);
+  }
+
+  70% {
+    opacity: 0.65;
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.games-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.games-tab {
+  padding: 0.8rem 1.15rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(226, 232, 240, 0.84);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.games-tab--active {
+  border-color: rgba(125, 211, 252, 0.24);
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.16), rgba(56, 189, 248, 0.06)),
+    rgba(56, 189, 248, 0.08);
+  color: #fff;
+}
+
+.games-panel {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 2rem;
+  background: rgba(2, 6, 23, 0.62);
+  box-shadow: 0 24px 80px rgba(2, 6, 23, 0.36);
+  backdrop-filter: blur(20px);
+}
+
+.games-panel--tetris {
+  margin-top: 0;
+}
+
+.games-panel__frame {
+  width: 100%;
+  min-height: 78vh;
+  border: 0;
+  border-radius: 1.5rem;
+  background: #020617;
+}
+
+.games-panel__frame--tall {
+  min-height: 88vh;
+}
+
+.games-back-button {
+  width: fit-content;
+  padding: 0.8rem 1.05rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(226, 232, 240, 0.92);
+  cursor: pointer;
+}
+
+.games-back-button:hover {
+  border-color: rgba(125, 211, 252, 0.24);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.tetris-local {
+  display: grid;
+  gap: 1rem;
+}
+
+.tetris-local__hud {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tetris-local__copy {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tetris-local__copy h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.tetris-local__eyebrow {
+  margin: 0;
+  color: rgba(125, 211, 252, 0.92);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.tetris-local__status {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.84);
+}
+
+.tetris-local__restart {
+  width: fit-content;
+  padding: 0.8rem 1.05rem;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #fff;
+  cursor: pointer;
+}
+
+.tetris-local__canvas-shell {
+  overflow: auto;
+  border-radius: 1.5rem;
+}
+
+.tetris-local canvas {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 .portfolio-hero__actions {
@@ -2157,10 +2360,39 @@ input {
     padding-top: 9rem;
   }
 
+  .games-page {
+    padding-top: 9rem;
+  }
+
   .portfolio-hero,
-  .portfolio-list {
+  .portfolio-list,
+  .games-hero {
     padding: 1.25rem;
     border-radius: 1.5rem;
+  }
+
+  .games-panel {
+    padding: 0.8rem;
+    border-radius: 1.5rem;
+  }
+
+  .games-panel__frame {
+    min-height: 68vh;
+    border-radius: 1.1rem;
+  }
+
+  .games-panel__frame--tall {
+    min-height: 78vh;
+  }
+
+  .games-hero__status {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .tetris-local__hud {
+    align-items: start;
+    flex-direction: column;
   }
 
   .portfolio-row {
