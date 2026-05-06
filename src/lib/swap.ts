@@ -71,6 +71,8 @@ export type ZeroExQuote = {
 export const ZEROX_API_BASE_URL = "https://api.0x.org";
 export const ZEROX_API_KEY_ENV = "VITE_ZEROX_API_KEY";
 export const ZEROX_PROXY_URL_ENV = "VITE_ZEROX_PROXY_URL";
+export const ZEROX_FEE_BPS_ENV = "VITE_ZEROX_FEE_BPS";
+export const ZEROX_FEE_RECIPIENT_ENV = "VITE_ZEROX_FEE_RECIPIENT";
 
 const supportedSwapSlugs: TokenSlug[] = [
   "xvgzke",

@@ -15,6 +15,8 @@ import {
   swapChains,
   type SwapAsset,
   type ZeroExQuote,
+  ZEROX_FEE_BPS_ENV,
+  ZEROX_FEE_RECIPIENT_ENV,
   ZEROX_PROXY_URL_ENV,
 } from "@/lib/swap";
 
@@ -55,6 +57,27 @@ async function fetchZeroExJson<T>(path: "price" | "quote", params: URLSearchPara
   }
 
   return payload as T;
+}
+
+function appendIntegratorFeeParams(params: URLSearchParams, sellToken: string) {
+  const feeBps = import.meta.env.VITE_ZEROX_FEE_BPS?.trim();
+  const feeRecipient = import.meta.env.VITE_ZEROX_FEE_RECIPIENT?.trim();
+
+  if (!feeBps && !feeRecipient) {
+    return;
+  }
+
+  if (!feeBps) {
+    throw new Error(`Missing ${ZEROX_FEE_BPS_ENV} in the frontend environment.`);
+  }
+
+  if (!feeRecipient) {
+    throw new Error(`Missing ${ZEROX_FEE_RECIPIENT_ENV} in the frontend environment.`);
+  }
+
+  params.set("swapFeeBps", feeBps);
+  params.set("swapFeeRecipient", feeRecipient);
+  params.set("swapFeeToken", sellToken);
 }
 
 export function SwapPage({ onNavigate }: SwapPageProps) {
@@ -212,6 +235,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
         sellAmount: parsedSellAmount.toString(),
         taker: address,
       });
+      appendIntegratorFeeParams(params, sellAsset.identifier);
 
       const nextQuote = await fetchZeroExJson<ZeroExQuote>("price", params);
       setQuote(nextQuote);
@@ -283,6 +307,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
         sellAmount: parsedSellAmount.toString(),
         taker: address,
       });
+      appendIntegratorFeeParams(params, sellAsset.identifier);
 
       const firmQuote = await fetchZeroExJson<ZeroExQuote>("quote", params);
 
