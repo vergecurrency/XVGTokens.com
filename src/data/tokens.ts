@@ -95,6 +95,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     links: [
       { label: "View Explorer", href: "https://era.zksync.network/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
       { label: "CoinGecko", href: "https://www.coingecko.com/en/coins/xvgzke", kind: "market" },
+      { label: "Phemex", href: "https://phemex.com/price/xvgzke", kind: "market" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/zksync/pair-explorer/0x1466d87bc4b100ac7c3d0dbeb2ba7a46f1bc59b2", kind: "dex" },
     ],
     wallet: {

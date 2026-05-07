@@ -14,6 +14,7 @@ export type SwapAsset = {
   decimals: number;
   kind: SwapAssetKind;
   isNativeLike: boolean;
+  coingeckoId?: string;
   tokenSlug?: TokenSlug;
 };
 
@@ -105,6 +106,7 @@ function createAsset(
     identifier: string;
     decimals: number;
     kind: SwapAssetKind;
+    coingeckoId?: string;
     isNativeLike?: boolean;
     tokenSlug?: TokenSlug;
   },
@@ -124,6 +126,7 @@ function createAsset(
     decimals: config.decimals,
     kind: config.kind,
     isNativeLike: config.isNativeLike ?? false,
+    coingeckoId: config.coingeckoId,
     tokenSlug: config.tokenSlug,
   };
 }
@@ -135,6 +138,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgzke.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgzke",
       tokenSlug: "xvgzke",
     }),
     createAsset("xvgzke", {
@@ -142,6 +146,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "zksync",
     }),
   ],
   xvgbase: [
@@ -150,6 +155,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgbase.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgbase",
       tokenSlug: "xvgbase",
     }),
     createAsset("xvgbase", {
@@ -157,6 +163,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "ETH",
       decimals: 18,
       kind: "eth",
+      coingeckoId: "ethereum",
       isNativeLike: true,
     }),
   ],
@@ -166,6 +173,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgopt.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgopt",
       tokenSlug: "xvgopt",
     }),
     createAsset("xvgopt", {
@@ -173,6 +181,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "0x4200000000000000000000000000000000000042",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "optimism",
     }),
   ],
   xvgson: [
@@ -181,6 +190,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgson.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgson",
       tokenSlug: "xvgson",
     }),
     createAsset("xvgson", {
@@ -188,6 +198,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "S",
       decimals: 18,
       kind: "native",
+      coingeckoId: "sonic-3",
       isNativeLike: true,
     }),
   ],
@@ -197,6 +208,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgarb.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgarb",
       tokenSlug: "xvgarb",
     }),
     createAsset("xvgarb", {
@@ -204,6 +216,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "arbitrum",
     }),
   ],
   xvgava: [
@@ -212,6 +225,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgava.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgava",
       tokenSlug: "xvgava",
     }),
     createAsset("xvgava", {
@@ -219,6 +233,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "AVAX",
       decimals: 18,
       kind: "native",
+      coingeckoId: "avalanche-2",
       isNativeLike: true,
     }),
   ],
@@ -228,6 +243,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgpoly.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgpoly",
       tokenSlug: "xvgpoly",
     }),
     createAsset("xvgpoly", {
@@ -235,6 +251,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "MATIC",
       decimals: 18,
       kind: "native",
+      coingeckoId: "matic-network",
       isNativeLike: true,
     }),
   ],
@@ -244,6 +261,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvglin.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvglin",
       tokenSlug: "xvglin",
     }),
   ],
@@ -253,6 +271,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgbsc.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgbsc",
       tokenSlug: "xvgbsc",
     }),
     createAsset("xvgbsc", {
@@ -260,6 +279,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "BNB",
       decimals: 18,
       kind: "native",
+      coingeckoId: "binancecoin",
       isNativeLike: true,
     }),
   ],
@@ -269,6 +289,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgmnt.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgmnt",
       tokenSlug: "xvgmnt",
     }),
     createAsset("xvgmnt", {
@@ -276,6 +297,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "MNT",
       decimals: 18,
       kind: "native",
+      coingeckoId: "mantle",
       isNativeLike: true,
     }),
   ],
@@ -285,6 +307,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgcro.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgcro",
       tokenSlug: "xvgcro",
     }),
     createAsset("xvgcro", {
@@ -292,6 +315,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "CRO",
       decimals: 18,
       kind: "native",
+      coingeckoId: "cronos",
       isNativeLike: true,
     }),
   ],
@@ -301,6 +325,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvguni.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvguni",
       tokenSlug: "xvguni",
     }),
     createAsset("xvguni", {
@@ -308,6 +333,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "UNI",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "uniswap",
     }),
   ],
   xvgblast: [
@@ -316,6 +342,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgblast.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgblast",
       tokenSlug: "xvgblast",
     }),
     createAsset("xvgblast", {
@@ -323,6 +350,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "BLAST",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "blast",
     }),
   ],
   xvggnosis: [
@@ -331,6 +359,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvggnosis.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvggnosis",
       tokenSlug: "xvggnosis",
     }),
     createAsset("xvggnosis", {
@@ -338,6 +367,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "XDAI",
       decimals: 18,
       kind: "native",
+      coingeckoId: "xdai",
       isNativeLike: true,
     }),
     createAsset("xvggnosis", {
@@ -345,6 +375,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "gnosis",
     }),
   ],
   xvgbera: [
@@ -353,6 +384,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgbera.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgbera",
       tokenSlug: "xvgbera",
     }),
     createAsset("xvgbera", {
@@ -360,6 +392,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "BERA",
       decimals: 18,
       kind: "native",
+      coingeckoId: "berachain-bera",
       isNativeLike: true,
     }),
   ],
@@ -369,6 +402,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvgworld.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvgworld",
       tokenSlug: "xvgworld",
     }),
     createAsset("xvgworld", {
@@ -376,6 +410,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "WLD",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "worldcoin-wld",
     }),
   ],
   xvghemi: [
@@ -384,6 +419,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: tokensBySlug.xvghemi.contractAddress,
       decimals: 18,
       kind: "xvg",
+      coingeckoId: "xvghemi",
       tokenSlug: "xvghemi",
     }),
     createAsset("xvghemi", {
@@ -391,6 +427,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       identifier: "HEMI",
       decimals: 18,
       kind: "governance",
+      coingeckoId: "hemi",
     }),
   ],
   xvgcbtc: [],

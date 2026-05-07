@@ -36,6 +36,18 @@ function getQuoteErrorMessage(error: unknown) {
   return "Failed to load a 0x quote for this pair.";
 }
 
+function formatUsdValue(value: number | null) {
+  if (value == null || !Number.isFinite(value)) {
+    return "--";
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: value >= 1 ? 2 : 6,
+  }).format(value);
+}
+
 async function fetchZeroExJson<T>(path: "price" | "quote", params: URLSearchParams) {
   const proxyUrl = import.meta.env.VITE_ZEROX_PROXY_URL;
 
@@ -94,6 +106,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<"" | "approve" | "swap">("");
   const [statusMessage, setStatusMessage] = useState<string>("");
+  const [usdPrices, setUsdPrices] = useState<Record<string, number>>({});
 
   const publicClient = usePublicClient({ chainId: selectedChainId });
   const selectedChain = useMemo(
@@ -132,6 +145,16 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
               ? "Ready for approval"
               : "Ready to swap"
             : "Awaiting quote";
+  const sellUsdValue =
+    quote && sellAsset?.coingeckoId && usdPrices[sellAsset.coingeckoId] != null
+      ? Number(formatUnitsSafe(BigInt(quote.sellAmount), sellAsset.decimals, 12)) *
+        usdPrices[sellAsset.coingeckoId]
+      : null;
+  const buyUsdValue =
+    quote && buyAsset?.coingeckoId && usdPrices[buyAsset.coingeckoId] != null
+      ? Number(formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 12)) *
+        usdPrices[buyAsset.coingeckoId]
+      : null;
 
   useEffect(() => {
     if (!selectedChainId && swapChains[0]) {
@@ -165,6 +188,54 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
       setSelectedChainId((current) => current || connectedChainId);
     }
   }, [connectedChainId]);
+
+  useEffect(() => {
+    const ids = Array.from(
+      new Set(
+        [sellAsset?.coingeckoId, buyAsset?.coingeckoId].filter(
+          (value): value is string => Boolean(value),
+        ),
+      ),
+    );
+
+    if (!ids.length) {
+      setUsdPrices({});
+      return;
+    }
+
+    const controller = new AbortController();
+
+    void (async () => {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
+            ids.join(","),
+          )}&vs_currencies=usd`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as Record<string, { usd?: number }>;
+        const nextPrices: Record<string, number> = {};
+
+        for (const id of ids) {
+          const price = payload[id]?.usd;
+          if (typeof price === "number") {
+            nextPrices[id] = price;
+          }
+        }
+
+        setUsdPrices(nextPrices);
+      } catch {
+        // Leave USD values hidden if the price lookup fails.
+      }
+    })();
+
+    return () => controller.abort();
+  }, [buyAsset?.coingeckoId, sellAsset?.coingeckoId]);
 
   async function ensureCorrectChain() {
     if (!isWrongNetwork || !selectedChain) {
@@ -489,11 +560,17 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
           <CardContent className="swap-card__content swap-metrics">
             <div className="swap-metric">
               <span>Sell amount</span>
-              <strong>{quote && sellAsset ? `${formatUnitsSafe(BigInt(quote.sellAmount), sellAsset.decimals, 6)} ${sellAsset.symbol}` : "--"}</strong>
+              <div className="swap-metric__value">
+                <strong>{quote && sellAsset ? `${formatUnitsSafe(BigInt(quote.sellAmount), sellAsset.decimals, 6)} ${sellAsset.symbol}` : "--"}</strong>
+                <small>{formatUsdValue(sellUsdValue)}</small>
+              </div>
             </div>
             <div className="swap-metric">
               <span>Buy amount</span>
-              <strong>{quote && buyAsset ? `${formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
+              <div className="swap-metric__value">
+                <strong>{quote && buyAsset ? `${formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
+                <small>{formatUsdValue(buyUsdValue)}</small>
+              </div>
             </div>
             <div className="swap-metric">
               <span>Minimum received</span>
