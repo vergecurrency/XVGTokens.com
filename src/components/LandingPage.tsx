@@ -235,7 +235,7 @@ export function LandingPage({ farms, farmSummaries, onNavigateToFarm }: LandingP
         </section>
 
         <div className="pb-2 pt-2 text-center text-xs text-slate-300/70">
-          Copyright 2026 xvg.fi
+          Copyright 2026 XVGTokens.com
         </div>
       </div>
     </main>

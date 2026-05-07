@@ -50,7 +50,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
     <header className="site-header">
       <div className="site-header__inner">
         <button type="button" className="site-brand" onClick={() => onNavigate("/")}>
-          <span className="site-brand__text">xvg.fi</span>
+          <span className="site-brand__text">xvgtokens.com</span>
         </button>
 
         <nav className="site-nav">

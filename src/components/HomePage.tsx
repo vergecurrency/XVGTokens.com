@@ -123,7 +123,7 @@ export function HomePage({ tokens, onNavigate }: HomePageProps) {
             </a>
           ))}
         </div>
-        <div className="landing-footer-note">xvg.fi 2026</div>
+        <div className="landing-footer-note">XVGTokens.com 2026</div>
       </section>
     </main>
   );
