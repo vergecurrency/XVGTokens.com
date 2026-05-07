@@ -7,7 +7,7 @@ import {
   type Eip1193Provider,
 } from "ethers";
 import { parseAbi, type Abi } from "viem";
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount, useReadContracts, useSwitchChain } from "wagmi";
 import { useFarmConfig } from "@/lib/farm-context";
 import { ERC20_ABI, REWARDS_ABI, UNISWAP_V2_PAIR_ABI } from "@/lib/abis";
 import {
@@ -134,6 +134,7 @@ async function waitForConfirmedTransaction(
 export function useFarm(): FarmState {
   const farmConfig = useFarmConfig();
   const { address, connector, chain, isConnected } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
   const rewardsContractReady = isAddress(farmConfig.rewardsContractAddress);
   const tokenAddressReady = isAddress(farmConfig.tokenAddress);
   const quoteTokenAddressReady = isAddress(farmConfig.quoteTokenAddress);
@@ -438,6 +439,38 @@ export function useFarm(): FarmState {
   );
   const isOnFarmChain = (chain?.id ?? farmConfig.chainId) === farmConfig.chainId;
 
+  const ensureFarmChain = useCallback(async () => {
+    if (!isConnected) {
+      setStatus("Connect wallet first.");
+      return false;
+    }
+
+    if (isOnFarmChain) {
+      return true;
+    }
+
+    if (!switchChainAsync) {
+      setStatus(`Switch wallet to ${farmConfig.chainName} first.`);
+      return false;
+    }
+
+    try {
+      setStatus(`Switching wallet to ${farmConfig.chainName}...`);
+      await switchChainAsync({ chainId: farmConfig.chainId });
+      setStatus(`Wallet switched to ${farmConfig.chainName}. Retry the action.`);
+    } catch (error) {
+      setStatus(formatStatusError(error, `Failed to switch to ${farmConfig.chainName}.`));
+    }
+
+    return false;
+  }, [
+    farmConfig.chainId,
+    farmConfig.chainName,
+    isConnected,
+    isOnFarmChain,
+    switchChainAsync,
+  ]);
+
   const refreshData = useCallback(async () => {
     try {
       await Promise.all([
@@ -658,6 +691,10 @@ export function useFarm(): FarmState {
     (requiredRemoveLiquidityApproval === 0n || lpAllowanceToRouter >= requiredRemoveLiquidityApproval);
 
   const approveLp = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!lpWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -675,9 +712,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [lpWrite, refreshData]);
+  }, [ensureFarmChain, lpWrite, refreshData]);
 
   const approveTokenForRouter = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!tokenWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -695,9 +736,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [refreshData, tokenWrite]);
+  }, [ensureFarmChain, refreshData, tokenWrite]);
 
   const approveQuoteTokenForRouter = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!quoteTokenWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -715,9 +760,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [quoteTokenWrite, refreshData]);
+  }, [ensureFarmChain, quoteTokenWrite, refreshData]);
 
   const approveLpForRouter = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!lpWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -735,9 +784,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [lpWrite, refreshData]);
+  }, [ensureFarmChain, lpWrite, refreshData]);
 
   const addLiquidity = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!v2RouterWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -836,12 +889,17 @@ export function useFarm(): FarmState {
     pairQuoteReserve,
     pairTokenReserve,
     refreshData,
+    ensureFarmChain,
     v2RouterWrite,
     walletQuoteTokenBalance,
     walletTokenBalance,
   ]);
 
   const removeLiquidity = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!v2RouterWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -922,12 +980,17 @@ export function useFarm(): FarmState {
     pairTokenReserve,
     refreshData,
     removeLiquidityInput,
+    ensureFarmChain,
     v2RouterWrite,
     hasRemoveLiquidityApproval,
     walletLpBalance,
   ]);
 
   const stakeLp = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!rewardsWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -953,9 +1016,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [refreshData, rewardsWrite, stakeInput]);
+  }, [ensureFarmChain, refreshData, rewardsWrite, stakeInput]);
 
   const withdrawLp = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!rewardsWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -981,9 +1048,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [refreshData, rewardsWrite, withdrawInput]);
+  }, [ensureFarmChain, refreshData, rewardsWrite, withdrawInput]);
 
   const claimRewards = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!rewardsWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -1001,9 +1072,13 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [refreshData, rewardsWrite]);
+  }, [ensureFarmChain, refreshData, rewardsWrite]);
 
   const exitFarm = useCallback(async () => {
+    if (!(await ensureFarmChain())) {
+      return;
+    }
+
     if (!rewardsWrite) {
       setStatus("Connect wallet first.");
       return;
@@ -1021,7 +1096,7 @@ export function useFarm(): FarmState {
     } finally {
       setBusy(false);
     }
-  }, [refreshData, rewardsWrite]);
+  }, [ensureFarmChain, refreshData, rewardsWrite]);
 
   const fillMaxStake = useCallback(() => {
     setStakeInput(formatUnitsSafe(walletLpBalance, farmConfig.lpDecimals, 8));
