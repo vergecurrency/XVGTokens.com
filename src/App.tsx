@@ -50,7 +50,20 @@ function getTokenSlugFromPath(pathname: string): TokenSlug | null {
 }
 
 export default function App() {
-  const [pathname, setPathname] = useState(() => normalizePath(window.location.pathname));
+  const [pathname, setPathname] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectedPath = params.get("__redirect");
+
+    if (redirectedPath) {
+      const normalizedRedirect = normalizePath(redirectedPath);
+      const nextUrl = `${normalizedRedirect}${window.location.hash}`;
+
+      window.history.replaceState({}, "", nextUrl);
+      return normalizedRedirect;
+    }
+
+    return normalizePath(window.location.pathname);
+  });
   const tokens = tokenOrder.map((slug) => tokensBySlug[slug]);
 
   useEffect(() => {
