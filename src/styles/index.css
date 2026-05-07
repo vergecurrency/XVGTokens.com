@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Orbitron";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/orbitron-400.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Orbitron";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/orbitron-700.ttf") format("truetype");
+}
+
 :root {
   color-scheme: dark;
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -1490,7 +1506,7 @@ input {
 }
 
 .swap-card {
-  overflow: hidden;
+  overflow: visible;
   background:
     radial-gradient(circle at top left, rgba(255, 77, 157, 0.22), transparent 30%),
     radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 28%),
@@ -1535,8 +1551,20 @@ input {
   letter-spacing: 0.04em;
 }
 
+.swap-progress__label,
+.swap-progress__meta strong {
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
+}
+
+.swap-progress__label {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 .swap-progress__meta strong {
   color: #fff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .swap-progress__track {
@@ -1571,12 +1599,13 @@ input {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 1rem;
-  align-items: end;
+  align-items: start;
 }
 
 .swap-token-panel {
   display: grid;
   gap: 0.6rem;
+  align-content: start;
 }
 
 .swap-field {
@@ -1585,10 +1614,14 @@ input {
 }
 
 .swap-field__label {
+  display: inline-flex;
+  align-items: center;
   color: rgba(226, 232, 240, 0.84);
   font-size: 0.8rem;
   font-weight: 700;
+  line-height: 1;
   letter-spacing: 0.12em;
+  min-height: 0.8rem;
   text-transform: uppercase;
 }
 
@@ -1608,13 +1641,17 @@ input {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.55rem;
-  min-height: 3.2rem;
+  min-height: 3rem;
   width: 100%;
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 1rem;
   background: rgba(15, 23, 42, 0.7);
   color: #fff;
   padding: 0.2rem;
+}
+
+.swap-input {
+  height: 3rem;
 }
 
 .swap-asset-trigger--open {
@@ -1769,13 +1806,13 @@ input {
 .swap-output {
   display: flex;
   align-items: center;
-  min-height: 2.9rem;
+  min-height: 3rem;
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 1rem;
   background: rgba(15, 23, 42, 0.58);
   color: #fff;
-  padding: 0.8rem 1rem;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
 }
 
@@ -1785,7 +1822,7 @@ input {
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  margin-bottom: 0.1rem;
+  margin-top: 2.25rem;
   border: 1px solid rgba(125, 211, 252, 0.24);
   border-radius: 999px;
   background: rgba(56, 189, 248, 0.08);
@@ -2762,6 +2799,7 @@ input {
 
   .swap-flip {
     width: 100%;
+    margin-top: 0;
   }
 
   .swap-asset-trigger__button {

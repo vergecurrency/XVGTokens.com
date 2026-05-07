@@ -670,14 +670,14 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
               <Button variant="outline" onClick={() => onNavigate("/")}>Back</Button>
               {!isConnected ? <WalletConnectTrigger /> : null}
             </div>
-            <div className="swap-progress">
-              <div className="swap-progress__meta">
-                <span>Status</span>
-                <strong>{swapProgressLabel}</strong>
-              </div>
-              <div className="swap-progress__track" aria-hidden="true">
-                <div className="swap-progress__fill" style={{ width: `${swapProgress}%` }} />
-              </div>
+              <div className="swap-progress">
+                <div className="swap-progress__meta">
+                  <span className="swap-progress__label">Status</span>
+                  <strong>{swapProgressLabel}</strong>
+                </div>
+                <div className="swap-progress__track" aria-hidden="true">
+                  <div className="swap-progress__fill" style={{ width: `${swapProgress}%` }} />
+                </div>
             </div>
           </CardHeader>
           <CardContent className="swap-card__content">
@@ -704,6 +704,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                     }}
                   />
                   <Input
+                    className="swap-input"
                     inputMode="decimal"
                     placeholder="0.0"
                     value={sellAmount}
