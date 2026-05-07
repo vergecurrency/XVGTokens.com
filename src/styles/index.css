@@ -733,40 +733,10 @@ body[data-view="games"] .site-header__inner::after {
 
 .site-brand__text {
   color: #fff;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
   font-size: 1.12rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.site-brand__mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.9rem;
-  height: 2.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(125, 211, 252, 0.2);
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.24), rgba(15, 23, 42, 0.12)),
-    linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.92));
-  color: #f8fafc;
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.22);
-}
-
-body[data-view="home"] .site-brand__mark,
-body[data-view="portfolio"] .site-brand__mark,
-body[data-view="swap"] .site-brand__mark,
-body[data-view="games"] .site-brand__mark {
-  border: 1px solid rgba(34, 211, 238, 0.28);
-  background:
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(255, 77, 157, 0.14)),
-    linear-gradient(180deg, rgba(37, 20, 79, 0.96), rgba(13, 10, 35, 0.94));
-  box-shadow:
-    0 0 24px rgba(255, 77, 157, 0.18),
-    0 0 42px rgba(34, 211, 238, 0.1);
 }
 
 .site-nav {
