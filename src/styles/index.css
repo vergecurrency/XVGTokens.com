@@ -1585,6 +1585,13 @@ input {
   text-transform: uppercase;
 }
 
+.swap-field__usd {
+  color: rgba(148, 163, 184, 0.92);
+  font-size: 0.76rem;
+  line-height: 1;
+  min-height: 0.76rem;
+}
+
 .swap-select {
   min-height: 2.9rem;
   width: 100%;

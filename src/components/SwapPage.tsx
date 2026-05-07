@@ -146,8 +146,8 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
               : "Ready to swap"
             : "Awaiting quote";
   const sellUsdValue =
-    quote && sellAsset?.coingeckoId && usdPrices[sellAsset.coingeckoId] != null
-      ? Number(formatUnitsSafe(BigInt(quote.sellAmount), sellAsset.decimals, 12)) *
+    sellAsset?.coingeckoId && usdPrices[sellAsset.coingeckoId] != null
+      ? Number(formatUnitsSafe(parsedSellAmount, sellAsset.decimals, 12)) *
         usdPrices[sellAsset.coingeckoId]
       : null;
   const buyUsdValue =
@@ -480,6 +480,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                       setQuoteError("");
                     }}
                   />
+                  <small className="swap-field__usd">{formatUsdValue(sellUsdValue)}</small>
                 </label>
 
                 <button type="button" className="swap-flip" onClick={handleFlipAssets} aria-label="Flip sell and buy assets">
@@ -500,6 +501,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                   <div className="swap-output">
                     {quote ? formatUnitsSafe(BigInt(quote.buyAmount), buyAsset?.decimals ?? 18, 6) : "--"}
                   </div>
+                  <small className="swap-field__usd">{formatUsdValue(buyUsdValue)}</small>
                 </label>
               </div>
 
