@@ -7,7 +7,7 @@ import {
   uniswapWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { defineChain } from "viem";
+import { defineChain, fallback } from "viem";
 import { http } from "wagmi";
 import {
   mainnet as mainnetChain,
@@ -40,6 +40,19 @@ function getRpcUrlEnv(name: string, fallback: string) {
 
   const normalized = raw.trim();
   return normalized.length > 0 ? normalized : fallback;
+}
+
+function getRpcUrlListEnv(name: string, fallbacks: string[]) {
+  const raw = import.meta.env[name];
+  const envUrls =
+    typeof raw === "string"
+      ? raw
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean)
+      : [];
+
+  return Array.from(new Set([...envUrls, ...fallbacks].filter(Boolean)));
 }
 
 const citreaChain = defineChain({
@@ -93,17 +106,36 @@ const transports = Object.fromEntries(
       http(getRpcUrlEnv("VITE_ETH_RPC_URL", "https://ethereum-rpc.publicnode.com")),
     ],
     ...tokenOrder.map((slug) => {
-    const token = tokensBySlug[slug];
-    const chainId = Number.parseInt(token.wallet.chainId, 16);
+      const token = tokensBySlug[slug];
+      const chainId = Number.parseInt(token.wallet.chainId, 16);
 
-    const rpcUrl =
-      chainId === baseChain.id
-        ? getRpcUrlEnv("VITE_BASE_RPC_URL", token.wallet.rpcUrl)
-        : chainId === bscChain.id
-          ? getRpcUrlEnv("VITE_BSC_RPC_URL", token.wallet.rpcUrl)
-          : token.wallet.rpcUrl;
+      if (chainId === baseChain.id) {
+        return [
+          chainId,
+          fallback(
+            getRpcUrlListEnv("VITE_BASE_RPC_URL", [
+              token.wallet.rpcUrl,
+              "https://base-rpc.publicnode.com",
+              "https://base.llamarpc.com",
+            ]).map((rpcUrl) => http(rpcUrl)),
+          ),
+        ];
+      }
 
-      return [chainId, http(rpcUrl)];
+      if (chainId === bscChain.id) {
+        return [
+          chainId,
+          fallback(
+            getRpcUrlListEnv("VITE_BSC_RPC_URL", [
+              token.wallet.rpcUrl,
+              "https://bsc-rpc.publicnode.com",
+              "https://bsc-dataseed1.bnbchain.org",
+            ]).map((rpcUrl) => http(rpcUrl)),
+          ),
+        ];
+      }
+
+      return [chainId, http(token.wallet.rpcUrl)];
     }),
   ],
 );

@@ -169,7 +169,7 @@ export function useFarm(): FarmState {
     allowFailure: true,
     query: {
       enabled: rewardsContractReady,
-      refetchInterval: 10000,
+      refetchInterval: 30000,
     },
   });
   const walletSnapshotContracts = useMemo(() => {
@@ -235,7 +235,7 @@ export function useFarm(): FarmState {
     contracts: walletSnapshotContracts.map(({ key: _key, ...contract }) => contract),
     query: {
       enabled: walletSnapshotContracts.length > 0,
-      refetchInterval: 10000,
+      refetchInterval: 30000,
     },
   });
   const accountContracts = useMemo(() => {
@@ -341,7 +341,7 @@ export function useFarm(): FarmState {
     contracts: accountContracts.map(({ key: _key, ...contract }) => contract),
     query: {
       enabled: accountContracts.length > 0,
-      refetchInterval: 10000,
+      refetchInterval: 30000,
     },
   });
   const poolContracts = useMemo(() => {
@@ -385,7 +385,7 @@ export function useFarm(): FarmState {
     contracts: poolContracts.map(({ key: _key, ...contract }) => contract),
     query: {
       enabled: poolContracts.length > 0,
-      refetchInterval: 10000,
+      refetchInterval: 30000,
     },
   });
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
@@ -1061,16 +1061,6 @@ export function useFarm(): FarmState {
     setPairTokenReserve(0n);
     setPairQuoteReserve(0n);
   }, [isOnFarmChain]);
-
-  useEffect(() => {
-    if (!account) {
-      return;
-    }
-
-    const nextValue = formatUnitsSafe(walletTokenBalance, farmConfig.tokenDecimals, 8);
-    setLiquidityTokenInput(nextValue);
-    setLiquidityQuoteInput(quoteFromTokenInput(nextValue));
-  }, [account, quoteFromTokenInput, walletTokenBalance]);
 
   useEffect(() => {
     if (!isConnected || !connector || !address) {
