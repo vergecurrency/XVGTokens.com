@@ -94,9 +94,8 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           </div>
           <button
             type="button"
-            className="site-nav__link is-disabled"
-            disabled
-            aria-disabled="true"
+            className={`site-nav__link ${isSwapRoute ? "is-active" : ""}`}
+            onClick={() => onNavigate("/swap")}
           >
             Swap
           </button>
