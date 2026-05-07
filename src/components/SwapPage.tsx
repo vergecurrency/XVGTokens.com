@@ -24,6 +24,9 @@ import {
 const APPROVE_ABI = parseAbi([
   "function approve(address spender, uint256 amount) returns (bool)",
 ]);
+const ERC20_BALANCE_ABI = parseAbi([
+  "function balanceOf(address owner) view returns (uint256)",
+]);
 
 type SwapPageProps = {
   onNavigate: (path: string) => void;
@@ -328,6 +331,8 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
   const [actionLoading, setActionLoading] = useState<"" | "approve" | "swap">("");
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [usdPrices, setUsdPrices] = useState<Record<string, number>>({});
+  const [sellBalance, setSellBalance] = useState<bigint | null>(null);
+  const [sellBalanceLoading, setSellBalanceLoading] = useState(false);
 
   const publicClient = usePublicClient({ chainId: selectedChainId });
   const selectedChain = useMemo(
@@ -376,6 +381,10 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
       ? Number(formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 12)) *
         usdPrices[buyAsset.coingeckoId]
       : null;
+  const sellBalanceFormatted =
+    sellAsset && sellBalance != null
+      ? formatUnitsSafe(sellBalance, sellAsset.decimals, 6)
+      : "--";
 
   useEffect(() => {
     if (!selectedChainId && swapChains[0]) {
@@ -457,6 +466,42 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
 
     return () => controller.abort();
   }, [buyAsset?.coingeckoId, sellAsset?.coingeckoId]);
+
+  useEffect(() => {
+    if (!publicClient || !address || !sellAsset?.address) {
+      setSellBalance(null);
+      setSellBalanceLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setSellBalanceLoading(true);
+
+    void (async () => {
+      try {
+        const balance = await publicClient.readContract({
+          address: sellAsset.address as `0x${string}`,
+          abi: ERC20_BALANCE_ABI,
+          functionName: "balanceOf",
+          args: [address],
+        });
+
+        if (!controller.signal.aborted) {
+          setSellBalance(balance);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          setSellBalance(null);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setSellBalanceLoading(false);
+        }
+      }
+    })();
+
+    return () => controller.abort();
+  }, [address, publicClient, sellAsset?.address]);
 
   async function ensureCorrectChain() {
     if (!isWrongNetwork || !selectedChain) {
@@ -661,6 +706,16 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
     setQuoteError("");
   }
 
+  function handleSetMaxSellAmount() {
+    if (!sellAsset || sellBalance == null) {
+      return;
+    }
+
+    setSellAmount(formatUnitsSafe(sellBalance, sellAsset.decimals, sellAsset.decimals));
+    setQuote(null);
+    setQuoteError("");
+  }
+
   return (
     <main className="swap-page">
       <section className="swap-grid">
@@ -703,6 +758,19 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                       setQuoteError("");
                     }}
                   />
+                  <div className="swap-token-panel__meta">
+                    <small className="swap-token-panel__balance">
+                      Balance: {sellBalanceLoading ? "Loading..." : sellBalanceFormatted}
+                    </small>
+                    <button
+                      type="button"
+                      className="swap-token-panel__max"
+                      onClick={handleSetMaxSellAmount}
+                      disabled={!sellAsset || sellBalance == null || sellBalanceLoading}
+                    >
+                      Max
+                    </button>
+                  </div>
                   <Input
                     className="swap-input"
                     inputMode="decimal"
