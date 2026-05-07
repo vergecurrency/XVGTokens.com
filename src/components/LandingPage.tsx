@@ -54,7 +54,7 @@ export function LandingPage({ farms, farmSummaries, onNavigateToFarm }: LandingP
               </div>
               <div className="farm-landing-inner-card relative z-[1] mt-4">
                 <h1 className="max-w-4xl text-4xl font-extrabold tracking-[-0.03em] text-slate-50 sm:text-5xl lg:text-6xl">
-                  Welcome to the XVGTokens Farm!
+                  Welcome to the XVG Farm!
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-slate-200/85 sm:text-lg">
                   Join one of the XVGToken Farms and start staking right away!
@@ -235,7 +235,7 @@ export function LandingPage({ farms, farmSummaries, onNavigateToFarm }: LandingP
         </section>
 
         <div className="pb-2 pt-2 text-center text-xs text-slate-300/70">
-          Copyright 2026 XVGTokens.com
+          Copyright 2026 xvg.fi
         </div>
       </div>
     </main>

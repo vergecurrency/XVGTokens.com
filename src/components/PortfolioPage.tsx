@@ -205,13 +205,9 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
         <div className="portfolio-hero__copy">
           <div className="portfolio-hero__eyebrow">
             <BarChart3 className="h-4 w-4" />
-            Multi-Chain Portfolio
+            Portfolio
           </div>
-          <h1 className="portfolio-hero__title">Your XVG token balances across every chain.</h1>
-          <p className="portfolio-hero__body">
-            Connect a wallet and this page will check your balance for each XVG token deployment on
-            the site, chain by chain.
-          </p>
+          <h1 className="portfolio-hero__title">Multi-Chain Portfolio</h1>
         </div>
         <div className="portfolio-hero__actions">
           <div className="portfolio-hero__status">

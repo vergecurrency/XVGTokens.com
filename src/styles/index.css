@@ -93,8 +93,47 @@ body {
   background-attachment: fixed;
 }
 
-html[data-farm-theme="xvgbase"],
-body[data-farm-theme="xvgbase"] {
+body[data-view="home"],
+body[data-view="token"],
+body[data-view="portfolio"],
+body[data-view="swap"],
+body[data-view="games"] {
+  background:
+    radial-gradient(circle at 50% -14%, rgba(255, 87, 194, 0.26), transparent 28%),
+    radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.16), transparent 24%),
+    radial-gradient(circle at 86% 16%, rgba(168, 85, 247, 0.16), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(251, 146, 60, 0.14), transparent 30%),
+    linear-gradient(90deg, rgba(255, 77, 157, 0.1) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(34, 211, 238, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, #150b33 0%, #110827 40%, #12061f 72%, #07040f 100%);
+  background-size: auto, auto, auto, auto, 52px 52px, 52px 52px, auto;
+  background-attachment: fixed;
+}
+
+body[data-view="home"]::before,
+body[data-view="token"]::before,
+body[data-view="portfolio"]::before,
+body[data-view="swap"]::before,
+body[data-view="games"]::before {
+  content: "";
+  position: fixed;
+  inset: auto 0 0;
+  height: 32vh;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 77, 157, 0), rgba(255, 77, 157, 0.06)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(34, 211, 238, 0.22) 0 2px,
+      transparent 2px 72px
+    );
+  clip-path: polygon(0 100%, 100% 100%, 100% 50%, 50% 14%, 0 50%);
+  opacity: 0.55;
+  z-index: 0;
+}
+
+html[data-farm-theme="xvgbase"]:not([data-view="token"]),
+body[data-farm-theme="xvgbase"]:not([data-view="token"]) {
   background:
     radial-gradient(circle at 16% 14%, rgba(125, 211, 252, 0.1), transparent 24%),
     radial-gradient(circle at 84% 10%, rgba(56, 189, 248, 0.08), transparent 28%),
@@ -102,8 +141,8 @@ body[data-farm-theme="xvgbase"] {
     linear-gradient(180deg, #171b1d 0%, #101415 58%, #0a0d0e 100%);
 }
 
-html[data-farm-theme="xvgbsc"],
-body[data-farm-theme="xvgbsc"] {
+html[data-farm-theme="xvgbsc"]:not([data-view="token"]),
+body[data-farm-theme="xvgbsc"]:not([data-view="token"]) {
   background:
     radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.08), transparent 18%),
     radial-gradient(circle at 18% 18%, rgba(250, 204, 21, 0.1), transparent 24%),
@@ -600,6 +639,20 @@ input {
   padding: 1rem 1rem 0;
 }
 
+body[data-view="home"] .site-header__inner,
+body[data-view="portfolio"] .site-header__inner,
+body[data-view="swap"] .site-header__inner,
+body[data-view="games"] .site-header__inner {
+  border: 1px solid rgba(255, 77, 157, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(26, 12, 56, 0.94), rgba(12, 9, 33, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 20px 70px rgba(9, 3, 24, 0.55),
+    0 0 40px rgba(255, 77, 157, 0.12);
+}
+
 .site-header__inner {
   position: relative;
   overflow: visible;
@@ -647,6 +700,24 @@ input {
   opacity: 0.65;
 }
 
+body[data-view="home"] .site-header__inner::before,
+body[data-view="portfolio"] .site-header__inner::before,
+body[data-view="swap"] .site-header__inner::before,
+body[data-view="games"] .site-header__inner::before {
+  background:
+    linear-gradient(90deg, rgba(255, 77, 157, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.22;
+}
+
+body[data-view="home"] .site-header__inner::after,
+body[data-view="portfolio"] .site-header__inner::after,
+body[data-view="swap"] .site-header__inner::after,
+body[data-view="games"] .site-header__inner::after {
+  background: radial-gradient(circle, rgba(255, 77, 157, 0.3), transparent 68%);
+}
+
 .site-brand {
   position: relative;
   z-index: 1;
@@ -683,6 +754,19 @@ input {
   font-weight: 800;
   letter-spacing: 0.18em;
   box-shadow: 0 0 24px rgba(56, 189, 248, 0.22);
+}
+
+body[data-view="home"] .site-brand__mark,
+body[data-view="portfolio"] .site-brand__mark,
+body[data-view="swap"] .site-brand__mark,
+body[data-view="games"] .site-brand__mark {
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(255, 77, 157, 0.14)),
+    linear-gradient(180deg, rgba(37, 20, 79, 0.96), rgba(13, 10, 35, 0.94));
+  box-shadow:
+    0 0 24px rgba(255, 77, 157, 0.18),
+    0 0 42px rgba(34, 211, 238, 0.1);
 }
 
 .site-nav {
@@ -725,6 +809,17 @@ input {
   transition: 180ms ease;
 }
 
+body[data-view="home"] .site-nav__link,
+body[data-view="portfolio"] .site-nav__link,
+body[data-view="swap"] .site-nav__link,
+body[data-view="games"] .site-nav__link {
+  border: 1px solid rgba(255, 77, 157, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+  color: rgba(244, 224, 255, 0.92);
+}
+
 .site-nav__link:hover,
 .site-nav__link.is-active {
   border-color: rgba(125, 211, 252, 0.22);
@@ -733,6 +828,23 @@ input {
     rgba(56, 189, 248, 0.12);
   box-shadow: 0 10px 28px rgba(2, 6, 23, 0.22), 0 0 22px rgba(56, 189, 248, 0.08);
   color: #fff;
+}
+
+body[data-view="home"] .site-nav__link:hover,
+body[data-view="home"] .site-nav__link.is-active,
+body[data-view="portfolio"] .site-nav__link:hover,
+body[data-view="portfolio"] .site-nav__link.is-active,
+body[data-view="swap"] .site-nav__link:hover,
+body[data-view="swap"] .site-nav__link.is-active,
+body[data-view="games"] .site-nav__link:hover,
+body[data-view="games"] .site-nav__link.is-active {
+  border-color: rgba(34, 211, 238, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 77, 157, 0.18), rgba(168, 85, 247, 0.12)),
+    rgba(34, 211, 238, 0.08);
+  box-shadow:
+    0 10px 28px rgba(9, 3, 24, 0.32),
+    0 0 24px rgba(255, 77, 157, 0.16);
 }
 
 .site-nav__link.is-disabled,
@@ -768,6 +880,19 @@ input {
   backdrop-filter: blur(20px);
 }
 
+body[data-view="home"] .site-nav__popover,
+body[data-view="portfolio"] .site-nav__popover,
+body[data-view="swap"] .site-nav__popover,
+body[data-view="games"] .site-nav__popover {
+  border: 1px solid rgba(255, 77, 157, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    rgba(14, 8, 31, 0.94);
+  box-shadow:
+    0 24px 80px rgba(6, 2, 18, 0.62),
+    0 0 30px rgba(34, 211, 238, 0.08);
+}
+
 .site-nav__token {
   display: flex;
   align-items: center;
@@ -786,6 +911,18 @@ input {
 .site-nav__token.is-active {
   border-color: rgba(125, 211, 252, 0.24);
   background: rgba(56, 189, 248, 0.12);
+}
+
+body[data-view="home"] .site-nav__token:hover,
+body[data-view="home"] .site-nav__token.is-active,
+body[data-view="portfolio"] .site-nav__token:hover,
+body[data-view="portfolio"] .site-nav__token.is-active,
+body[data-view="swap"] .site-nav__token:hover,
+body[data-view="swap"] .site-nav__token.is-active,
+body[data-view="games"] .site-nav__token:hover,
+body[data-view="games"] .site-nav__token.is-active {
+  border-color: rgba(34, 211, 238, 0.26);
+  background: linear-gradient(135deg, rgba(255, 77, 157, 0.16), rgba(34, 211, 238, 0.12));
 }
 
 .site-nav__token-icon {
@@ -813,6 +950,17 @@ input {
   overflow: hidden;
 }
 
+body[data-view="home"] .token-grid-section {
+  border: 1px solid rgba(255, 77, 157, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    linear-gradient(135deg, rgba(21, 11, 51, 0.95), rgba(14, 7, 37, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 32px 110px rgba(7, 2, 20, 0.52),
+    0 0 40px rgba(255, 77, 157, 0.08);
+}
+
 .token-grid-section::before {
   content: "";
   position: absolute;
@@ -825,6 +973,14 @@ input {
   pointer-events: none;
 }
 
+body[data-view="home"] .token-grid-section::before {
+  background:
+    linear-gradient(90deg, rgba(255, 77, 157, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.18;
+}
+
 .token-grid-section::after {
   content: "";
   position: absolute;
@@ -833,6 +989,12 @@ input {
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.07), transparent 22%),
     linear-gradient(180deg, rgba(125, 211, 252, 0.06), transparent 24%, transparent 76%, rgba(16, 185, 129, 0.04));
   pointer-events: none;
+}
+
+body[data-view="home"] .token-grid-section::after {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 22%),
+    linear-gradient(180deg, rgba(255, 77, 157, 0.08), transparent 24%, transparent 76%, rgba(34, 211, 238, 0.06));
 }
 
 .landing-atmosphere {
@@ -861,12 +1023,20 @@ input {
   background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 68%);
 }
 
+body[data-view="home"] .landing-atmosphere__ring--one {
+  background: radial-gradient(circle, rgba(255, 77, 157, 0.18), transparent 68%);
+}
+
 .landing-atmosphere__ring--two {
   top: 10rem;
   right: -7rem;
   width: 28rem;
   height: 28rem;
   background: radial-gradient(circle, rgba(74, 222, 128, 0.08), transparent 70%);
+}
+
+body[data-view="home"] .landing-atmosphere__ring--two {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.12), transparent 70%);
 }
 
 .landing-atmosphere__ring--three {
@@ -879,6 +1049,12 @@ input {
   background:
     radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 58%),
     conic-gradient(from 90deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.06), rgba(56, 189, 248, 0.12));
+}
+
+body[data-view="home"] .landing-atmosphere__ring--three {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 58%),
+    conic-gradient(from 90deg, rgba(255, 77, 157, 0.16), rgba(168, 85, 247, 0.12), rgba(34, 211, 238, 0.12));
 }
 
 .landing-atmosphere__beam {
@@ -895,10 +1071,18 @@ input {
   transform: rotate(-18deg);
 }
 
+body[data-view="home"] .landing-atmosphere__beam--left {
+  background: linear-gradient(180deg, rgba(255, 77, 157, 0), rgba(255, 77, 157, 0.26), rgba(255, 77, 157, 0));
+}
+
 .landing-atmosphere__beam--right {
   right: -6%;
   background: linear-gradient(180deg, rgba(16, 185, 129, 0), rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0));
   transform: rotate(18deg);
+}
+
+body[data-view="home"] .landing-atmosphere__beam--right {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0), rgba(34, 211, 238, 0.22), rgba(34, 211, 238, 0));
 }
 
 .token-grid-intro {
@@ -924,6 +1108,16 @@ input {
     0 20px 60px rgba(2, 6, 23, 0.24);
 }
 
+body[data-view="home"] .token-grid-intro__stack {
+  background:
+    radial-gradient(circle at top, rgba(255, 77, 157, 0.16), transparent 48%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
+    rgba(13, 8, 31, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 60px rgba(7, 2, 20, 0.34);
+}
+
 .token-grid-kicker {
   display: inline-flex;
   align-items: center;
@@ -939,6 +1133,12 @@ input {
   text-transform: uppercase;
 }
 
+body[data-view="home"] .token-grid-kicker {
+  border: 1px solid rgba(34, 211, 238, 0.24);
+  background: rgba(25, 12, 54, 0.48);
+  color: rgba(244, 224, 255, 0.94);
+}
+
 .token-grid-kicker::before {
   content: "";
   width: 0.5rem;
@@ -948,14 +1148,21 @@ input {
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.75);
 }
 
+body[data-view="home"] .token-grid-kicker::before {
+  background: #ff4d9d;
+  box-shadow: 0 0 16px rgba(255, 77, 157, 0.8);
+}
+
 .token-grid-heading {
   max-width: 34rem;
   color: #fff;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
   font-size: clamp(2rem, 4vw, 3.35rem);
-  font-weight: 900;
-  letter-spacing: -0.05em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   line-height: 0.98;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .token-grid-body {
@@ -1458,6 +1665,19 @@ input {
   backdrop-filter: blur(20px);
 }
 
+body[data-view="portfolio"] .portfolio-hero,
+body[data-view="portfolio"] .portfolio-list,
+body[data-view="swap"] .swap-card,
+body[data-view="games"] .games-hero {
+  border: 1px solid rgba(255, 77, 157, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    linear-gradient(135deg, rgba(21, 11, 51, 0.94), rgba(11, 8, 30, 0.92));
+  box-shadow:
+    0 24px 80px rgba(6, 2, 18, 0.48),
+    0 0 34px rgba(255, 77, 157, 0.08);
+}
+
 .portfolio-hero {
   display: flex;
   align-items: flex-end;
@@ -1489,22 +1709,31 @@ input {
   text-transform: uppercase;
 }
 
+body[data-view="portfolio"] .portfolio-hero__eyebrow,
+body[data-view="games"] .portfolio-hero__eyebrow {
+  color: rgba(244, 224, 255, 0.88);
+}
+
 .portfolio-hero__title {
   margin: 0.8rem 0 1rem;
   color: #fff;
-  font-size: clamp(2.1rem, 4.6vw, 4.2rem);
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 0.98;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
+  font-size: clamp(2.5rem, 5.2vw, 4.7rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 0.96;
+  text-transform: uppercase;
 }
 
 .games-hero__title {
   margin: 0;
   color: #fff;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
   font-size: clamp(2rem, 4vw, 3.6rem);
-  font-weight: 900;
-  letter-spacing: -0.05em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   line-height: 1;
+  text-transform: uppercase;
 }
 
 .portfolio-hero__body {
@@ -1512,6 +1741,10 @@ input {
   color: rgba(226, 232, 240, 0.82);
   font-size: 1rem;
   line-height: 1.8;
+}
+
+body[data-view="portfolio"] .portfolio-hero__body {
+  color: rgba(238, 226, 255, 0.8);
 }
 
 .swap-grid {
@@ -1588,6 +1821,11 @@ input {
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.56);
+}
+
+body[data-view="swap"] .swap-progress__track {
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  background: rgba(9, 6, 25, 0.62);
 }
 
 .swap-progress__fill {
@@ -2268,10 +2506,12 @@ input {
 .token-page__title {
   margin: 0.8rem 0 1rem;
   color: #fff;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
   font-size: clamp(2.8rem, 6vw, 5.4rem);
-  font-weight: 900;
-  letter-spacing: -0.06em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   line-height: 0.95;
+  text-transform: uppercase;
 }
 
 .token-page__description {

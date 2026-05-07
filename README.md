@@ -1,11 +1,11 @@
-# 🌐 XVGTokens.com 
+# 🌐 xvg.fi
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Project-Active-brightgreen.svg)](#)
 [![Made with ❤️ for Verge](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg)](#)
-[![Powered by XVG](https://img.shields.io/badge/Powered%20by-XVG-blue.svg)](https://XVGTokens.com)
+[![Powered by XVG](https://img.shields.io/badge/Powered%20by-XVG-blue.svg)](https://xvg.fi)
 
-> **XVGTokens.com** is the official hub for the multi-chain suite of Verge (XVG) tokens — unifying all XVG-branded assets across Ethereum, BSC, Polygon, Base, Solana, Hemi, and more.  
+> **xvg.fi** is the official hub for the multi-chain suite of Verge (XVG) tokens — unifying all XVG-branded assets across Ethereum, BSC, Polygon, Base, Solana, Hemi, and more.  
 > *One XVG. One Contract. All Chains.*
 
 XVG Unified Contract Address Chains Supported:<br>
@@ -48,8 +48,8 @@ Citrea ($XVGcBTC)<br>
 Clone the repository and edit webpage:
 
 ```bash
-git clone https://github.com/vergecurrency/XVGTokens.com.git
-cd XVGTokens.com
+git clone https://github.com/vergecurrency/xvg.fi.git
+cd xvg.fi
 
 nano index.html
 

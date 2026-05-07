@@ -141,9 +141,9 @@ const transports = Object.fromEntries(
 );
 
 export const wagmiConfig = getDefaultConfig({
-  appName: "XVGTokens",
-  appDescription: "Multi-chain XVGTokens explorer, farms, and portfolio tracker.",
-  appUrl: "https://xvgtokens.com/",
+  appName: "xvg.fi",
+  appDescription: "Multi-chain XVG explorer, farms, swap, and portfolio tracker.",
+  appUrl: "https://xvg.fi/",
   projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "YOUR_WALLETCONNECT_PROJECT_ID",
   chains,
   transports,

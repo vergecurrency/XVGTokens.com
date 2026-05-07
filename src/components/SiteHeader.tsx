@@ -40,12 +40,18 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
     return () => window.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+    setFarmMenuOpen(false);
+    setChainMenuOpen(false);
+  }, [currentPath]);
+
   return (
     <header className="site-header">
       <div className="site-header__inner">
         <button type="button" className="site-brand" onClick={() => onNavigate("/")}>
           <span className="site-brand__mark">XVG</span>
-          <span className="site-brand__text">XVGTokens.com</span>
+          <span className="site-brand__text">xvg.fi</span>
         </button>
 
         <nav className="site-nav">
@@ -66,7 +72,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           <div className="site-nav__menu" ref={farmMenuRef}>
             <button
               type="button"
-              className={`site-nav__link ${activeToken?.farmSlug ? "is-active" : ""}`}
+              className={`site-nav__link ${farmMenuOpen ? "is-active" : ""}`}
               onClick={() => setFarmMenuOpen((open) => !open)}
             >
               Farm
@@ -109,7 +115,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           <div className="site-nav__menu" ref={chainMenuRef}>
             <button
               type="button"
-              className={`site-nav__link ${activeToken ? "is-active" : ""}`}
+              className={`site-nav__link ${chainMenuOpen ? "is-active" : ""}`}
               onClick={() => setChainMenuOpen((open) => !open)}
             >
               Chains
@@ -138,7 +144,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           <div className="site-nav__menu" ref={menuRef}>
             <button
               type="button"
-              className={`site-nav__link ${activeToken ? "is-active" : ""}`}
+              className={`site-nav__link ${menuOpen ? "is-active" : ""}`}
               onClick={() => setMenuOpen((open) => !open)}
             >
               Tokens
