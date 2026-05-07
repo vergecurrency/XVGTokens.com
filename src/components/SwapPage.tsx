@@ -73,6 +73,26 @@ function formatAssetAddress(address?: string) {
   return `${address.slice(0, 6)}…`;
 }
 
+const networkIconsById = new Map<number, string>([
+  [324, "/images/networks/zksync.webp"],
+  [8453, "/images/networks/base.webp"],
+  [10, "/images/networks/optimism.webp"],
+  [146, "/images/networks/sonic.webp"],
+  [42161, "/images/networks/arbitrum.webp"],
+  [43114, "/images/networks/avalanche.webp"],
+  [137, "/images/networks/polygon.webp"],
+  [59144, "/images/networks/linea.webp"],
+  [56, "/images/networks/bsc.webp"],
+  [5000, "/images/networks/mantle.webp"],
+  [25, "/images/networks/cronos.webp"],
+  [130, "/images/networks/unichain.webp"],
+  [81457, "/images/networks/blast.webp"],
+  [100, "/images/networks/gnosis.webp"],
+  [80094, "/images/networks/berachain.webp"],
+  [480, "/images/networks/worldchain.webp"],
+  [43111, "/images/networks/hemi.webp"],
+]);
+
 function TokenIcon({ label, src }: { label: string; src: string }) {
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -315,18 +335,6 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
     [selectedChainId],
   );
   const chainAssets = useMemo(() => getAssetsForChain(selectedChainId), [selectedChainId]);
-  const chainIconsById = useMemo(
-    () =>
-      new Map(
-        swapChains.map((chain) => {
-          const logoAsset =
-            getAssetsForChain(chain.chainId).find((asset) => asset.kind !== "xvg") ??
-            getDefaultSellAsset(chain.chainId);
-          return [chain.chainId, logoAsset?.icon ?? ""];
-        }),
-      ),
-    [],
-  );
   const sellAsset = chainAssets.find((asset) => asset.id === sellAssetId) ?? null;
   const buyAsset = chainAssets.find((asset) => asset.id === buyAssetId) ?? null;
   const parsedSellAmount = sellAsset ? parseInputToUnitsSafe(sellAmount, sellAsset.decimals) : 0n;
@@ -676,7 +684,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
             <div className="swap-form">
               <NetworkSelector
                 chains={swapChains}
-                chainIconsById={chainIconsById}
+                chainIconsById={networkIconsById}
                 selectedChain={selectedChain}
                 onSelect={(chainId) => void handleChainSelectionChange(chainId)}
               />
