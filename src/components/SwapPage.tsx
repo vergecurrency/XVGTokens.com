@@ -68,6 +68,18 @@ function formatUsdValue(value: number | null) {
   }).format(value);
 }
 
+function parseOptionalBigInt(value?: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return BigInt(value);
+  } catch {
+    return null;
+  }
+}
+
 function formatAssetAddress(address?: string) {
   if (!address) {
     return "Native";
@@ -77,6 +89,7 @@ function formatAssetAddress(address?: string) {
 }
 
 const networkIconsById = new Map<number, string>([
+  [1, "/images/networks/ethereum.webp"],
   [324, "/images/networks/zksync.webp"],
   [8453, "/images/networks/base.webp"],
   [10, "/images/networks/optimism.webp"],
@@ -310,9 +323,18 @@ function appendIntegratorFeeParams(params: URLSearchParams, sellToken: string) {
     throw new Error(`Missing ${ZEROX_FEE_RECIPIENT_ENV} in the frontend environment.`);
   }
 
+  const buyToken = params.get("buyToken") ?? "";
+  const selectedFeeToken = sellToken.startsWith("0x")
+    ? sellToken
+    : buyToken.startsWith("0x")
+      ? buyToken
+      : "";
+
   params.set("swapFeeBps", feeBps);
   params.set("swapFeeRecipient", feeRecipient);
-  params.set("swapFeeToken", sellToken);
+  if (selectedFeeToken) {
+    params.set("swapFeeToken", selectedFeeToken);
+  }
 }
 
 export function SwapPage({ onNavigate }: SwapPageProps) {
@@ -343,6 +365,9 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
   const sellAsset = chainAssets.find((asset) => asset.id === sellAssetId) ?? null;
   const buyAsset = chainAssets.find((asset) => asset.id === buyAssetId) ?? null;
   const parsedSellAmount = sellAsset ? parseInputToUnitsSafe(sellAmount, sellAsset.decimals) : 0n;
+  const quotedSellAmount = parseOptionalBigInt(quote?.sellAmount);
+  const quotedBuyAmount = parseOptionalBigInt(quote?.buyAmount);
+  const quotedMinBuyAmount = parseOptionalBigInt(quote?.minBuyAmount);
   const isWrongNetwork = isConnected && connectedChainId !== selectedChainId;
   const needsApproval = Boolean(
     quote?.issues?.allowance?.spender && sellAsset && !sellAsset.isNativeLike,
@@ -377,8 +402,8 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
         usdPrices[sellAsset.coingeckoId]
       : null;
   const buyUsdValue =
-    quote && buyAsset?.coingeckoId && usdPrices[buyAsset.coingeckoId] != null
-      ? Number(formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 12)) *
+    quotedBuyAmount != null && buyAsset?.coingeckoId && usdPrices[buyAsset.coingeckoId] != null
+      ? Number(formatUnitsSafe(quotedBuyAmount, buyAsset.decimals, 12)) *
         usdPrices[buyAsset.coingeckoId]
       : null;
   const sellBalanceFormatted =
@@ -468,7 +493,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
   }, [buyAsset?.coingeckoId, sellAsset?.coingeckoId]);
 
   useEffect(() => {
-    if (!publicClient || !address || !sellAsset?.address) {
+    if (!publicClient || !address || !sellAsset) {
       setSellBalance(null);
       setSellBalanceLoading(false);
       return;
@@ -479,12 +504,14 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
 
     void (async () => {
       try {
-        const balance = await publicClient.readContract({
-          address: sellAsset.address as `0x${string}`,
-          abi: ERC20_BALANCE_ABI,
-          functionName: "balanceOf",
-          args: [address],
-        });
+        const balance = sellAsset.isNativeLike
+          ? (await publicClient.getBalance({ address }))
+          : (await publicClient.readContract({
+              address: sellAsset.address as `0x${string}`,
+              abi: ERC20_BALANCE_ABI,
+              functionName: "balanceOf",
+              args: [address],
+            }));
 
         if (!controller.signal.aborted) {
           setSellBalance(balance);
@@ -501,7 +528,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
     })();
 
     return () => controller.abort();
-  }, [address, publicClient, sellAsset?.address]);
+  }, [address, publicClient, sellAsset]);
 
   async function ensureCorrectChain() {
     if (!isWrongNetwork || !selectedChain) {
@@ -591,9 +618,13 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
       appendIntegratorFeeParams(params, sellAsset.identifier);
 
       const nextQuote = await fetchZeroExJson<ZeroExQuote>("price", params);
+      const hasRenderableAmounts = typeof nextQuote.sellAmount === "string" && typeof nextQuote.buyAmount === "string";
+
       setQuote(nextQuote);
       if (nextQuote.liquidityAvailable === false) {
         setQuoteError("0x did not return liquidity for this pair on the selected chain.");
+      } else if (!hasRenderableAmounts) {
+        setQuoteError("0x returned an incomplete quote for this pair on the selected chain.");
       }
     } catch (error) {
       setQuote(null);
@@ -803,7 +834,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                     }}
                   />
                   <div className="swap-output">
-                    {quote ? formatUnitsSafe(BigInt(quote.buyAmount), buyAsset?.decimals ?? 18, 6) : "--"}
+                    {quotedBuyAmount != null ? formatUnitsSafe(quotedBuyAmount, buyAsset?.decimals ?? 18, 6) : "--"}
                   </div>
                   <small className="swap-field__usd">{formatUsdValue(buyUsdValue)}</small>
                 </div>
@@ -867,20 +898,20 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
             <div className="swap-metric">
               <span>Sell amount</span>
               <div className="swap-metric__value">
-                <strong>{quote && sellAsset ? `${formatUnitsSafe(BigInt(quote.sellAmount), sellAsset.decimals, 6)} ${sellAsset.symbol}` : "--"}</strong>
+                <strong>{quotedSellAmount != null && sellAsset ? `${formatUnitsSafe(quotedSellAmount, sellAsset.decimals, 6)} ${sellAsset.symbol}` : "--"}</strong>
                 <small>{formatUsdValue(sellUsdValue)}</small>
               </div>
             </div>
             <div className="swap-metric">
               <span>Buy amount</span>
               <div className="swap-metric__value">
-                <strong>{quote && buyAsset ? `${formatUnitsSafe(BigInt(quote.buyAmount), buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
+                <strong>{quotedBuyAmount != null && buyAsset ? `${formatUnitsSafe(quotedBuyAmount, buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
                 <small>{formatUsdValue(buyUsdValue)}</small>
               </div>
             </div>
             <div className="swap-metric">
               <span>Minimum received</span>
-              <strong>{quote?.minBuyAmount && buyAsset ? `${formatUnitsSafe(BigInt(quote.minBuyAmount), buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
+              <strong>{quotedMinBuyAmount != null && buyAsset ? `${formatUnitsSafe(quotedMinBuyAmount, buyAsset.decimals, 6)} ${buyAsset.symbol}` : "--"}</strong>
             </div>
           </CardContent>
         </Card>

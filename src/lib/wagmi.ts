@@ -10,6 +10,7 @@ import {
 import { defineChain } from "viem";
 import { http } from "wagmi";
 import {
+  mainnet as mainnetChain,
   arbitrum as arbitrumChain,
   avalanche as avalancheChain,
   base as baseChain,
@@ -63,6 +64,7 @@ const citreaChain = defineChain({
 });
 
 const chains = [
+  mainnetChain,
   citreaChain,
   baseChain,
   bscChain,
@@ -85,7 +87,12 @@ const chains = [
 ] as const;
 
 const transports = Object.fromEntries(
-  tokenOrder.map((slug) => {
+  [
+    [
+      mainnetChain.id,
+      http(getRpcUrlEnv("VITE_ETH_RPC_URL", "https://ethereum-rpc.publicnode.com")),
+    ],
+    ...tokenOrder.map((slug) => {
     const token = tokensBySlug[slug];
     const chainId = Number.parseInt(token.wallet.chainId, 16);
 
@@ -96,8 +103,9 @@ const transports = Object.fromEntries(
           ? getRpcUrlEnv("VITE_BSC_RPC_URL", token.wallet.rpcUrl)
           : token.wallet.rpcUrl;
 
-    return [chainId, http(rpcUrl)];
-  }),
+      return [chainId, http(rpcUrl)];
+    }),
+  ],
 );
 
 export const wagmiConfig = getDefaultConfig({

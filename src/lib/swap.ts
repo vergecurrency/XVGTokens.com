@@ -1,5 +1,6 @@
 import { tokensBySlug, type TokenSlug } from "@/data/tokens";
 
+export type SwapChainKey = TokenSlug | "xvgeth";
 export type SwapAssetKind = "xvg" | "native" | "stable" | "eth" | "governance";
 
 export type SwapAsset = {
@@ -16,7 +17,7 @@ export type SwapAsset = {
   kind: SwapAssetKind;
   isNativeLike: boolean;
   coingeckoId?: string;
-  tokenSlug?: TokenSlug;
+  tokenSlug?: SwapChainKey;
 };
 
 export type SwapChain = {
@@ -24,7 +25,7 @@ export type SwapChain = {
   chainIdHex: string;
   chainName: string;
   nativeSymbol: string;
-  tokenSlug: TokenSlug;
+  tokenSlug: SwapChainKey;
   tokenSymbol: string;
 };
 
@@ -76,7 +77,17 @@ export const ZEROX_PROXY_URL_ENV = "VITE_ZEROX_PROXY_URL";
 export const ZEROX_FEE_BPS_ENV = "VITE_ZEROX_FEE_BPS";
 export const ZEROX_FEE_RECIPIENT_ENV = "VITE_ZEROX_FEE_RECIPIENT";
 
-const supportedSwapSlugs: TokenSlug[] = [
+const ethereumSwapChain = {
+  chainId: 1,
+  chainIdHex: "0x1",
+  chainName: "Ethereum",
+  nativeSymbol: "ETH",
+  tokenSlug: "xvgeth" as const,
+  tokenSymbol: "XVGETH",
+};
+
+const supportedSwapSlugs: SwapChainKey[] = [
+  "xvgeth",
   "xvgzke",
   "xvgbase",
   "xvgopt",
@@ -104,8 +115,24 @@ function localSwapIcon(filename: string) {
   return `/images/networks/${filename}.webp`;
 }
 
+function getChainMetadata(key: SwapChainKey) {
+  if (key === "xvgeth") {
+    return ethereumSwapChain;
+  }
+
+  const token = tokensBySlug[key];
+  return {
+    chainId: hexToNumber(token.wallet.chainId),
+    chainIdHex: token.wallet.chainId,
+    chainName: token.chainName,
+    nativeSymbol: token.wallet.nativeSymbol,
+    tokenSlug: key,
+    tokenSymbol: token.symbol,
+  };
+}
+
 function createAsset(
-  slug: TokenSlug,
+  slug: SwapChainKey,
   config: {
     symbol: string;
     identifier: string;
@@ -115,22 +142,21 @@ function createAsset(
     icon?: string;
     address?: string;
     isNativeLike?: boolean;
-    tokenSlug?: TokenSlug;
+    tokenSlug?: SwapChainKey;
   },
 ): SwapAsset {
-  const token = tokensBySlug[slug];
-  const chainId = hexToNumber(token.wallet.chainId);
+  const chain = getChainMetadata(slug);
   const address = config.address ?? (config.identifier.startsWith("0x") ? config.identifier : undefined);
 
   return {
-    id: `${chainId}:${config.symbol}:${config.identifier}`,
+    id: `${chain.chainId}:${config.symbol}:${config.identifier}`,
     symbol: config.symbol,
-    name: `${config.symbol} on ${token.chainName}`,
-    icon: config.icon ?? token.icon,
+    name: `${config.symbol} on ${chain.chainName}`,
+    icon: config.icon ?? `/images/${slug}.png`,
     address,
-    chainId,
-    chainIdHex: token.wallet.chainId,
-    chainName: token.chainName,
+    chainId: chain.chainId,
+    chainIdHex: chain.chainIdHex,
+    chainName: chain.chainName,
     identifier: config.identifier,
     decimals: config.decimals,
     kind: config.kind,
@@ -140,7 +166,44 @@ function createAsset(
   };
 }
 
-const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
+const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
+  xvgeth: [
+    createAsset("xvgeth", {
+      symbol: "XVGETH",
+      identifier: "0x85614a474dbeed440d5bbdb8ac50b0f22367f997",
+      decimals: 18,
+      kind: "xvg",
+      coingeckoId: "xvgeth",
+      tokenSlug: "xvgeth",
+    }),
+    createAsset("xvgeth", {
+      symbol: "ETH",
+      identifier: "ETH",
+      decimals: 18,
+      kind: "eth",
+      coingeckoId: "ethereum",
+      icon: localSwapIcon("ethereum"),
+      isNativeLike: true,
+    }),
+    createAsset("xvgeth", {
+      symbol: "USDC",
+      identifier: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      decimals: 6,
+      kind: "stable",
+      coingeckoId: "usd-coin",
+      icon: localSwapIcon("ethereum"),
+      address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    }),
+    createAsset("xvgeth", {
+      symbol: "USDT",
+      identifier: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      decimals: 6,
+      kind: "stable",
+      coingeckoId: "tether",
+      icon: localSwapIcon("ethereum"),
+      address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    }),
+  ],
   xvgzke: [
     createAsset("xvgzke", {
       symbol: "XVGZKE",
@@ -473,15 +536,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
 };
 
 export const swapChains: SwapChain[] = supportedSwapSlugs.map((slug) => {
-  const token = tokensBySlug[slug];
-  return {
-    chainId: hexToNumber(token.wallet.chainId),
-    chainIdHex: token.wallet.chainId,
-    chainName: token.chainName,
-    nativeSymbol: token.wallet.nativeSymbol,
-    tokenSlug: slug,
-    tokenSymbol: token.symbol,
-  };
+  return getChainMetadata(slug);
 });
 
 export const swapAssets: SwapAsset[] = supportedSwapSlugs.flatMap((slug) => swapAssetsBySlug[slug]);
