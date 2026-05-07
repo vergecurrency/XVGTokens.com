@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { ArrowDownUp, LoaderCircle } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowDownUp, Check, ChevronDown, Copy, LoaderCircle } from "lucide-react";
 import { parseAbi } from "viem";
 import { useAccount, useChainId, usePublicClient, useSwitchChain, useWalletClient } from "wagmi";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -14,6 +14,7 @@ import {
   getDefaultSellAsset,
   swapChains,
   type SwapAsset,
+  type SwapChain,
   type ZeroExQuote,
   ZEROX_FEE_BPS_ENV,
   ZEROX_FEE_RECIPIENT_ENV,
@@ -26,6 +27,22 @@ const APPROVE_ABI = parseAbi([
 
 type SwapPageProps = {
   onNavigate: (path: string) => void;
+};
+
+type AssetSelectorProps = {
+  assets: SwapAsset[];
+  copiedAssetId: string;
+  label: string;
+  selectedAsset: SwapAsset | null;
+  onCopyAddress: (asset: SwapAsset) => void;
+  onSelect: (assetId: string) => void;
+};
+
+type NetworkSelectorProps = {
+  chainIconsById: Map<number, string>;
+  chains: SwapChain[];
+  selectedChain: SwapChain | null;
+  onSelect: (chainId: number) => void;
 };
 
 function getQuoteErrorMessage(error: unknown) {
@@ -46,6 +63,189 @@ function formatUsdValue(value: number | null) {
     currency: "USD",
     maximumFractionDigits: value >= 1 ? 2 : 6,
   }).format(value);
+}
+
+function formatAssetAddress(address?: string) {
+  if (!address) {
+    return "Native";
+  }
+
+  return `${address.slice(0, 6)}…`;
+}
+
+function TokenIcon({ label, src }: { label: string; src: string }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  return (
+    <span className="swap-asset-icon">
+      {!imageFailed ? (
+        <img
+          src={src}
+          alt={`${label} logo`}
+          className="swap-asset-icon__image"
+          onError={() => setImageFailed(true)}
+        />
+      ) : null}
+      {imageFailed ? <span className="swap-asset-icon__fallback">{label.slice(0, 3)}</span> : null}
+    </span>
+  );
+}
+
+function AssetSelector({
+  assets,
+  copiedAssetId,
+  label,
+  selectedAsset,
+  onCopyAddress,
+  onSelect,
+}: AssetSelectorProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  return (
+    <div className="swap-field swap-asset-selector" ref={containerRef}>
+      <span className="swap-field__label">{label}</span>
+      <div className={`swap-asset-trigger${open ? " swap-asset-trigger--open" : ""}`}>
+        <button
+          type="button"
+          className="swap-asset-trigger__button"
+          onClick={() => setOpen((current) => !current)}
+        >
+          {selectedAsset ? <TokenIcon label={selectedAsset.symbol} src={selectedAsset.icon} /> : null}
+          <span className="swap-asset-trigger__text">
+            <strong>{selectedAsset?.symbol ?? "Select asset"}</strong>
+            <small>{selectedAsset?.name ?? "Choose an asset"}</small>
+          </span>
+          <span className="swap-asset-trigger__meta">
+            <span>{formatAssetAddress(selectedAsset?.address)}</span>
+          </span>
+          <ChevronDown size={16} className="swap-asset-trigger__chevron" />
+        </button>
+        {selectedAsset?.address ? (
+          <button
+            type="button"
+            className="swap-asset-trigger__copy"
+            onClick={() => void onCopyAddress(selectedAsset)}
+            aria-label={`Copy ${selectedAsset.symbol} contract`}
+          >
+            {copiedAssetId === selectedAsset.id ? <Check size={14} /> : <Copy size={14} />}
+          </button>
+        ) : null}
+      </div>
+      {open ? (
+        <div className="swap-asset-menu">
+          {assets.map((asset) => (
+            <div key={asset.id} className="swap-asset-option">
+              <button
+                type="button"
+                className="swap-asset-option__button"
+                onClick={() => {
+                  onSelect(asset.id);
+                  setOpen(false);
+                }}
+              >
+                <TokenIcon label={asset.symbol} src={asset.icon} />
+                <span className="swap-asset-option__text">
+                  <strong>{asset.symbol}</strong>
+                  <small>{asset.name}</small>
+                </span>
+              </button>
+              <span className="swap-asset-option__meta">
+                <span>{formatAssetAddress(asset.address)}</span>
+                {asset.address ? (
+                  <button
+                    type="button"
+                    className="swap-asset-option__copy"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void onCopyAddress(asset);
+                    }}
+                    aria-label={`Copy ${asset.symbol} contract`}
+                  >
+                    {copiedAssetId === asset.id ? <Check size={14} /> : <Copy size={14} />}
+                  </button>
+                ) : null}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function NetworkSelector({ chainIconsById, chains, selectedChain, onSelect }: NetworkSelectorProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  const selectedIcon = selectedChain ? chainIconsById.get(selectedChain.chainId) ?? "" : "";
+
+  return (
+    <div className="swap-field swap-asset-selector" ref={containerRef}>
+      <span className="swap-field__label">Network</span>
+      <div className={`swap-asset-trigger${open ? " swap-asset-trigger--open" : ""}`}>
+        <button
+          type="button"
+          className="swap-asset-trigger__button"
+          onClick={() => setOpen((current) => !current)}
+        >
+          {selectedChain && selectedIcon ? <TokenIcon label={selectedChain.chainName} src={selectedIcon} /> : null}
+          <span className="swap-asset-trigger__text">
+            <strong>{selectedChain?.chainName ?? "Select network"}</strong>
+            <small>{selectedChain?.nativeSymbol ?? "Choose a chain"}</small>
+          </span>
+          <ChevronDown size={16} className="swap-asset-trigger__chevron" />
+        </button>
+      </div>
+      {open ? (
+        <div className="swap-asset-menu">
+          {chains.map((chain) => {
+            const icon = chainIconsById.get(chain.chainId) ?? "";
+            return (
+              <div key={chain.chainId} className="swap-asset-option">
+                <button
+                  type="button"
+                  className="swap-asset-option__button"
+                  onClick={() => {
+                    onSelect(chain.chainId);
+                    setOpen(false);
+                  }}
+                >
+                  {icon ? <TokenIcon label={chain.chainName} src={icon} /> : null}
+                  <span className="swap-asset-option__text">
+                    <strong>{chain.chainName}</strong>
+                    <small>{chain.nativeSymbol}</small>
+                  </span>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 async function fetchZeroExJson<T>(path: "price" | "quote", params: URLSearchParams) {
@@ -103,6 +303,7 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
   const [sellAmount, setSellAmount] = useState<string>("");
   const [quote, setQuote] = useState<ZeroExQuote | null>(null);
   const [quoteError, setQuoteError] = useState<string>("");
+  const [copiedAssetId, setCopiedAssetId] = useState("");
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<"" | "approve" | "swap">("");
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -114,6 +315,18 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
     [selectedChainId],
   );
   const chainAssets = useMemo(() => getAssetsForChain(selectedChainId), [selectedChainId]);
+  const chainIconsById = useMemo(
+    () =>
+      new Map(
+        swapChains.map((chain) => {
+          const logoAsset =
+            getAssetsForChain(chain.chainId).find((asset) => asset.kind !== "xvg") ??
+            getDefaultSellAsset(chain.chainId);
+          return [chain.chainId, logoAsset?.icon ?? ""];
+        }),
+      ),
+    [],
+  );
   const sellAsset = chainAssets.find((asset) => asset.id === sellAssetId) ?? null;
   const buyAsset = chainAssets.find((asset) => asset.id === buyAssetId) ?? null;
   const parsedSellAmount = sellAsset ? parseInputToUnitsSafe(sellAmount, sellAsset.decimals) : 0n;
@@ -268,6 +481,22 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
       if (connectedChainId && swapChains.some((chain) => chain.chainId === connectedChainId)) {
         setSelectedChainId(connectedChainId);
       }
+    }
+  }
+
+  async function handleCopyAssetAddress(asset: SwapAsset) {
+    if (!asset.address) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(asset.address);
+      setCopiedAssetId(asset.id);
+      window.setTimeout(() => {
+        setCopiedAssetId((current) => (current === asset.id ? "" : current));
+      }, 1500);
+    } catch {
+      // Ignore clipboard failures.
     }
   }
 
@@ -445,31 +674,27 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
           </CardHeader>
           <CardContent className="swap-card__content">
             <div className="swap-form">
-              <label className="swap-field">
-                <span className="swap-field__label">Network</span>
-                <select
-                  className="swap-select"
-                  value={selectedChainId}
-                  onChange={(event) => void handleChainSelectionChange(Number(event.target.value))}
-                >
-                  {swapChains.map((chain) => (
-                    <option key={chain.chainId} value={chain.chainId}>
-                      {chain.chainName}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <NetworkSelector
+                chains={swapChains}
+                chainIconsById={chainIconsById}
+                selectedChain={selectedChain}
+                onSelect={(chainId) => void handleChainSelectionChange(chainId)}
+              />
 
               <div className="swap-token-panels">
-                <label className="swap-field">
-                  <span className="swap-field__label">Sell</span>
-                  <select className="swap-select" value={sellAssetId} onChange={(event) => setSellAssetId(event.target.value)}>
-                    {chainAssets.map((asset) => (
-                      <option key={asset.id} value={asset.id}>
-                        {asset.symbol}
-                      </option>
-                    ))}
-                  </select>
+                <div className="swap-token-panel">
+                  <AssetSelector
+                    label="Sell"
+                    assets={chainAssets}
+                    selectedAsset={sellAsset}
+                    copiedAssetId={copiedAssetId}
+                    onCopyAddress={handleCopyAssetAddress}
+                    onSelect={(assetId) => {
+                      setSellAssetId(assetId);
+                      setQuote(null);
+                      setQuoteError("");
+                    }}
+                  />
                   <Input
                     inputMode="decimal"
                     placeholder="0.0"
@@ -481,28 +706,30 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
                     }}
                   />
                   <small className="swap-field__usd">{formatUsdValue(sellUsdValue)}</small>
-                </label>
+                </div>
 
                 <button type="button" className="swap-flip" onClick={handleFlipAssets} aria-label="Flip sell and buy assets">
                   <ArrowDownUp size={18} />
                 </button>
 
-                <label className="swap-field">
-                  <span className="swap-field__label">Buy</span>
-                  <select className="swap-select" value={buyAssetId} onChange={(event) => setBuyAssetId(event.target.value)}>
-                    {chainAssets
-                      .filter((asset) => asset.id !== sellAssetId)
-                      .map((asset) => (
-                        <option key={asset.id} value={asset.id}>
-                          {asset.symbol}
-                        </option>
-                      ))}
-                  </select>
+                <div className="swap-token-panel">
+                  <AssetSelector
+                    label="Buy"
+                    assets={chainAssets.filter((asset) => asset.id !== sellAssetId)}
+                    selectedAsset={buyAsset}
+                    copiedAssetId={copiedAssetId}
+                    onCopyAddress={handleCopyAssetAddress}
+                    onSelect={(assetId) => {
+                      setBuyAssetId(assetId);
+                      setQuote(null);
+                      setQuoteError("");
+                    }}
+                  />
                   <div className="swap-output">
                     {quote ? formatUnitsSafe(BigInt(quote.buyAmount), buyAsset?.decimals ?? 18, 6) : "--"}
                   </div>
                   <small className="swap-field__usd">{formatUsdValue(buyUsdValue)}</small>
-                </label>
+                </div>
               </div>
 
               <div className="swap-actions">

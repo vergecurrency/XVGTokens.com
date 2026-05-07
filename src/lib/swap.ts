@@ -7,6 +7,7 @@ export type SwapAsset = {
   symbol: string;
   name: string;
   icon: string;
+  address?: string;
   chainId: number;
   chainIdHex: string;
   chainName: string;
@@ -99,6 +100,10 @@ function hexToNumber(chainIdHex: string) {
   return Number.parseInt(chainIdHex, 16);
 }
 
+function tokenIcon(chainId: number, address: string) {
+  return `https://tokens.1inch.io/${chainId}/${address}.png`;
+}
+
 function createAsset(
   slug: TokenSlug,
   config: {
@@ -107,18 +112,22 @@ function createAsset(
     decimals: number;
     kind: SwapAssetKind;
     coingeckoId?: string;
+    icon?: string;
+    address?: string;
     isNativeLike?: boolean;
     tokenSlug?: TokenSlug;
   },
 ): SwapAsset {
   const token = tokensBySlug[slug];
   const chainId = hexToNumber(token.wallet.chainId);
+  const address = config.address ?? (config.identifier.startsWith("0x") ? config.identifier : undefined);
 
   return {
     id: `${chainId}:${config.symbol}:${config.identifier}`,
     symbol: config.symbol,
     name: `${config.symbol} on ${token.chainName}`,
-    icon: token.icon,
+    icon: config.icon ?? token.icon,
+    address,
     chainId,
     chainIdHex: token.wallet.chainId,
     chainName: token.chainName,
@@ -147,6 +156,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "zksync",
+      icon: tokenIcon(324, "0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E"),
     }),
   ],
   xvgbase: [
@@ -164,6 +174,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "eth",
       coingeckoId: "ethereum",
+      icon: tokenIcon(8453, "0x4200000000000000000000000000000000000006"),
+      address: "0x4200000000000000000000000000000000000006",
       isNativeLike: true,
     }),
   ],
@@ -182,6 +194,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "optimism",
+      icon: tokenIcon(10, "0x4200000000000000000000000000000000000042"),
     }),
   ],
   xvgson: [
@@ -199,6 +212,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "sonic-3",
+      icon: tokenIcon(146, "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38"),
+      address: "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
       isNativeLike: true,
     }),
   ],
@@ -217,6 +232,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "arbitrum",
+      icon: tokenIcon(42161, "0x912CE59144191C1204E64559FE8253a0e49E6548"),
     }),
   ],
   xvgava: [
@@ -234,6 +250,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "avalanche-2",
+      icon: tokenIcon(43114, "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"),
+      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       isNativeLike: true,
     }),
   ],
@@ -252,6 +270,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "matic-network",
+      icon: tokenIcon(137, "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"),
+      address: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
       isNativeLike: true,
     }),
   ],
@@ -263,6 +283,14 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       kind: "xvg",
       coingeckoId: "xvglin",
       tokenSlug: "xvglin",
+    }),
+    createAsset("xvglin", {
+      symbol: "LINEA",
+      identifier: "0x1789e0043623282d5dcc7f213d703c6d8bafbb04",
+      decimals: 18,
+      kind: "governance",
+      coingeckoId: "bridged-usdc-linea-bridged-usdc-linea",
+      icon: tokenIcon(59144, "0x1789e0043623282d5dcc7f213d703c6d8bafbb04"),
     }),
   ],
   xvgbsc: [
@@ -280,6 +308,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "binancecoin",
+      icon: tokenIcon(56, "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"),
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
       isNativeLike: true,
     }),
   ],
@@ -298,6 +328,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "mantle",
+      icon: tokenIcon(5000, "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8"),
+      address: "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
       isNativeLike: true,
     }),
   ],
@@ -316,6 +348,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "cronos",
+      icon: tokenIcon(25, "0x5c7f8a570d578ed84e63fdfa7b1ee72deae1ae23"),
+      address: "0x5c7f8a570d578ed84e63fdfa7b1ee72deae1ae23",
       isNativeLike: true,
     }),
   ],
@@ -334,6 +368,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "uniswap",
+      icon: tokenIcon(130, "0x8f187aa05619a017077f5308904739877ce9ea21"),
+      address: "0x8f187aa05619a017077f5308904739877ce9ea21",
     }),
   ],
   xvgblast: [
@@ -351,6 +387,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "blast",
+      icon: tokenIcon(81457, "0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad"),
+      address: "0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad",
     }),
   ],
   xvggnosis: [
@@ -376,6 +414,7 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "gnosis",
+      icon: tokenIcon(100, "0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb"),
     }),
   ],
   xvgbera: [
@@ -393,6 +432,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "native",
       coingeckoId: "berachain-bera",
+      icon: tokenIcon(80094, "0x6969696969696969696969696969696969696969"),
+      address: "0x6969696969696969696969696969696969696969",
       isNativeLike: true,
     }),
   ],
@@ -411,6 +452,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "worldcoin-wld",
+      icon: tokenIcon(480, "0x2cFc85d8E48F8EAB294be644d9E25C3030863003"),
+      address: "0x2cFc85d8E48F8EAB294be644d9E25C3030863003",
     }),
   ],
   xvghemi: [
@@ -428,6 +471,8 @@ const swapAssetsBySlug: Record<TokenSlug, SwapAsset[]> = {
       decimals: 18,
       kind: "governance",
       coingeckoId: "hemi",
+      icon: tokenIcon(43111, "0x99e3dE3817F6081B2568208337ef83295b7f591D"),
+      address: "0x99e3dE3817F6081B2568208337ef83295b7f591D",
     }),
   ],
   xvgcbtc: [],
