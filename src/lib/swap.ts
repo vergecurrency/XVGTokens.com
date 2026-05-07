@@ -187,6 +187,15 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       isNativeLike: true,
     }),
     createAsset("xvgeth", {
+      symbol: "WETH",
+      identifier: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      decimals: 18,
+      kind: "eth",
+      coingeckoId: "ethereum",
+      icon: localSwapIcon("ethereum"),
+      address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    }),
+    createAsset("xvgeth", {
       symbol: "USDC",
       identifier: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       decimals: 6,
