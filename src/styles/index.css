@@ -691,6 +691,21 @@ input {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.site-header__wallet {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.site-header__wallet button {
+  width: auto;
+  white-space: nowrap;
 }
 
 .site-nav__menu {
@@ -2790,6 +2805,15 @@ input {
   .site-nav {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .site-header__wallet {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .site-header__wallet button {
+    width: 100%;
   }
 
   .token-grid {

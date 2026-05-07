@@ -2,7 +2,6 @@ import { BarChart3, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createPublicClient, formatUnits, http, parseAbi } from "viem";
 import { useAccount } from "wagmi";
-import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { type TokenDefinition } from "@/data/tokens";
 
 const PORTFOLIO_BALANCE_ABI = parseAbi([
@@ -215,10 +214,9 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
           </p>
         </div>
         <div className="portfolio-hero__actions">
-          <WalletConnectTrigger />
           <div className="portfolio-hero__status">
             <Wallet className="h-4 w-4" />
-            {isConnected ? "Wallet connected" : "Connect wallet to load balances"}
+            {isConnected ? "Wallet connected" : "Use the navbar wallet button to load balances"}
           </div>
         </div>
       </section>

@@ -6,7 +6,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { formatUnitsSafe, parseInputToUnitsSafe } from "@/lib/format";
 import {
   getAssetsForChain,
@@ -754,7 +753,6 @@ export function SwapPage({ onNavigate }: SwapPageProps) {
           <CardHeader className="swap-card__header">
             <div className="swap-card__topline">
               <Button variant="outline" onClick={() => onNavigate("/")}>Back</Button>
-              {!isConnected ? <WalletConnectTrigger /> : null}
             </div>
               <div className="swap-progress">
                 <div className="swap-progress__meta">

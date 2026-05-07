@@ -5,7 +5,6 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { useFarmConfig } from "@/lib/farm-context";
 
 type WalletActionsProps = {
@@ -109,7 +108,6 @@ export function WalletActions({
           </div>
         </CardHeader>
         <CardContent className="relative grid gap-3 sm:flex sm:flex-wrap">
-          <WalletConnectTrigger />
           {connected && wrongFarmChain ? (
             <Button
               onClick={() => void handleSwitchChain()}

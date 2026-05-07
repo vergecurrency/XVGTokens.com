@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import type { TokenDefinition } from "@/data/tokens";
 
 type SiteHeaderProps = {
@@ -165,6 +166,9 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
             ) : null}
           </div>
         </nav>
+        <div className="site-header__wallet">
+          <WalletConnectTrigger />
+        </div>
       </div>
     </header>
   );

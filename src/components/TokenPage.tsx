@@ -2,7 +2,6 @@ import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, TrendingUp, Wallet } 
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { formatUnits, parseAbi } from "viem";
 import { useAccount, usePublicClient, useSwitchChain } from "wagmi";
-import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import { socials, type TokenDefinition } from "@/data/tokens";
 
 type TokenPageProps = {
@@ -452,10 +451,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
                 )
               ) : (
                 <>
-                  <strong>Connect wallet</strong>
-                  <div className="token-page__meta-wallet">
-                    <WalletConnectTrigger />
-                  </div>
+                  <strong>Connect from navbar</strong>
                 </>
               )}
             </div>
