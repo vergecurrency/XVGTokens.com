@@ -1558,11 +1558,13 @@ input {
 .swap-card__content {
   display: grid;
   gap: 0.9rem;
+  overflow: visible;
 }
 
 .swap-form {
   display: grid;
   gap: 0.9rem;
+  overflow: visible;
 }
 
 .swap-token-panels {
