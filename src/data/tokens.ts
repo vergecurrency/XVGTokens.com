@@ -368,6 +368,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGCRO is a Verge-branded token deployed natively on Cronos. Unlike wrapped assets or synthetic derivatives, it is fully native and anchored by a single liquidity pool paired exclusively with CRO.",
     links: [
       { label: "View Explorer", href: "https://cronoscan.com/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/cro/pools/0xdcd1bd360155de2469e36f7f8095584de4d5f828", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/cronos/pair-explorer/0xdcd1bd360155de2469e36f7f8095584de4d5f828", kind: "dex" },
     ],
     wallet: {
