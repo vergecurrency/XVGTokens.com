@@ -642,7 +642,8 @@ input {
 body[data-view="home"] .site-header__inner,
 body[data-view="portfolio"] .site-header__inner,
 body[data-view="swap"] .site-header__inner,
-body[data-view="games"] .site-header__inner {
+body[data-view="games"] .site-header__inner,
+body[data-view="token"] .site-header__inner {
   border: 1px solid rgba(255, 77, 157, 0.24);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
@@ -703,7 +704,8 @@ body[data-view="games"] .site-header__inner {
 body[data-view="home"] .site-header__inner::before,
 body[data-view="portfolio"] .site-header__inner::before,
 body[data-view="swap"] .site-header__inner::before,
-body[data-view="games"] .site-header__inner::before {
+body[data-view="games"] .site-header__inner::before,
+body[data-view="token"] .site-header__inner::before {
   background:
     linear-gradient(90deg, rgba(255, 77, 157, 0.08) 1px, transparent 1px),
     linear-gradient(180deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
@@ -714,7 +716,8 @@ body[data-view="games"] .site-header__inner::before {
 body[data-view="home"] .site-header__inner::after,
 body[data-view="portfolio"] .site-header__inner::after,
 body[data-view="swap"] .site-header__inner::after,
-body[data-view="games"] .site-header__inner::after {
+body[data-view="games"] .site-header__inner::after,
+body[data-view="token"] .site-header__inner::after {
   background: radial-gradient(circle, rgba(255, 77, 157, 0.3), transparent 68%);
 }
 
@@ -786,7 +789,8 @@ body[data-view="games"] .site-header__inner::after {
 body[data-view="home"] .site-nav__link,
 body[data-view="portfolio"] .site-nav__link,
 body[data-view="swap"] .site-nav__link,
-body[data-view="games"] .site-nav__link {
+body[data-view="games"] .site-nav__link,
+body[data-view="token"] .site-nav__link {
   border: 1px solid rgba(255, 77, 157, 0.16);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
@@ -806,7 +810,8 @@ body[data-view="games"] .site-nav__link {
 body[data-view="home"] .site-nav__link.is-active,
 body[data-view="portfolio"] .site-nav__link.is-active,
 body[data-view="swap"] .site-nav__link.is-active,
-body[data-view="games"] .site-nav__link.is-active {
+body[data-view="games"] .site-nav__link.is-active,
+body[data-view="token"] .site-nav__link.is-active {
   border-color: rgba(34, 211, 238, 0.28);
   background:
     linear-gradient(180deg, rgba(255, 77, 157, 0.18), rgba(168, 85, 247, 0.12)),
@@ -845,7 +850,8 @@ body[data-view="games"] .site-nav__link.is-active {
   body[data-view="home"] .site-nav__link:hover,
   body[data-view="portfolio"] .site-nav__link:hover,
   body[data-view="swap"] .site-nav__link:hover,
-  body[data-view="games"] .site-nav__link:hover {
+  body[data-view="games"] .site-nav__link:hover,
+  body[data-view="token"] .site-nav__link:hover {
     border-color: rgba(34, 211, 238, 0.28);
     background:
       linear-gradient(180deg, rgba(255, 77, 157, 0.18), rgba(168, 85, 247, 0.12)),
