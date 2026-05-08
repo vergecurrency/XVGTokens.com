@@ -794,7 +794,6 @@ body[data-view="games"] .site-nav__link {
   color: rgba(244, 224, 255, 0.92);
 }
 
-.site-nav__link:hover,
 .site-nav__link.is-active {
   border-color: rgba(125, 211, 252, 0.22);
   background:
@@ -804,13 +803,9 @@ body[data-view="games"] .site-nav__link {
   color: #fff;
 }
 
-body[data-view="home"] .site-nav__link:hover,
 body[data-view="home"] .site-nav__link.is-active,
-body[data-view="portfolio"] .site-nav__link:hover,
 body[data-view="portfolio"] .site-nav__link.is-active,
-body[data-view="swap"] .site-nav__link:hover,
 body[data-view="swap"] .site-nav__link.is-active,
-body[data-view="games"] .site-nav__link:hover,
 body[data-view="games"] .site-nav__link.is-active {
   border-color: rgba(34, 211, 238, 0.28);
   background:
@@ -835,6 +830,30 @@ body[data-view="games"] .site-nav__link.is-active {
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.03);
   color: rgba(226, 232, 240, 0.88);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-nav__link:hover {
+    border-color: rgba(125, 211, 252, 0.22);
+    background:
+      linear-gradient(180deg, rgba(125, 211, 252, 0.16), rgba(56, 189, 248, 0.08)),
+      rgba(56, 189, 248, 0.12);
+    box-shadow: 0 10px 28px rgba(2, 6, 23, 0.22), 0 0 22px rgba(56, 189, 248, 0.08);
+    color: #fff;
+  }
+
+  body[data-view="home"] .site-nav__link:hover,
+  body[data-view="portfolio"] .site-nav__link:hover,
+  body[data-view="swap"] .site-nav__link:hover,
+  body[data-view="games"] .site-nav__link:hover {
+    border-color: rgba(34, 211, 238, 0.28);
+    background:
+      linear-gradient(180deg, rgba(255, 77, 157, 0.18), rgba(168, 85, 247, 0.12)),
+      rgba(34, 211, 238, 0.08);
+    box-shadow:
+      0 10px 28px rgba(9, 3, 24, 0.32),
+      0 0 24px rgba(255, 77, 157, 0.16);
+  }
 }
 
 .site-nav__popover {
