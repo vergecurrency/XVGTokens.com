@@ -278,8 +278,10 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const [tokenBalance, setTokenBalance] = useState<bigint | null>(null);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const geckoTerminalPool = getGeckoTerminalPool(token);
-  const hasMarketChart = Boolean(token.marketChartId || geckoTerminalPool);
-  const chartSourceName = token.marketChartId ? "CoinGecko" : geckoTerminalPool ? "GeckoTerminal" : "Market";
+  const geckoTerminalNetwork = geckoTerminalPool?.network ?? null;
+  const geckoTerminalPoolAddress = geckoTerminalPool?.poolAddress ?? null;
+  const hasMarketChart = Boolean(token.marketChartId || geckoTerminalPoolAddress);
+  const chartSourceName = token.marketChartId ? "CoinGecko" : geckoTerminalPoolAddress ? "GeckoTerminal" : "Market";
   const [marketChart, setMarketChart] = useState<MarketChartState>({
     points: [],
     loading: hasMarketChart,
@@ -400,7 +402,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   }, [token]);
 
   useEffect(() => {
-    if (!token.marketChartId && !geckoTerminalPool) {
+    if (!token.marketChartId && !geckoTerminalNetwork && !geckoTerminalPoolAddress) {
       setMarketChart({ points: [], loading: false, error: null });
       return;
     }
@@ -446,7 +448,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           if (points.length) {
             writeCachedMarketChart(token, "coingecko", points);
           }
-        } else if (geckoTerminalPool) {
+        } else if (geckoTerminalNetwork && geckoTerminalPoolAddress) {
           const cachedPoints = readCachedMarketChart(token, "geckoterminal");
 
           if (cachedPoints) {
@@ -459,7 +461,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           }
 
           const response = await fetch(
-            `https://api.geckoterminal.com/api/v2/networks/${geckoTerminalPool.network}/pools/${geckoTerminalPool.poolAddress}/ohlcv/day?aggregate=1&limit=30&currency=usd&token=${encodeURIComponent(token.contractAddress.toLowerCase())}`,
+            `https://api.geckoterminal.com/api/v2/networks/${geckoTerminalNetwork}/pools/${geckoTerminalPoolAddress}/ohlcv/day?aggregate=1&limit=30&currency=usd&token=${encodeURIComponent(token.contractAddress.toLowerCase())}`,
             { signal: controller.signal },
           );
 
@@ -514,7 +516,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
     void loadMarketChart();
 
     return () => controller.abort();
-  }, [geckoTerminalPool, token.contractAddress, token.marketChartId, token.symbol]);
+  }, [geckoTerminalNetwork, geckoTerminalPoolAddress, token.contractAddress, token.marketChartId, token.slug, token.symbol]);
 
   const chartPoints = marketChart.points;
   const firstPoint = chartPoints[0];
