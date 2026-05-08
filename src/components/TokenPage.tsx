@@ -22,6 +22,11 @@ type MarketChartState = {
   error: string | null;
 };
 
+type GeckoTerminalPool = {
+  network: string;
+  poolAddress: string;
+};
+
 const TOKEN_BALANCE_ABI = parseAbi([
   "function balanceOf(address account) view returns (uint256)",
 ]);
@@ -86,6 +91,27 @@ function getCoinGeckoCoinId(token: TokenDefinition) {
 
   const match = marketLink.href.match(/\/coins\/([^/?#]+)/i);
   return match?.[1] ?? null;
+}
+
+function getGeckoTerminalPool(token: TokenDefinition): GeckoTerminalPool | null {
+  const geckoTerminalLink = token.links.find(
+    (link) => link.href.includes("geckoterminal.com/") && link.href.includes("/pools/"),
+  );
+
+  if (!geckoTerminalLink) {
+    return null;
+  }
+
+  const match = geckoTerminalLink.href.match(/geckoterminal\.com\/([^/?#]+)\/pools\/(0x[a-fA-F0-9]{40})/i);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    network: match[1],
+    poolAddress: match[2].toLowerCase(),
+  };
 }
 
 function buildChartPath(points: MarketChartPoint[]) {
@@ -185,9 +211,12 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const [spotPriceUsd, setSpotPriceUsd] = useState<number | null>(null);
   const [tokenBalance, setTokenBalance] = useState<bigint | null>(null);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+  const geckoTerminalPool = getGeckoTerminalPool(token);
+  const hasMarketChart = Boolean(token.marketChartId || geckoTerminalPool);
+  const chartSourceName = token.marketChartId ? "CoinGecko" : geckoTerminalPool ? "GeckoTerminal" : "Market";
   const [marketChart, setMarketChart] = useState<MarketChartState>({
     points: [],
-    loading: Boolean(token.marketChartId),
+    loading: hasMarketChart,
     error: null,
   });
 
@@ -305,7 +334,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   }, [token]);
 
   useEffect(() => {
-    if (!token.marketChartId) {
+    if (!token.marketChartId && !geckoTerminalPool) {
       setMarketChart({ points: [], loading: false, error: null });
       return;
     }
@@ -316,23 +345,56 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
       setMarketChart((current) => ({ ...current, loading: true, error: null }));
 
       try {
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${token.marketChartId}/market_chart?vs_currency=usd&days=30`,
-          { signal: controller.signal },
-        );
+        let points: MarketChartPoint[] = [];
 
-        if (!response.ok) {
-          throw new Error(`CoinGecko request failed with ${response.status}`);
+        if (token.marketChartId) {
+          const response = await fetch(
+            `https://api.coingecko.com/api/v3/coins/${token.marketChartId}/market_chart?vs_currency=usd&days=30`,
+            { signal: controller.signal },
+          );
+
+          if (!response.ok) {
+            throw new Error(`CoinGecko request failed with ${response.status}`);
+          }
+
+          const payload = (await response.json()) as {
+            prices?: Array<[number, number]>;
+          };
+
+          points = (payload.prices ?? [])
+            .filter((entry): entry is [number, number] => Array.isArray(entry) && entry.length === 2)
+            .map(([timestamp, price]) => ({ timestamp, price }))
+            .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price));
+        } else if (geckoTerminalPool) {
+          const response = await fetch(
+            `https://api.geckoterminal.com/api/v2/networks/${geckoTerminalPool.network}/pools/${geckoTerminalPool.poolAddress}/ohlcv/day?aggregate=1&limit=30&currency=usd&token=${encodeURIComponent(token.contractAddress.toLowerCase())}`,
+            { signal: controller.signal },
+          );
+
+          if (!response.ok) {
+            throw new Error(`GeckoTerminal request failed with ${response.status}`);
+          }
+
+          const payload = (await response.json()) as {
+            data?: {
+              attributes?: {
+                ohlcv_list?: Array<[number, number, number, number, number, number]>;
+              };
+            };
+          };
+
+          points = (payload.data?.attributes?.ohlcv_list ?? [])
+            .filter(
+              (entry): entry is [number, number, number, number, number, number] =>
+                Array.isArray(entry) && entry.length >= 5,
+            )
+            .map(([timestamp, _open, _high, _low, close]) => ({
+              timestamp: timestamp * 1000,
+              price: close,
+            }))
+            .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price))
+            .reverse();
         }
-
-        const payload = (await response.json()) as {
-          prices?: Array<[number, number]>;
-        };
-
-        const points = (payload.prices ?? [])
-          .filter((entry): entry is [number, number] => Array.isArray(entry) && entry.length === 2)
-          .map(([timestamp, price]) => ({ timestamp, price }))
-          .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price));
 
         setMarketChart({
           points,
@@ -356,7 +418,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
     void loadMarketChart();
 
     return () => controller.abort();
-  }, [token.marketChartId, token.symbol]);
+  }, [geckoTerminalPool, token.contractAddress, token.marketChartId, token.symbol]);
 
   const chartPoints = marketChart.points;
   const firstPoint = chartPoints[0];
@@ -368,8 +430,9 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const midPrice = minPrice + (maxPrice - minPrice) / 2;
   const isPositiveChart = chartChange >= 0;
   const tokenBalanceDecimal = Number.parseFloat(formatUnits(tokenBalance ?? 0n, 18));
+  const derivedSpotPriceUsd = spotPriceUsd ?? lastPoint?.price ?? null;
   const tokenBalanceUsd =
-    Number.isFinite(tokenBalanceDecimal) && spotPriceUsd !== null ? tokenBalanceDecimal * spotPriceUsd : null;
+    Number.isFinite(tokenBalanceDecimal) && derivedSpotPriceUsd !== null ? tokenBalanceDecimal * derivedSpotPriceUsd : null;
 
   async function handleSwitchChain() {
     if (!switchChainAsync) {
@@ -513,7 +576,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
         </div>
       </section>
 
-      {token.marketChartId ? (
+      {hasMarketChart ? (
         <section className="token-page__resources token-page__chart-section">
           <div className="token-page__section-head">
             <div>
@@ -535,7 +598,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           </div>
 
           {marketChart.loading ? (
-            <div className="token-page__chart-state">Loading CoinGecko chart data...</div>
+            <div className="token-page__chart-state">Loading {chartSourceName} chart data...</div>
           ) : marketChart.error ? (
             <div className="token-page__chart-state token-page__chart-state--error">{marketChart.error}</div>
           ) : (

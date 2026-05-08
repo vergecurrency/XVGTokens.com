@@ -172,6 +172,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       { label: "View Explorer", href: "https://optimistic.etherscan.io/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
       { label: "CoinGecko", href: "https://www.coingecko.com/en/coins/xvgopt", kind: "market" },
       { label: "Phemex", href: "https://phemex.com/price/xvgopt", kind: "market" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/optimism/pools/0x9a13f98cb987694c9f086b1f5eb990eea8264ec3", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/optimism/pair-explorer/0x08ad80b07b28ea2d40a031150cecb71b59ebb174b663bb3e341cd816dae37ba7", kind: "dex" },
     ],
     wallet: {
