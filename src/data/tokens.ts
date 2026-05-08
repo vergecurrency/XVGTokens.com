@@ -391,6 +391,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGUNI harnesses Uniswap's proprietary L2 chain to merge Verge's value with one of the largest DEX user bases in the world. It brings ultra-fast swaps, next-gen liquidity incentives, and direct access to the heart of DeFi innovation.",
     links: [
       { label: "View Explorer", href: "https://uniscan.xyz/address/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/unichain/pools/0x04b01734e4af42a33e6d89a4c42915a10f5237c19f99ea401a6ebed87e9693ce", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/unichain/pair-explorer/0x04b01734e4af42a33e6d89a4c42915a10f5237c19f99ea401a6ebed87e9693ce", kind: "dex" },
     ],
     wallet: {
