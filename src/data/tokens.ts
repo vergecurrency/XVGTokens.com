@@ -294,6 +294,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGLIN brings the power of Verge to Linea's zkEVM Layer 2, combining ultra-low gas fees with Ethereum-level security and full EVM compatibility. It is the gateway for users who want to scale without compromise.",
     links: [
       { label: "View Explorer", href: "https://lineascan.build/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/linea/pools/0xee83fce74a0ef6efcdc63c0f7367819d485aef8d", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/linea/pair-explorer/0xee83fce74a0ef6efcdc63c0f7367819d485aef8d", kind: "dex" },
     ],
     wallet: {
@@ -319,6 +320,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
     links: [
       { label: "View Explorer", href: "https://bscscan.com/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
       { label: "Jump to Farm", href: "#farm", kind: "farm" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/bsc/pools/0x1aefd48cbfedecb3459ea7b1f6ad723227575527", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/bnb/pair-explorer/0x7c58c7c78b8bfff31c03ddc1f3ae6fc09b372490500e0f39ac1d15e0dfd1e115", kind: "dex" },
     ],
     wallet: {
@@ -342,6 +344,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGMNT brings Verge to Mantle's modular Ethereum Layer 2, combining rollup security with decentralized data availability and low fees. Its liquidity pool is paired solely with MNT and the token supply was airdropped for free.",
     links: [
       { label: "View Explorer", href: "https://explorer.mantle.xyz/token/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/mantle/pools/0x3f5db130faeb741b3131f51d9d48789e74b20d57", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/mantle/pair-explorer/0x3f5db130faeb741b3131f51d9d48789e74b20d57", kind: "dex" },
     ],
     wallet: {
@@ -434,6 +437,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGGNOSIS extends the XVG ecosystem to Gnosis Chain, leveraging low fees and secure infrastructure while maintaining the same unified contract address as the other tokens. It gives users efficient cross-chain access to the Gnosis DeFi and payments ecosystem.",
     links: [
       { label: "View Explorer", href: "https://gnosis.blockscout.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708?tab=contract", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/xdai/pools/0x0925aae4c0aa5bd31eb315dc1063247d9ea72b0f", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/gnosis/pair-explorer/0x0925aae4c0aa5bd31eb315dc1063247d9ea72b0f", kind: "dex" },
     ],
     wallet: {
