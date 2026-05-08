@@ -109,7 +109,7 @@ function getGeckoTerminalPool(token: TokenDefinition): GeckoTerminalPool | null 
     return null;
   }
 
-  const match = geckoTerminalLink.href.match(/geckoterminal\.com\/([^/?#]+)\/pools\/(0x[a-fA-F0-9]{40})/i);
+  const match = geckoTerminalLink.href.match(/geckoterminal\.com\/([^/?#]+)\/pools\/(0x[a-fA-F0-9]{40,})/i);
 
   if (!match) {
     return null;
