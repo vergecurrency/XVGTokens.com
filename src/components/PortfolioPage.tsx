@@ -78,6 +78,10 @@ function getCoinGeckoCoinId(token: TokenDefinition) {
   return match?.[1] ?? null;
 }
 
+function getPortfolioPriceKey(token: TokenDefinition) {
+  return getCoinGeckoCoinId(token) ?? token.slug;
+}
+
 function getPortfolioRpcUrls(token: TokenDefinition) {
   return Array.from(
     new Set([token.wallet.rpcUrl, ...(portfolioRpcFallbacks[token.slug] ?? [])].filter(Boolean)),
@@ -162,6 +166,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
     () =>
       tokens.map((token) => ({
         slug: token.slug,
+        priceKey: getPortfolioPriceKey(token),
         coinId: getCoinGeckoCoinId(token),
         geckoTerminalToken: getGeckoTerminalToken(token),
       })),
@@ -206,7 +211,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
       }
 
       const geckoTerminalFallbacks = tokenCoinIds.filter((entry) => {
-        if (!entry.coinId || nextPrices[entry.coinId] != null) {
+        if (nextPrices[entry.priceKey] != null) {
           return false;
         }
 
@@ -217,14 +222,14 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
         geckoTerminalFallbacks.map(async (entry) => {
           const token = tokens.find((item) => item.slug === entry.slug);
 
-          if (!token || !entry.coinId || !entry.geckoTerminalToken) {
+          if (!token || !entry.geckoTerminalToken) {
             return;
           }
 
           const cachedPrice = readCachedGeckoTerminalPrice(token);
 
           if (cachedPrice != null) {
-            nextPrices[entry.coinId] = cachedPrice;
+            nextPrices[entry.priceKey] = cachedPrice;
             return;
           }
 
@@ -249,7 +254,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
             const priceUsd = Number.parseFloat(payload.data?.attributes?.price_usd ?? "");
 
             if (Number.isFinite(priceUsd)) {
-              nextPrices[entry.coinId] = priceUsd;
+              nextPrices[entry.priceKey] = priceUsd;
               writeCachedGeckoTerminalPrice(token, priceUsd);
             }
           } catch (error) {
@@ -359,8 +364,8 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
       <section className="portfolio-list">
         {tokens.map((token, index) => {
           const balanceValue = balancesBySlug[token.slug] ?? 0n;
-          const coinId = tokenCoinIds[index]?.coinId;
-          const tokenPriceUsd = coinId ? pricesByCoinId[coinId] : undefined;
+          const priceKey = tokenCoinIds[index]?.priceKey;
+          const tokenPriceUsd = priceKey ? pricesByCoinId[priceKey] : undefined;
           const balanceDecimal = Number.parseFloat(formatUnits(balanceValue, 18));
           const usdValue =
             Number.isFinite(balanceDecimal) && tokenPriceUsd !== undefined
