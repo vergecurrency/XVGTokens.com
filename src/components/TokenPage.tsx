@@ -27,6 +27,12 @@ type GeckoTerminalPool = {
   poolAddress: string;
 };
 
+type CachedMarketChart = {
+  cachedAt: number;
+  points: MarketChartPoint[];
+  source: "coingecko" | "geckoterminal";
+};
+
 const TOKEN_BALANCE_ABI = parseAbi([
   "function balanceOf(address account) view returns (uint256)",
 ]);
@@ -34,6 +40,7 @@ const TOKEN_BALANCE_ABI = parseAbi([
 const chartWidth = 720;
 const chartHeight = 260;
 const chartPadding = 18;
+const marketChartCacheTtlMs = 10 * 60 * 1000;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -144,6 +151,65 @@ function buildChartPath(points: MarketChartPoint[]) {
   const areaPath = `${linePath} L ${lastPoint.x.toFixed(2)} ${baseline} L ${firstPoint.x.toFixed(2)} ${baseline} Z`;
 
   return { linePath, areaPath, minPrice, maxPrice };
+}
+
+function getMarketChartCacheKey(token: TokenDefinition) {
+  return `token-market-chart:${token.slug}`;
+}
+
+function readCachedMarketChart(token: TokenDefinition, source: CachedMarketChart["source"]) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.sessionStorage.getItem(getMarketChartCacheKey(token));
+
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as CachedMarketChart;
+
+    if (
+      parsed.source !== source ||
+      !Array.isArray(parsed.points) ||
+      !Number.isFinite(parsed.cachedAt) ||
+      Date.now() - parsed.cachedAt > marketChartCacheTtlMs
+    ) {
+      return null;
+    }
+
+    const points = parsed.points.filter(
+      (point) => point && Number.isFinite(point.timestamp) && Number.isFinite(point.price),
+    );
+
+    return points.length ? points : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedMarketChart(
+  token: TokenDefinition,
+  source: CachedMarketChart["source"],
+  points: MarketChartPoint[],
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    const payload: CachedMarketChart = {
+      cachedAt: Date.now(),
+      points,
+      source,
+    };
+
+    window.sessionStorage.setItem(getMarketChartCacheKey(token), JSON.stringify(payload));
+  } catch {
+    // Ignore storage failures. The chart can still render from the live response.
+  }
 }
 
 async function addTokenToWallet(token: TokenDefinition) {
@@ -348,6 +414,17 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
         let points: MarketChartPoint[] = [];
 
         if (token.marketChartId) {
+          const cachedPoints = readCachedMarketChart(token, "coingecko");
+
+          if (cachedPoints) {
+            setMarketChart({
+              points: cachedPoints,
+              loading: false,
+              error: null,
+            });
+            return;
+          }
+
           const response = await fetch(
             `https://api.coingecko.com/api/v3/coins/${token.marketChartId}/market_chart?vs_currency=usd&days=30`,
             { signal: controller.signal },
@@ -365,7 +442,22 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
             .filter((entry): entry is [number, number] => Array.isArray(entry) && entry.length === 2)
             .map(([timestamp, price]) => ({ timestamp, price }))
             .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price));
+
+          if (points.length) {
+            writeCachedMarketChart(token, "coingecko", points);
+          }
         } else if (geckoTerminalPool) {
+          const cachedPoints = readCachedMarketChart(token, "geckoterminal");
+
+          if (cachedPoints) {
+            setMarketChart({
+              points: cachedPoints,
+              loading: false,
+              error: null,
+            });
+            return;
+          }
+
           const response = await fetch(
             `https://api.geckoterminal.com/api/v2/networks/${geckoTerminalPool.network}/pools/${geckoTerminalPool.poolAddress}/ohlcv/day?aggregate=1&limit=30&currency=usd&token=${encodeURIComponent(token.contractAddress.toLowerCase())}`,
             { signal: controller.signal },
@@ -394,6 +486,10 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
             }))
             .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price))
             .reverse();
+
+          if (points.length) {
+            writeCachedMarketChart(token, "geckoterminal", points);
+          }
         }
 
         setMarketChart({
