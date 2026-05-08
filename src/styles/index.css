@@ -2118,7 +2118,7 @@ body[data-view="swap"] .swap-progress__track {
 
 .games-hero__status {
   position: absolute;
-  top: 1.35rem;
+  top: 0.8rem;
   right: 1.35rem;
   display: inline-flex;
   align-items: center;
