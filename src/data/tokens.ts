@@ -461,6 +461,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGBERA brings the unified XVG token experience to Berachain by using the same contract address pattern, giving holders instant recognition while combining XVG liquidity with Berachain's scalable appchain design.",
     links: [
       { label: "View Explorer", href: "https://berascan.com/address/0xe061Aa40Be525A13296CB4Bf69f513242349D708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/berachain/pools/0x0eea4b4c5e02ce122276ab3a559837d498d6f43f", kind: "dex" },
       { label: "View on DexScreener", href: "https://dexscreener.com/berachain/0x0eea4b4c5e02ce122276ab3a559837d498d6f43f", kind: "dex" },
     ],
     wallet: {
@@ -485,6 +486,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGWORLD brings the XVG brand to World Chain for faster transactions, lower fees, and broader utility. It ties XVG's value to World Chain's growth while giving holders new arbitrage, cross-chain, and dApp opportunities.",
     links: [
       { label: "View Explorer", href: "https://worldscan.org/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708", kind: "explorer" },
+      { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/world-chain/pools/0x2a67b0973fae9192652891af33e457d43bd7e37b38376a3e2c235ddb078788af", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/worldchain/pair-explorer/0x2a67b0973fae9192652891af33e457d43bd7e37b38376a3e2c235ddb078788af", kind: "dex" },
     ],
     wallet: {
