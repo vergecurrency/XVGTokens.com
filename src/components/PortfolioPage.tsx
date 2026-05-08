@@ -20,6 +20,11 @@ type GeckoTerminalToken = {
   address: string;
 };
 
+type GeckoTerminalPool = {
+  network: string;
+  poolAddress: string;
+};
+
 type CachedGeckoTerminalPrice = {
   cachedAt: number;
   priceUsd: number;
@@ -107,6 +112,25 @@ function getGeckoTerminalToken(token: TokenDefinition): GeckoTerminalToken | nul
   };
 }
 
+function getGeckoTerminalPool(token: TokenDefinition): GeckoTerminalPool | null {
+  const geckoTerminalLink = token.links.find((link) => link.href.includes("geckoterminal.com/") && link.href.includes("/pools/"));
+
+  if (!geckoTerminalLink) {
+    return null;
+  }
+
+  const match = geckoTerminalLink.href.match(/geckoterminal\.com\/([^/?#]+)\/pools\/(0x[a-fA-F0-9]{40,})/i);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    network: match[1],
+    poolAddress: match[2].toLowerCase(),
+  };
+}
+
 function getGeckoTerminalPriceCacheKey(token: TokenDefinition) {
   return `portfolio-geckoterminal-price:${token.slug}`;
 }
@@ -169,6 +193,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
         priceKey: getPortfolioPriceKey(token),
         coinId: getCoinGeckoCoinId(token),
         geckoTerminalToken: getGeckoTerminalToken(token),
+        geckoTerminalPool: getGeckoTerminalPool(token),
       })),
     [tokens],
   );
@@ -176,38 +201,35 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
   useEffect(() => {
     const coinIds = Array.from(new Set(tokenCoinIds.map((entry) => entry.coinId).filter((value): value is string => Boolean(value))));
 
-    if (!coinIds.length) {
-      setPricesByCoinId({});
-      return;
-    }
-
     const controller = new AbortController();
 
     async function loadPrices() {
       let nextPrices: PriceMap = {};
 
-      try {
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=${encodeURIComponent(coinIds.join(","))}`,
-          { signal: controller.signal },
-        );
+      if (coinIds.length) {
+        try {
+          const response = await fetch(
+            `https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=${encodeURIComponent(coinIds.join(","))}`,
+            { signal: controller.signal },
+          );
 
-        if (!response.ok) {
-          throw new Error(`CoinGecko request failed with ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`CoinGecko request failed with ${response.status}`);
+          }
+
+          const payload = (await response.json()) as Record<string, { usd?: number }>;
+          nextPrices = Object.fromEntries(
+            Object.entries(payload)
+              .map(([coinId, value]) => [coinId, value?.usd])
+              .filter((entry): entry is [string, number] => Number.isFinite(entry[1])),
+          );
+        } catch (error) {
+          if (controller.signal.aborted) {
+            return;
+          }
+
+          console.error("Failed loading portfolio USD prices", error);
         }
-
-        const payload = (await response.json()) as Record<string, { usd?: number }>;
-        nextPrices = Object.fromEntries(
-          Object.entries(payload)
-            .map(([coinId, value]) => [coinId, value?.usd])
-            .filter((entry): entry is [string, number] => Number.isFinite(entry[1])),
-        );
-      } catch (error) {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        console.error("Failed loading portfolio USD prices", error);
       }
 
       const geckoTerminalFallbacks = tokenCoinIds.filter((entry) => {
@@ -215,14 +237,14 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
           return false;
         }
 
-        return Boolean(entry.geckoTerminalToken);
+        return Boolean(entry.geckoTerminalPool || entry.geckoTerminalToken);
       });
 
       await Promise.all(
         geckoTerminalFallbacks.map(async (entry) => {
           const token = tokens.find((item) => item.slug === entry.slug);
 
-          if (!token || !entry.geckoTerminalToken) {
+          if (!token) {
             return;
           }
 
@@ -234,24 +256,62 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
           }
 
           try {
-            const response = await fetch(
-              `https://api.geckoterminal.com/api/v2/networks/${entry.geckoTerminalToken.network}/tokens/${entry.geckoTerminalToken.address}`,
-              { signal: controller.signal },
-            );
+            let priceUsd = Number.NaN;
 
-            if (!response.ok) {
-              throw new Error(`GeckoTerminal request failed with ${response.status}`);
-            }
+            if (entry.geckoTerminalPool) {
+              const response = await fetch(
+                `https://api.geckoterminal.com/api/v2/networks/${entry.geckoTerminalPool.network}/pools/${entry.geckoTerminalPool.poolAddress}?include=base_token,quote_token`,
+                { signal: controller.signal },
+              );
 
-            const payload = (await response.json()) as {
-              data?: {
-                attributes?: {
-                  price_usd?: string;
+              if (!response.ok) {
+                throw new Error(`GeckoTerminal pool request failed with ${response.status}`);
+              }
+
+              const payload = (await response.json()) as {
+                data?: {
+                  relationships?: {
+                    base_token?: { data?: { id?: string } };
+                    quote_token?: { data?: { id?: string } };
+                  };
+                  attributes?: {
+                    base_token_price_usd?: string;
+                    quote_token_price_usd?: string;
+                  };
                 };
               };
-            };
 
-            const priceUsd = Number.parseFloat(payload.data?.attributes?.price_usd ?? "");
+              const baseTokenId = payload.data?.relationships?.base_token?.data?.id ?? "";
+              const quoteTokenId = payload.data?.relationships?.quote_token?.data?.id ?? "";
+              const tokenAddress = token.contractAddress.toLowerCase();
+
+              if (baseTokenId.toLowerCase().includes(tokenAddress)) {
+                priceUsd = Number.parseFloat(payload.data?.attributes?.base_token_price_usd ?? "");
+              } else if (quoteTokenId.toLowerCase().includes(tokenAddress)) {
+                priceUsd = Number.parseFloat(payload.data?.attributes?.quote_token_price_usd ?? "");
+              }
+            }
+
+            if (!Number.isFinite(priceUsd) && entry.geckoTerminalToken) {
+              const response = await fetch(
+                `https://api.geckoterminal.com/api/v2/networks/${entry.geckoTerminalToken.network}/tokens/${entry.geckoTerminalToken.address}`,
+                { signal: controller.signal },
+              );
+
+              if (!response.ok) {
+                throw new Error(`GeckoTerminal token request failed with ${response.status}`);
+              }
+
+              const payload = (await response.json()) as {
+                data?: {
+                  attributes?: {
+                    price_usd?: string;
+                  };
+                };
+              };
+
+              priceUsd = Number.parseFloat(payload.data?.attributes?.price_usd ?? "");
+            }
 
             if (Number.isFinite(priceUsd)) {
               nextPrices[entry.priceKey] = priceUsd;
