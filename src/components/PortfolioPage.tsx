@@ -15,6 +15,16 @@ type PortfolioPageProps = {
 
 type PriceMap = Record<string, number>;
 
+type GeckoTerminalToken = {
+  network: string;
+  address: string;
+};
+
+type CachedGeckoTerminalPrice = {
+  cachedAt: number;
+  priceUsd: number;
+};
+
 const portfolioRpcFallbacks: Partial<Record<TokenDefinition["slug"], string[]>> = {
   xvgpoly: ["https://polygon-bor-rpc.publicnode.com"],
   xvgbsc: [
@@ -23,6 +33,8 @@ const portfolioRpcFallbacks: Partial<Record<TokenDefinition["slug"], string[]>> 
     "https://bsc-dataseed.binance.org",
   ],
 };
+
+const geckoTerminalPriceCacheTtlMs = 10 * 60 * 1000;
 
 function formatBalance(value: bigint) {
   const formatted = Number.parseFloat(formatUnits(value, 18));
@@ -72,6 +84,74 @@ function getPortfolioRpcUrls(token: TokenDefinition) {
   );
 }
 
+function getGeckoTerminalToken(token: TokenDefinition): GeckoTerminalToken | null {
+  const geckoTerminalLink = token.links.find((link) => link.href.includes("geckoterminal.com/"));
+
+  if (!geckoTerminalLink) {
+    return null;
+  }
+
+  const match = geckoTerminalLink.href.match(/geckoterminal\.com\/([^/?#]+)\//i);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    network: match[1],
+    address: token.contractAddress.toLowerCase(),
+  };
+}
+
+function getGeckoTerminalPriceCacheKey(token: TokenDefinition) {
+  return `portfolio-geckoterminal-price:${token.slug}`;
+}
+
+function readCachedGeckoTerminalPrice(token: TokenDefinition) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.sessionStorage.getItem(getGeckoTerminalPriceCacheKey(token));
+
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as CachedGeckoTerminalPrice;
+
+    if (
+      !Number.isFinite(parsed.priceUsd) ||
+      !Number.isFinite(parsed.cachedAt) ||
+      Date.now() - parsed.cachedAt > geckoTerminalPriceCacheTtlMs
+    ) {
+      return null;
+    }
+
+    return parsed.priceUsd;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedGeckoTerminalPrice(token: TokenDefinition, priceUsd: number) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    const payload: CachedGeckoTerminalPrice = {
+      cachedAt: Date.now(),
+      priceUsd,
+    };
+
+    window.sessionStorage.setItem(getGeckoTerminalPriceCacheKey(token), JSON.stringify(payload));
+  } catch {
+    // Ignore cache write failures.
+  }
+}
+
 export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
   const { address, isConnected } = useAccount();
   const [pricesByCoinId, setPricesByCoinId] = useState<PriceMap>({});
@@ -83,6 +163,7 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
       tokens.map((token) => ({
         slug: token.slug,
         coinId: getCoinGeckoCoinId(token),
+        geckoTerminalToken: getGeckoTerminalToken(token),
       })),
     [tokens],
   );
@@ -98,6 +179,8 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
     const controller = new AbortController();
 
     async function loadPrices() {
+      let nextPrices: PriceMap = {};
+
       try {
         const response = await fetch(
           `https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=${encodeURIComponent(coinIds.join(","))}`,
@@ -109,20 +192,76 @@ export function PortfolioPage({ tokens, onNavigate }: PortfolioPageProps) {
         }
 
         const payload = (await response.json()) as Record<string, { usd?: number }>;
-        const nextPrices = Object.fromEntries(
+        nextPrices = Object.fromEntries(
           Object.entries(payload)
             .map(([coinId, value]) => [coinId, value?.usd])
             .filter((entry): entry is [string, number] => Number.isFinite(entry[1])),
         );
-
-        setPricesByCoinId(nextPrices);
       } catch (error) {
         if (controller.signal.aborted) {
           return;
         }
 
         console.error("Failed loading portfolio USD prices", error);
-        setPricesByCoinId({});
+      }
+
+      const geckoTerminalFallbacks = tokenCoinIds.filter((entry) => {
+        if (!entry.coinId || nextPrices[entry.coinId] != null) {
+          return false;
+        }
+
+        return Boolean(entry.geckoTerminalToken);
+      });
+
+      await Promise.all(
+        geckoTerminalFallbacks.map(async (entry) => {
+          const token = tokens.find((item) => item.slug === entry.slug);
+
+          if (!token || !entry.coinId || !entry.geckoTerminalToken) {
+            return;
+          }
+
+          const cachedPrice = readCachedGeckoTerminalPrice(token);
+
+          if (cachedPrice != null) {
+            nextPrices[entry.coinId] = cachedPrice;
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `https://api.geckoterminal.com/api/v2/networks/${entry.geckoTerminalToken.network}/tokens/${entry.geckoTerminalToken.address}`,
+              { signal: controller.signal },
+            );
+
+            if (!response.ok) {
+              throw new Error(`GeckoTerminal request failed with ${response.status}`);
+            }
+
+            const payload = (await response.json()) as {
+              data?: {
+                attributes?: {
+                  price_usd?: string;
+                };
+              };
+            };
+
+            const priceUsd = Number.parseFloat(payload.data?.attributes?.price_usd ?? "");
+
+            if (Number.isFinite(priceUsd)) {
+              nextPrices[entry.coinId] = priceUsd;
+              writeCachedGeckoTerminalPrice(token, priceUsd);
+            }
+          } catch (error) {
+            if (!controller.signal.aborted) {
+              console.error(`Failed loading GeckoTerminal USD price for ${token.symbol}`, error);
+            }
+          }
+        }),
+      );
+
+      if (!controller.signal.aborted) {
+        setPricesByCoinId(nextPrices);
       }
     }
 
