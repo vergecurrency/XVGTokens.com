@@ -222,6 +222,24 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       icon: "/images/pepe.png",
       address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
     }),
+    createAsset("xvgeth", {
+      symbol: "LINK",
+      identifier: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+      decimals: 18,
+      kind: "governance",
+      coingeckoId: "chainlink",
+      icon: "/images/chainlink.webp",
+      address: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+    }),
+    createAsset("xvgeth", {
+      symbol: "DOT",
+      identifier: "0x420CA0f9B9b604cE0fd9C18EF134C705e5Fa3430",
+      decimals: 10,
+      kind: "governance",
+      coingeckoId: "polkadot",
+      icon: "/images/polkadot.png",
+      address: "0x420CA0f9B9b604cE0fd9C18EF134C705e5Fa3430",
+    }),
   ],
   xvgzke: [
     createAsset("xvgzke", {
