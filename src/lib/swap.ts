@@ -277,6 +277,15 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       icon: localSwapIcon("base"),
       address: "0x4200000000000000000000000000000000000006",
     }),
+    createAsset("xvgbase", {
+      symbol: "USDC",
+      identifier: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      decimals: 6,
+      kind: "stable",
+      coingeckoId: "usd-coin",
+      icon: "/images/usdc.webp",
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    }),
   ],
   xvgopt: [
     createAsset("xvgopt", {
