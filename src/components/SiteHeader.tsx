@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { WalletConnectTrigger } from "@/components/WalletConnectTrigger";
 import type { TokenDefinition } from "@/data/tokens";
 
@@ -15,6 +15,9 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
   const menuRef = useRef<HTMLDivElement | null>(null);
   const farmMenuRef = useRef<HTMLDivElement | null>(null);
   const chainMenuRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const farmMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const chainMenuButtonRef = useRef<HTMLButtonElement | null>(null);
   const activeToken = tokens.find((token) => `/${token.slug}` === currentPath) ?? null;
   const farmTokens = tokens.filter((token) => token.farmSlug);
   const isPortfolioRoute = currentPath === "/portfolio";
@@ -52,6 +55,33 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
       setChainMenuOpen(false);
       return nextOpen;
     });
+  }
+
+  function getPopoverStyle(buttonRef: RefObject<HTMLButtonElement | null>): CSSProperties | undefined {
+    if (typeof window === "undefined" || window.innerWidth > 720) {
+      return undefined;
+    }
+
+    const button = buttonRef.current;
+    if (!button) {
+      return undefined;
+    }
+
+    const rect = button.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const gutter = 16;
+    const width = Math.min(288, viewportWidth - gutter * 2);
+    const left = Math.min(Math.max(rect.right - width, gutter), viewportWidth - width - gutter);
+
+    return {
+      position: "fixed",
+      top: rect.bottom + 12,
+      right: "auto",
+      left,
+      width,
+      maxHeight: "min(70vh, 32rem)",
+      zIndex: 90,
+    };
   }
 
   useEffect(() => {
@@ -101,6 +131,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           </button>
           <div className="site-nav__menu" ref={farmMenuRef}>
             <button
+              ref={farmMenuButtonRef}
               type="button"
               className={`site-nav__link ${farmMenuOpen ? "is-active" : ""}`}
               onClick={toggleFarmMenu}
@@ -108,7 +139,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               Farm
             </button>
             {farmMenuOpen ? (
-              <div className="site-nav__popover">
+              <div className="site-nav__popover" style={getPopoverStyle(farmMenuButtonRef)}>
                 {farmTokens.map((token) => (
                   <button
                     key={`farm-${token.slug}`}
@@ -144,6 +175,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           </button>
           <div className="site-nav__menu" ref={chainMenuRef}>
             <button
+              ref={chainMenuButtonRef}
               type="button"
               className={`site-nav__link ${chainMenuOpen ? "is-active" : ""}`}
               onClick={toggleChainMenu}
@@ -151,7 +183,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               Chains
             </button>
             {chainMenuOpen ? (
-              <div className="site-nav__popover">
+              <div className="site-nav__popover" style={getPopoverStyle(chainMenuButtonRef)}>
                 {tokens.map((token) => (
                   <button
                     key={`chain-${token.slug}`}
@@ -173,6 +205,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           </div>
           <div className="site-nav__menu" ref={menuRef}>
             <button
+              ref={menuButtonRef}
               type="button"
               className={`site-nav__link ${menuOpen ? "is-active" : ""}`}
               onClick={toggleTokenMenu}
@@ -180,7 +213,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               Tokens
             </button>
             {menuOpen ? (
-              <div className="site-nav__popover">
+              <div className="site-nav__popover" style={getPopoverStyle(menuButtonRef)}>
                 {tokens.map((token) => (
                   <button
                     key={token.slug}
