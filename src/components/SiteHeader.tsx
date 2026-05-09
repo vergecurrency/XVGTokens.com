@@ -21,8 +21,41 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
   const isSwapRoute = currentPath === "/swap";
   const isGamesRoute = currentPath === "/games";
 
+  function closeAllMenus() {
+    setMenuOpen(false);
+    setFarmMenuOpen(false);
+    setChainMenuOpen(false);
+  }
+
+  function toggleFarmMenu() {
+    setFarmMenuOpen((open) => {
+      const nextOpen = !open;
+      setMenuOpen(false);
+      setChainMenuOpen(false);
+      return nextOpen;
+    });
+  }
+
+  function toggleChainMenu() {
+    setChainMenuOpen((open) => {
+      const nextOpen = !open;
+      setMenuOpen(false);
+      setFarmMenuOpen(false);
+      return nextOpen;
+    });
+  }
+
+  function toggleTokenMenu() {
+    setMenuOpen((open) => {
+      const nextOpen = !open;
+      setFarmMenuOpen(false);
+      setChainMenuOpen(false);
+      return nextOpen;
+    });
+  }
+
   useEffect(() => {
-    function handlePointerDown(event: MouseEvent) {
+    function handlePointerDown(event: PointerEvent) {
       if (!menuRef.current?.contains(event.target as Node)) {
         setMenuOpen(false);
       }
@@ -36,14 +69,12 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
       }
     }
 
-    window.addEventListener("mousedown", handlePointerDown);
-    return () => window.removeEventListener("mousedown", handlePointerDown);
+    window.addEventListener("pointerdown", handlePointerDown);
+    return () => window.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
-    setFarmMenuOpen(false);
-    setChainMenuOpen(false);
+    closeAllMenus();
   }, [currentPath]);
 
   return (
@@ -72,7 +103,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
             <button
               type="button"
               className={`site-nav__link ${farmMenuOpen ? "is-active" : ""}`}
-              onClick={() => setFarmMenuOpen((open) => !open)}
+              onClick={toggleFarmMenu}
             >
               Farm
             </button>
@@ -86,7 +117,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
                       activeToken?.slug === token.slug ? "is-active" : ""
                     }`}
                     onClick={() => {
-                      setFarmMenuOpen(false);
+                      closeAllMenus();
                       onNavigate(`/${token.slug}`);
                     }}
                   >
@@ -115,7 +146,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
             <button
               type="button"
               className={`site-nav__link ${chainMenuOpen ? "is-active" : ""}`}
-              onClick={() => setChainMenuOpen((open) => !open)}
+              onClick={toggleChainMenu}
             >
               Chains
             </button>
@@ -129,7 +160,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
                       activeToken?.slug === token.slug ? "is-active" : ""
                     }`}
                     onClick={() => {
-                      setChainMenuOpen(false);
+                      closeAllMenus();
                       onNavigate(`/${token.slug}`);
                     }}
                   >
@@ -144,7 +175,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
             <button
               type="button"
               className={`site-nav__link ${menuOpen ? "is-active" : ""}`}
-              onClick={() => setMenuOpen((open) => !open)}
+              onClick={toggleTokenMenu}
             >
               Tokens
             </button>
@@ -158,7 +189,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
                       activeToken?.slug === token.slug ? "is-active" : ""
                     }`}
                     onClick={() => {
-                      setMenuOpen(false);
+                      closeAllMenus();
                       onNavigate(`/${token.slug}`);
                     }}
                   >
