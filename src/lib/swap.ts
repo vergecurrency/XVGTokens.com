@@ -213,6 +213,15 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       icon: "/images/usdt.png",
       address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     }),
+    createAsset("xvgeth", {
+      symbol: "PEPE",
+      identifier: "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+      decimals: 18,
+      kind: "governance",
+      coingeckoId: "pepe",
+      icon: "/images/pepe.png",
+      address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+    }),
   ],
   xvgzke: [
     createAsset("xvgzke", {
