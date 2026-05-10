@@ -1,15 +1,36 @@
-const updates = [
+import type { ReactNode } from "react";
+
+type UpdateEntry = {
+  date: string;
+  description: ReactNode;
+};
+
+function TokenMention({ children }: { children: ReactNode }) {
+  return <strong className="updates-item__token">{children}</strong>;
+}
+
+const updates: UpdateEntry[] = [
   {
     date: "May 10th 2026",
     description: "Updates section created on site.",
   },
   {
     date: "May 9th 2026",
-    description: "Worldplorer link added to XVGWorld page.",
+    description: (
+      <>
+        Worldplorer link added to <TokenMention>XVGWORLD</TokenMention> page.
+      </>
+    ),
   },
   {
     date: "May 9th 2026",
-    description: "More token options added to swaps on Ethereum. (PEPE, DOT, LINK)",
+    description: (
+      <>
+        More token options added to swaps on Ethereum. (
+        <TokenMention>PEPE</TokenMention>, <TokenMention>DOT</TokenMention>,{" "}
+        <TokenMention>LINK</TokenMention>)
+      </>
+    ),
   },
   {
     date: "May 7th 2026",
@@ -21,15 +42,38 @@ const updates = [
   },
   {
     date: "April 16th 2026",
-    description: "XVGBASE added to WallOfFame.finance",
+    description: (
+      <>
+        <TokenMention>XVGBASE</TokenMention> added to{" "}
+        <a
+          className="updates-item__link"
+          href="https://WallOfFame.finance"
+          target="_blank"
+          rel="noreferrer"
+        >
+          https://WallOfFame.finance
+        </a>
+        , a token-based Wall of Fame on the Base Network blockchain
+      </>
+    ),
   },
   {
     date: "April 5th 2026",
-    description: "XVGBSC Farm opens, paying out 273,972 XVGBSC per day until April 5th 2029!",
+    description: (
+      <>
+        <TokenMention>XVGBSC</TokenMention> Farm opens, paying out{" "}
+        <TokenMention>273,972 XVGBSC</TokenMention> per day until April 5th 2029!
+      </>
+    ),
   },
   {
     date: "March 31st 2026",
-    description: "XVGBase Farm opens, paying out 228,310 XVGBase per day until March 31st 2029!",
+    description: (
+      <>
+        <TokenMention>XVGBASE</TokenMention> Farm opens, paying out{" "}
+        <TokenMention>228,310 XVGBASE</TokenMention> per day until March 31st 2029!
+      </>
+    ),
   },
 ];
 
