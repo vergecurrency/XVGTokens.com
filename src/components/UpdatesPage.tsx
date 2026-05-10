@@ -18,6 +18,15 @@ const updates: UpdateEntry[] = [
     date: "May 10th 2026",
     description: (
       <>
+        <TokenMention>AERO</TokenMention> on Base and <TokenMention>USDC</TokenMention> on
+        Arbitrum were added to the swap options.
+      </>
+    ),
+  },
+  {
+    date: "May 10th 2026",
+    description: (
+      <>
         Tangem{" "}
         <a
           className="updates-item__link"

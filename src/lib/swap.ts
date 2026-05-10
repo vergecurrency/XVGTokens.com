@@ -286,6 +286,15 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       icon: "/images/usdc.webp",
       address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     }),
+    createAsset("xvgbase", {
+      symbol: "AERO",
+      identifier: "0x940181a94a35a4569e4529a3cdfb74e38fd98631",
+      decimals: 18,
+      kind: "governance",
+      coingeckoId: "aerodrome-finance",
+      icon: "/images/aero.png",
+      address: "0x940181a94a35a4569e4529a3cdfb74e38fd98631",
+    }),
   ],
   xvgopt: [
     createAsset("xvgopt", {
@@ -340,6 +349,15 @@ const swapAssetsBySlug: Record<SwapChainKey, SwapAsset[]> = {
       kind: "governance",
       coingeckoId: "arbitrum",
       icon: localSwapIcon("arbitrum"),
+    }),
+    createAsset("xvgarb", {
+      symbol: "USDC",
+      identifier: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      decimals: 6,
+      kind: "stable",
+      coingeckoId: "usd-coin",
+      icon: "/images/usdc.webp",
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     }),
   ],
   xvgava: [
