@@ -37,6 +37,15 @@ const updates: UpdateEntry[] = [
     description: "Farms balance/rewards API changed to display amounts faster.",
   },
   {
+    date: "May 7th 2026",
+    description: (
+      <>
+        Phemex links added to <TokenMention>XVGZKE</TokenMention>,{" "}
+        <TokenMention>XVGOPT</TokenMention>, and <TokenMention>XVGSON</TokenMention>
+      </>
+    ),
+  },
+  {
     date: "May 6th 2026",
     description: "Swap section added (more to come!).",
   },
