@@ -97,7 +97,8 @@ body[data-view="home"],
 body[data-view="token"],
 body[data-view="portfolio"],
 body[data-view="swap"],
-body[data-view="games"] {
+body[data-view="games"],
+body[data-view="updates"] {
   background:
     radial-gradient(circle at 50% -14%, rgba(255, 87, 194, 0.26), transparent 28%),
     radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.16), transparent 24%),
@@ -114,7 +115,8 @@ body[data-view="home"]::before,
 body[data-view="token"]::before,
 body[data-view="portfolio"]::before,
 body[data-view="swap"]::before,
-body[data-view="games"]::before {
+body[data-view="games"]::before,
+body[data-view="updates"]::before {
   content: "";
   position: fixed;
   inset: auto 0 0;
@@ -643,6 +645,7 @@ body[data-view="home"] .site-header__inner,
 body[data-view="portfolio"] .site-header__inner,
 body[data-view="swap"] .site-header__inner,
 body[data-view="games"] .site-header__inner,
+body[data-view="updates"] .site-header__inner,
 body[data-view="token"] .site-header__inner {
   border: 1px solid rgba(255, 77, 157, 0.24);
   background:
@@ -705,6 +708,7 @@ body[data-view="home"] .site-header__inner::before,
 body[data-view="portfolio"] .site-header__inner::before,
 body[data-view="swap"] .site-header__inner::before,
 body[data-view="games"] .site-header__inner::before,
+body[data-view="updates"] .site-header__inner::before,
 body[data-view="token"] .site-header__inner::before {
   background:
     linear-gradient(90deg, rgba(255, 77, 157, 0.08) 1px, transparent 1px),
@@ -717,6 +721,7 @@ body[data-view="home"] .site-header__inner::after,
 body[data-view="portfolio"] .site-header__inner::after,
 body[data-view="swap"] .site-header__inner::after,
 body[data-view="games"] .site-header__inner::after,
+body[data-view="updates"] .site-header__inner::after,
 body[data-view="token"] .site-header__inner::after {
   background: radial-gradient(circle, rgba(255, 77, 157, 0.3), transparent 68%);
 }
@@ -790,6 +795,7 @@ body[data-view="home"] .site-nav__link,
 body[data-view="portfolio"] .site-nav__link,
 body[data-view="swap"] .site-nav__link,
 body[data-view="games"] .site-nav__link,
+body[data-view="updates"] .site-nav__link,
 body[data-view="token"] .site-nav__link {
   border: 1px solid rgba(255, 77, 157, 0.16);
   background:
@@ -811,6 +817,7 @@ body[data-view="home"] .site-nav__link.is-active,
 body[data-view="portfolio"] .site-nav__link.is-active,
 body[data-view="swap"] .site-nav__link.is-active,
 body[data-view="games"] .site-nav__link.is-active,
+body[data-view="updates"] .site-nav__link.is-active,
 body[data-view="token"] .site-nav__link.is-active {
   border-color: rgba(34, 211, 238, 0.28);
   background:
@@ -851,6 +858,7 @@ body[data-view="token"] .site-nav__link.is-active {
   body[data-view="portfolio"] .site-nav__link:hover,
   body[data-view="swap"] .site-nav__link:hover,
   body[data-view="games"] .site-nav__link:hover,
+  body[data-view="updates"] .site-nav__link:hover,
   body[data-view="token"] .site-nav__link:hover {
     border-color: rgba(34, 211, 238, 0.28);
     background:
@@ -882,7 +890,8 @@ body[data-view="token"] .site-nav__link.is-active {
 body[data-view="home"] .site-nav__popover,
 body[data-view="portfolio"] .site-nav__popover,
 body[data-view="swap"] .site-nav__popover,
-body[data-view="games"] .site-nav__popover {
+body[data-view="games"] .site-nav__popover,
+body[data-view="updates"] .site-nav__popover {
   border: 1px solid rgba(255, 77, 157, 0.18);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
@@ -919,7 +928,9 @@ body[data-view="portfolio"] .site-nav__token.is-active,
 body[data-view="swap"] .site-nav__token:hover,
 body[data-view="swap"] .site-nav__token.is-active,
 body[data-view="games"] .site-nav__token:hover,
-body[data-view="games"] .site-nav__token.is-active {
+body[data-view="games"] .site-nav__token.is-active,
+body[data-view="updates"] .site-nav__token:hover,
+body[data-view="updates"] .site-nav__token.is-active {
   border-color: rgba(34, 211, 238, 0.26);
   background: linear-gradient(135deg, rgba(255, 77, 157, 0.16), rgba(34, 211, 238, 0.12));
 }
@@ -1644,7 +1655,8 @@ body[data-view="home"] .token-grid-kicker::before {
 }
 
 .swap-page,
-.games-page {
+.games-page,
+.updates-page {
   position: relative;
   z-index: 1;
   width: min(1200px, calc(100vw - 2rem));
@@ -1656,7 +1668,8 @@ body[data-view="home"] .token-grid-kicker::before {
 .portfolio-hero,
 .portfolio-list,
 .swap-card,
-.games-hero {
+.games-hero,
+.updates-hero {
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 2rem;
   background: rgba(2, 6, 23, 0.62);
@@ -1667,7 +1680,8 @@ body[data-view="home"] .token-grid-kicker::before {
 body[data-view="portfolio"] .portfolio-hero,
 body[data-view="portfolio"] .portfolio-list,
 body[data-view="swap"] .swap-card,
-body[data-view="games"] .games-hero {
+body[data-view="games"] .games-hero,
+body[data-view="updates"] .updates-hero {
   border: 1px solid rgba(255, 77, 157, 0.16);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
@@ -1690,6 +1704,10 @@ body[data-view="games"] .games-hero {
   display: flex;
   align-items: flex-start;
   min-height: 16rem;
+  padding: 2rem;
+}
+
+.updates-hero {
   padding: 2rem;
 }
 
@@ -1735,6 +1753,17 @@ body[data-view="games"] .portfolio-hero__eyebrow {
   text-transform: uppercase;
 }
 
+.updates-hero__title {
+  margin: 0;
+  color: #fff;
+  font-family: "Orbitron", "IBM Plex Sans", sans-serif;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .portfolio-hero__body {
   margin: 0;
   color: rgba(226, 232, 240, 0.82);
@@ -1744,6 +1773,44 @@ body[data-view="games"] .portfolio-hero__eyebrow {
 
 body[data-view="portfolio"] .portfolio-hero__body {
   color: rgba(238, 226, 255, 0.8);
+}
+
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+}
+
+.updates-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+    rgba(10, 8, 25, 0.42);
+  color: rgba(238, 226, 255, 0.92);
+  line-height: 1.65;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.updates-item__bullet {
+  flex: 0 0 auto;
+  color: #35e0ff;
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+
+.updates-item__content {
+  min-width: 0;
+}
+
+.updates-item__date {
+  color: #ff5fa2;
+  font-weight: 700;
 }
 
 .swap-grid {

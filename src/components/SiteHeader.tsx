@@ -23,6 +23,7 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
   const isPortfolioRoute = currentPath === "/portfolio";
   const isSwapRoute = currentPath === "/swap";
   const isGamesRoute = currentPath === "/games";
+  const isUpdatesRoute = currentPath === "/updates";
 
   function closeAllMenus() {
     setMenuOpen(false);
@@ -233,6 +234,13 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
               </div>
             ) : null}
           </div>
+          <button
+            type="button"
+            className={`site-nav__link ${isUpdatesRoute ? "is-active" : ""}`}
+            onClick={() => onNavigate("/updates")}
+          >
+            Updates
+          </button>
         </nav>
         <div className="site-header__wallet">
           <WalletConnectTrigger />
