@@ -489,6 +489,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       "XVGWORLD brings the XVG brand to World Chain for faster transactions, lower fees, and broader utility. It ties XVG's value to World Chain's growth while giving holders new arbitrage, cross-chain, and dApp opportunities.",
     links: [
       { label: "View Explorer", href: "https://worldscan.org/token/0xe061Aa40Be525A13296CB4Bf69f513242349D708", kind: "explorer" },
+      { label: "View on Worldplorer", href: "https://worldplorer.com/address/0xe061aa40be525a13296cb4bf69f513242349d708", kind: "explorer" },
       { label: "View on GeckoTerminal", href: "https://www.geckoterminal.com/world-chain/pools/0x2a67b0973fae9192652891af33e457d43bd7e37b38376a3e2c235ddb078788af", kind: "dex" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/worldchain/pair-explorer/0x2a67b0973fae9192652891af33e457d43bd7e37b38376a3e2c235ddb078788af", kind: "dex" },
     ],
