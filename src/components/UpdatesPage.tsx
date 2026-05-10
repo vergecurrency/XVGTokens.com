@@ -1,27 +1,35 @@
 const updates = [
   {
-    date: "May 10th",
+    date: "May 10th 2026",
     description: "Updates section created on site.",
   },
   {
-    date: "May 9th",
+    date: "May 9th 2026",
     description: "Worldplorer link added to XVGWorld page.",
   },
   {
-    date: "May 9th",
+    date: "May 9th 2026",
     description: "More token options added to swaps on Ethereum. (PEPE, DOT, LINK)",
   },
   {
-    date: "May 7th",
+    date: "May 7th 2026",
     description: "Farms balance/rewards API changed to display amounts faster.",
   },
   {
-    date: "May 6th",
+    date: "May 6th 2026",
     description: "Swap section added (more to come!).",
   },
   {
-    date: "April 16th",
+    date: "April 16th 2026",
     description: "XVGBASE added to WallOfFame.finance",
+  },
+  {
+    date: "April 5th 2026",
+    description: "XVGBSC Farm opens, paying out 273,972 XVGBSC per day until April 5th 2029!",
+  },
+  {
+    date: "March 31st 2026",
+    description: "XVGBase Farm opens, paying out 228,310 XVGBase per day until March 31st 2029!",
   },
 ];
 
