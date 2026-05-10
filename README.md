@@ -50,6 +50,7 @@ Clone the repo, install dependencies, and start the site locally:
 ```bash
 git clone https://github.com/vergecurrency/xvgtokens.com.git
 cd xvgtokens.com
+nvm use
 npm install
 npm run dev
 ```
@@ -59,6 +60,8 @@ To create a production build:
 ```bash
 npm run build
 ```
+
+This project is pinned to Node `24` via [.nvmrc](/home/office/xvgtokens.com/.nvmrc).
 
 Other Repositories of interest:<br>
 https://github.com/vergecurrency/erc20/<br>
