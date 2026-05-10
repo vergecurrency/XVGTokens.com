@@ -12,10 +12,6 @@ function TokenMention({ children }: { children: ReactNode }) {
 const updates: UpdateEntry[] = [
   {
     date: "May 10th 2026",
-    description: "Updates section created on site.",
-  },
-  {
-    date: "May 10th 2026",
     description: (
       <>
         <TokenMention>AERO</TokenMention> on Base and <TokenMention>USDC</TokenMention> on
