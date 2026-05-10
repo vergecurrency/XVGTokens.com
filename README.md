@@ -45,16 +45,21 @@ Citrea ($XVGcBTC)<br>
 
 ## 📦 Installation
 
-Clone the repository and edit webpage:
+Clone the repo, install dependencies, and start the site locally:
 
 ```bash
-git clone https://github.com/vergecurrency/XVGTokens.com.git
-cd XVGTokens.com
-
-nano index.html
-
-
+git clone https://github.com/vergecurrency/xvgtokens.com.git
+cd xvgtokens.com
+npm install
+npm run dev
 ```
+
+To create a production build:
+
+```bash
+npm run build
+```
+
 Other Repositories of interest:<br>
 https://github.com/vergecurrency/erc20/<br>
 <br>
