@@ -15,6 +15,24 @@ const updates: UpdateEntry[] = [
     description: "Updates section created on site.",
   },
   {
+    date: "May 10th 2026",
+    description: (
+      <>
+        Tangem{" "}
+        <a
+          className="updates-item__link"
+          href="https://tangem.com/en/how-to-buy/xvgbase/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          adds support
+        </a>{" "}
+        for <TokenMention>XVGBASE</TokenMention> and releases instructions on how to
+        buy/store <TokenMention>XVGBASE</TokenMention>
+      </>
+    ),
+  },
+  {
     date: "May 9th 2026",
     description: (
       <>

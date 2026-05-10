@@ -146,6 +146,7 @@ export const tokensBySlug: Record<TokenSlug, TokenDefinition> = {
       { label: "CoinGecko", href: "https://www.coingecko.com/en/coins/xvgbase", kind: "market" },
       { label: "View on Coinbase", href: "https://www.coinbase.com/price/xvgbase-base-0xe061aa40be525a13296cb4bf69f513242349d708-token", kind: "market" },
       { label: "Wall Of Fame", href: "https://xvgbase.walloffame.finance", kind: "market" },
+      { label: "Tangem", href: "https://tangem.com/en/how-to-buy/xvgbase/", kind: "market" },
       { label: "Jump to Farm", href: "#farm", kind: "farm" },
       { label: "View on DexTools", href: "https://www.dextools.io/app/en/base/pair-explorer/0x7f09fde136dafc1222ef22d4d15f434a0161aa50", kind: "dex" },
     ],
