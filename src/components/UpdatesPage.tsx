@@ -11,6 +11,14 @@ function TokenMention({ children }: { children: ReactNode }) {
 
 const updates: UpdateEntry[] = [
   {
+    date: "May 12th 2026",
+    description: (
+      <>
+        <TokenMention>XVGETH.xvgtokens.com</TokenMention> subdomain launches.
+      </>
+    ),
+  },
+  {
     date: "May 10th 2026",
     description: (
       <>
