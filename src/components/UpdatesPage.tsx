@@ -14,6 +14,15 @@ const updates: UpdateEntry[] = [
     date: "May 12th 2026",
     description: (
       <>
+        Added CoinStats link for <TokenMention>XVGBASE</TokenMention>,{" "}
+        <TokenMention>XVGARB</TokenMention>, and <TokenMention>XVGAVA</TokenMention>.
+      </>
+    ),
+  },
+  {
+    date: "May 12th 2026",
+    description: (
+      <>
         <a
           className="updates-item__link"
           href="https://xvgeth.xvgtokens.com"
