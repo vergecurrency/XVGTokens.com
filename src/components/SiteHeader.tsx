@@ -167,14 +167,6 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
           >
             Swap
           </button>
-          <a
-            href="https://xvgeth.xvgtokens.com"
-            target="_blank"
-            rel="noreferrer"
-            className="site-nav__link"
-          >
-            xvgeth
-          </a>
           <button
             type="button"
             className={`site-nav__link ${isGamesRoute ? "is-active" : ""}`}
@@ -239,6 +231,16 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
                     <span>${token.symbol}</span>
                   </button>
                 ))}
+                <a
+                  href="https://xvgeth.xvgtokens.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="site-nav__token"
+                  onClick={closeAllMenus}
+                >
+                  <img src="/images/xvgeth.jpg" alt="" className="site-nav__token-icon" />
+                  <span>$XVGETH</span>
+                </a>
               </div>
             ) : null}
           </div>
