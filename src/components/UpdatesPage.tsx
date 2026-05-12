@@ -14,7 +14,15 @@ const updates: UpdateEntry[] = [
     date: "May 12th 2026",
     description: (
       <>
-        <TokenMention>XVGETH.xvgtokens.com</TokenMention> subdomain launches.
+        <a
+          className="updates-item__link"
+          href="https://xvgeth.xvgtokens.com"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <TokenMention>XVGETH.xvgtokens.com</TokenMention>
+        </a>{" "}
+        subdomain launches.
       </>
     ),
   },
