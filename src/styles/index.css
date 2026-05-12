@@ -941,6 +941,11 @@ body[data-view="updates"] .site-nav__token.is-active {
   object-fit: contain;
 }
 
+.site-nav__token-icon--round {
+  border-radius: 999px;
+  object-fit: cover;
+}
+
 .token-grid-section {
   position: relative;
   z-index: 1;

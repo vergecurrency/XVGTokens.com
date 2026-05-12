@@ -215,6 +215,20 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
             </button>
             {menuOpen ? (
               <div className="site-nav__popover" style={getPopoverStyle(menuButtonRef)}>
+                <a
+                  href="https://xvgeth.xvgtokens.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="site-nav__token"
+                  onClick={closeAllMenus}
+                >
+                  <img
+                    src="/images/xvgeth.jpg"
+                    alt=""
+                    className="site-nav__token-icon site-nav__token-icon--round"
+                  />
+                  <span>$XVGETH</span>
+                </a>
                 {tokens.map((token) => (
                   <button
                     key={token.slug}
@@ -231,16 +245,6 @@ export function SiteHeader({ currentPath, tokens, onNavigate }: SiteHeaderProps)
                     <span>${token.symbol}</span>
                   </button>
                 ))}
-                <a
-                  href="https://xvgeth.xvgtokens.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="site-nav__token"
-                  onClick={closeAllMenus}
-                >
-                  <img src="/images/xvgeth.jpg" alt="" className="site-nav__token-icon" />
-                  <span>$XVGETH</span>
-                </a>
               </div>
             ) : null}
           </div>
