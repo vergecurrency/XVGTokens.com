@@ -2971,16 +2971,16 @@ body[data-view="swap"] .swap-progress__track {
 
 .token-page__swap-section .swap-card__header,
 .token-page__swap-section .swap-card__content {
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
 }
 
 .token-page__swap-section .swap-card__header {
-  padding-top: 0.2rem;
+  padding-top: 0.4rem;
 }
 
 .token-page__swap-section .swap-card__content {
-  padding-bottom: 0.2rem;
+  padding-bottom: 0.4rem;
 }
 
 .token-page__chart-section {
