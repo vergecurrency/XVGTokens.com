@@ -7,3 +7,9 @@ vite.config.d.ts
 .env
 .env.local
 .env.*.local
+/assets/
+/images/
+/.htaccess
+/404.html
+/CNAME
+/_redirects

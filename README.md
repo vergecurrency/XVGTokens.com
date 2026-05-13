@@ -61,6 +61,8 @@ To create a production build:
 npm run build
 ```
 
+Deployment is handled by GitHub Pages through the repository Actions workflow, using the generated `dist/` artifact.
+
 This project is pinned to Node `24` via [.nvmrc](/home/office/xvgtokens.com/.nvmrc).
 
 Other Repositories of interest:<br>
