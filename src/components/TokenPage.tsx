@@ -3,6 +3,8 @@ import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 
 import { formatUnits, parseAbi } from "viem";
 import { useAccount, usePublicClient, useSwitchChain } from "wagmi";
 import { socials, type TokenDefinition } from "@/data/tokens";
+import { SwapWidget } from "@/components/SwapWidget";
+import { getAssetsForChain, getDefaultSellAsset } from "@/lib/swap";
 
 type TokenPageProps = {
   token: TokenDefinition;
@@ -280,6 +282,9 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const geckoTerminalPool = getGeckoTerminalPool(token);
   const geckoTerminalNetwork = geckoTerminalPool?.network ?? null;
   const geckoTerminalPoolAddress = geckoTerminalPool?.poolAddress ?? null;
+  const swapChainAssets = getAssetsForChain(targetChainId);
+  const swapSellAsset = getDefaultSellAsset(targetChainId);
+  const hasMiniSwap = Boolean(swapSellAsset && swapSellAsset.tokenSlug === token.slug && swapChainAssets.length > 1);
   const hasMarketChart = Boolean(token.marketChartId || geckoTerminalPoolAddress);
   const chartSourceName = token.marketChartId ? "CoinGecko" : geckoTerminalPoolAddress ? "GeckoTerminal" : "Market";
   const [marketChart, setMarketChart] = useState<MarketChartState>({
@@ -673,6 +678,27 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           })}
         </div>
       </section>
+
+      {hasMiniSwap ? (
+        <section className="token-page__resources token-page__swap-section">
+          <div className="token-page__section-head">
+            <div>
+              <div className="token-page__section-eyebrow">
+                <Sparkles className="h-4 w-4" />
+                Swap
+              </div>
+              <h2>Swap on {token.chainName}</h2>
+            </div>
+          </div>
+          <SwapWidget
+            mode="compact"
+            fixedChainId={targetChainId}
+            fixedSellAssetId={swapSellAsset?.id}
+            eyebrow={token.chainName}
+            heading={`Swap ${token.symbol}`}
+          />
+        </section>
+      ) : null}
 
       {hasMarketChart ? (
         <section className="token-page__resources token-page__chart-section">
