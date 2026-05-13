@@ -64,5 +64,8 @@ npm run build
 This project is pinned to Node `24` via [.nvmrc](/home/office/xvgtokens.com/.nvmrc).
 
 Other Repositories of interest:<br>
+xvgeth.xvgtokens.com:<br>
+https://github.com/vergecurrency/xvgeth/<br>
+contracts:<br>
 https://github.com/vergecurrency/erc20/<br>
 <br>
