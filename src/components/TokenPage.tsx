@@ -696,7 +696,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
           <SwapWidget
             mode="compact"
             fixedChainId={targetChainId}
-            fixedSellAssetId={swapSellAsset?.id}
+            defaultSellAssetId={swapSellAsset?.id}
             eyebrow={token.chainName}
             heading={`Swap ${token.symbol}`}
           />

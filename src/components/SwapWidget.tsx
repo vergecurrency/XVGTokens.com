@@ -31,7 +31,7 @@ type SwapWidgetProps = {
   mode?: "full" | "compact";
   onNavigate?: (path: string) => void;
   fixedChainId?: number;
-  fixedSellAssetId?: string;
+  defaultSellAssetId?: string;
   heading?: string;
   eyebrow?: string;
 };
@@ -370,7 +370,7 @@ export function SwapWidget({
   mode = "full",
   onNavigate,
   fixedChainId,
-  fixedSellAssetId,
+  defaultSellAssetId,
   heading,
   eyebrow,
 }: SwapWidgetProps) {
@@ -380,7 +380,7 @@ export function SwapWidget({
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient();
   const [selectedChainId, setSelectedChainId] = useState<number>(() => fixedChainId ?? swapChains[0]?.chainId ?? 1);
-  const [sellAssetId, setSellAssetId] = useState<string>(fixedSellAssetId ?? "");
+  const [sellAssetId, setSellAssetId] = useState<string>(defaultSellAssetId ?? "");
   const [buyAssetId, setBuyAssetId] = useState<string>("");
   const [sellAmount, setSellAmount] = useState<string>("");
   const [quote, setQuote] = useState<ZeroExQuote | null>(null);
@@ -458,12 +458,6 @@ export function SwapWidget({
   }, [fixedChainId, selectedChainId]);
 
   useEffect(() => {
-    if (fixedSellAssetId && sellAssetId !== fixedSellAssetId) {
-      setSellAssetId(fixedSellAssetId);
-    }
-  }, [fixedSellAssetId, sellAssetId]);
-
-  useEffect(() => {
     if (!fixedChainId && !selectedChainId && swapChains[0]) {
       setSelectedChainId(swapChains[0].chainId);
     }
@@ -474,16 +468,12 @@ export function SwapWidget({
       return;
     }
 
-    const defaultSell = fixedSellAssetId
-      ? chainAssets.find((asset) => asset.id === fixedSellAssetId) ?? null
+    const defaultSell = defaultSellAssetId
+      ? chainAssets.find((asset) => asset.id === defaultSellAssetId) ?? null
       : getDefaultSellAsset(selectedChain.chainId);
     const defaultBuy = getDefaultBuyAsset(selectedChain.chainId);
 
     setSellAssetId((current) => {
-      if (fixedSellAssetId) {
-        return defaultSell?.id ?? "";
-      }
-
       return current && chainAssets.some((asset) => asset.id === current) ? current : defaultSell?.id ?? "";
     });
     setBuyAssetId((current) => {
@@ -497,7 +487,7 @@ export function SwapWidget({
     });
     setQuote(null);
     setQuoteError("");
-  }, [selectedChain, chainAssets, fixedSellAssetId]);
+  }, [selectedChain, chainAssets, defaultSellAssetId]);
 
   useEffect(() => {
     if (fixedChainId || !connectedChainId) {
@@ -796,7 +786,7 @@ export function SwapWidget({
   }
 
   function handleFlipAssets() {
-    if (fixedSellAssetId || !sellAsset || !buyAsset || sellAsset.chainId !== buyAsset.chainId) {
+    if (!sellAsset || !buyAsset || sellAsset.chainId !== buyAsset.chainId) {
       return;
     }
 
@@ -865,10 +855,9 @@ export function SwapWidget({
                 <div className="swap-token-panel">
                   <AssetSelector
                     label="Sell"
-                    assets={fixedSellAssetId ? [sellAsset] : chainAssets}
+                    assets={chainAssets}
                     selectedAsset={sellAsset}
                     copiedAssetId={copiedAssetId}
-                    disabled={Boolean(fixedSellAssetId)}
                     onCopyAddress={handleCopyAssetAddress}
                     onSelect={(assetId) => {
                       setSellAssetId(assetId);
@@ -903,15 +892,9 @@ export function SwapWidget({
                   <small className="swap-field__usd">{formatUsdValue(sellUsdValue)}</small>
                 </div>
 
-                {!fixedSellAssetId ? (
-                  <button type="button" className="swap-flip" onClick={handleFlipAssets} aria-label="Flip sell and buy assets">
-                    <ArrowDownUp size={18} />
-                  </button>
-                ) : (
-                  <div className="swap-flip swap-flip--locked" aria-hidden="true">
-                    <ArrowDownUp size={18} />
-                  </div>
-                )}
+                <button type="button" className="swap-flip" onClick={handleFlipAssets} aria-label="Flip sell and buy assets">
+                  <ArrowDownUp size={18} />
+                </button>
 
                 <div className="swap-token-panel">
                   <AssetSelector
