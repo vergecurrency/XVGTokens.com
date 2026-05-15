@@ -1,7 +1,7 @@
 import { Check, ChevronLeft, Copy, ExternalLink, Sparkles, TrendingUp, Wallet } from "lucide-react";
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
-import { formatUnits, parseAbi } from "viem";
-import { useAccount, usePublicClient, useSwitchChain } from "wagmi";
+import { createPublicClient, formatUnits, http, parseAbi } from "viem";
+import { useAccount, useSwitchChain } from "wagmi";
 import { socials, type TokenDefinition } from "@/data/tokens";
 import { SwapWidget } from "@/components/SwapWidget";
 import { getAssetsForChain, getDefaultSellAsset } from "@/lib/swap";
@@ -272,7 +272,6 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   const previousToken = currentIndex > 0 ? tokens[currentIndex - 1] : null;
   const nextToken = currentIndex < tokens.length - 1 ? tokens[currentIndex + 1] : null;
   const targetChainId = Number.parseInt(token.wallet.chainId, 16);
-  const publicClient = usePublicClient({ chainId: targetChainId });
   const wrongTokenChain = Boolean(chain && chain.id !== targetChainId);
   const autoSwitchAttemptRef = useRef<string | null>(null);
   const [contractCopied, setContractCopied] = useState(false);
@@ -322,14 +321,21 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
   }, [chain?.id, isConnected, switchChainAsync, targetChainId, token.chainName, wrongTokenChain]);
 
   useEffect(() => {
-    if (!address || wrongTokenChain || !publicClient) {
+    if (!address || wrongTokenChain) {
       setTokenBalance(null);
       setIsBalanceLoading(false);
       return;
     }
 
     const account = address;
-    const client = publicClient;
+    const client = createPublicClient({
+      transport: http(token.wallet.rpcUrl, {
+        timeout: 12_000,
+      }),
+      batch: {
+        multicall: false,
+      },
+    });
     let cancelled = false;
 
     async function loadTokenBalance() {
@@ -363,7 +369,7 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
     return () => {
       cancelled = true;
     };
-  }, [address, publicClient, token.contractAddress, token.symbol, wrongTokenChain]);
+  }, [address, token.contractAddress, token.symbol, token.wallet.rpcUrl, wrongTokenChain]);
 
   useEffect(() => {
     const nextCoinId = getCoinGeckoCoinId(token);
@@ -591,6 +597,18 @@ export function TokenPage({ token, tokens, onNavigate, children }: TokenPageProp
             <div className="token-page__meta-card">
               <span>Farm</span>
               <strong>{token.farmSlug ? "Live on this page" : "Not yet live"}</strong>
+            </div>
+            <div className="token-page__meta-card token-page__meta-card--network">
+              <span>Network</span>
+              <strong>Visit the main {token.chainName} website:</strong>
+              <a
+                href={token.chainWebsite}
+                target="_blank"
+                rel="noreferrer"
+                className="token-page__meta-action"
+              >
+                {token.chainWebsite}
+              </a>
             </div>
             <div className="token-page__meta-card token-page__meta-card--balance">
               <span>Wallet Balance</span>

@@ -2693,6 +2693,11 @@ body[data-view="swap"] .swap-progress__track {
   align-content: start;
 }
 
+.token-page__meta-card--network {
+  display: grid;
+  align-content: start;
+}
+
 .token-page__meta-value {
   color: rgba(186, 230, 253, 0.86);
   font-size: 0.82rem;
@@ -2701,6 +2706,8 @@ body[data-view="swap"] .swap-progress__track {
 }
 
 .token-page__meta-action {
+  display: inline-flex;
+  align-items: center;
   justify-self: start;
   margin-top: 0.55rem;
   padding: 0.7rem 0.95rem;
@@ -2712,7 +2719,9 @@ body[data-view="swap"] .swap-progress__track {
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
+  text-decoration: none;
   transition: 180ms ease;
+  word-break: break-word;
 }
 
 .token-page__meta-action:hover {
